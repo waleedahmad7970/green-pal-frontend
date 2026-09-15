@@ -1,110 +1,184 @@
-import type { Order, Location, Purchase, Invoice, MonthlyStat } from "./types";
-import { useAdminData } from "./store";
-import { seedMonthlyStats } from "./mockData";
 
-// Simulated network latency so loading states in the UI get exercised now,
-// not discovered for the first time when a real backend is wired in.
-const delay = (ms = 260) => new Promise((resolve) => setTimeout(resolve, ms));
+import type {
+  Order,
+  Location,
+  Purchase,
+  Invoice,
+  MonthlyStat,
+} from "./types";
+import apiClient from "../apiClient";
 
-function id(prefix: string) {
-  return `${prefix}_${Math.random().toString(36).slice(2, 8)}`;
+// -----------------------------------------------------------------------------
+// Helpers
+// -----------------------------------------------------------------------------
+
+/**
+ * Converts MongoDB `_id` into the frontend `id` field.
+ */
+function normalize<T>(doc: unknown): T {
+  const value = doc as Record<string, unknown>;
+
+  const { _id, id, ...rest } = value;
+
+  return {
+    ...rest,
+    id: String(_id ?? id ?? ""),
+  } as T;
 }
 
-// ---- Orders -----------------------------------------------------------
+/**
+ * Normalizes a list of MongoDB documents.
+ */
+function normalizeList<T>(docs: unknown[]): T[] {
+  return docs.map((doc) => normalize<T>(doc));
+}
+
+// ============================================================================
+// Orders
+// ============================================================================
+
 export async function listOrders(): Promise<Order[]> {
-  await delay();
-  return useAdminData.getState().orders;
+  const response = await apiClient.get("/orders");
+
+  return normalizeList<Order>(response.data);
 }
 
-export async function createOrder(input: Omit<Order, "id" | "createdAt">): Promise<Order> {
-  await delay();
-  const order: Order = { ...input, id: id("ord"), createdAt: new Date().toISOString().slice(0, 10) };
-  const { orders, setOrders } = useAdminData.getState();
-  setOrders([order, ...orders]);
-  return order;
+export async function createOrder(
+  input: Omit<Order, "id" | "createdAt">
+): Promise<Order> {
+  const response = await apiClient.post("/orders", input);
+
+  return normalize<Order>(response.data);
 }
 
-export async function updateOrder(orderId: string, patch: Partial<Order>): Promise<void> {
-  await delay();
-  const { orders, setOrders } = useAdminData.getState();
-  setOrders(orders.map((o) => (o.id === orderId ? { ...o, ...patch } : o)));
+export async function updateOrder(
+  orderId: string,
+  patch: Partial<Order>
+): Promise<void> {
+  await apiClient.put(`/orders/${orderId}`, patch);
 }
 
 export async function deleteOrder(orderId: string): Promise<void> {
-  await delay();
-  const { orders, setOrders } = useAdminData.getState();
-  setOrders(orders.filter((o) => o.id !== orderId));
+  await apiClient.delete(`/orders/${orderId}`);
 }
 
-// ---- Locations ----------------------------------------------------------
+// ============================================================================
+// Locations
+// ============================================================================
+
 export async function listLocations(): Promise<Location[]> {
-  await delay();
-  return useAdminData.getState().locations;
+  const response = await apiClient.get("/locations");
+
+  return normalizeList<Location>(response.data);
 }
 
-export async function createLocation(input: Omit<Location, "id">): Promise<Location> {
-  await delay();
-  const location: Location = { ...input, id: id("loc") };
-  const { locations, setLocations } = useAdminData.getState();
-  setLocations([location, ...locations]);
-  return location;
+export async function createLocation(
+  input: Omit<Location, "id">
+): Promise<Location> {
+  const response = await apiClient.post("/locations", input);
+
+  return normalize<Location>(response.data);
 }
 
-export async function updateLocation(locationId: string, patch: Partial<Location>): Promise<void> {
-  await delay();
-  const { locations, setLocations } = useAdminData.getState();
-  setLocations(locations.map((l) => (l.id === locationId ? { ...l, ...patch } : l)));
+export async function updateLocation(
+  locationId: string,
+  patch: Partial<Location>
+): Promise<void> {
+  await apiClient.put(`/locations/${locationId}`, patch);
 }
 
 export async function deleteLocation(locationId: string): Promise<void> {
-  await delay();
-  const { locations, setLocations } = useAdminData.getState();
-  setLocations(locations.filter((l) => l.id !== locationId));
+  await apiClient.delete(`/locations/${locationId}`);
 }
 
-// ---- Purchases ----------------------------------------------------------
+// ============================================================================
+// Purchases
+// ============================================================================
+
 export async function listPurchases(): Promise<Purchase[]> {
-  await delay();
-  return useAdminData.getState().purchases;
+  const response = await apiClient.get("/purchases");
+
+  return normalizeList<Purchase>(response.data);
 }
 
-export async function createPurchase(input: Omit<Purchase, "id">): Promise<Purchase> {
-  await delay();
-  const purchase: Purchase = { ...input, id: id("pur") };
-  const { purchases, setPurchases } = useAdminData.getState();
-  setPurchases([purchase, ...purchases]);
-  return purchase;
+export async function createPurchase(
+  input: Omit<Purchase, "id">
+): Promise<Purchase> {
+  const response = await apiClient.post("/purchases", input);
+
+  return normalize<Purchase>(response.data);
 }
 
-export async function updatePurchase(purchaseId: string, patch: Partial<Purchase>): Promise<void> {
-  await delay();
-  const { purchases, setPurchases } = useAdminData.getState();
-  setPurchases(purchases.map((p) => (p.id === purchaseId ? { ...p, ...patch } : p)));
+export async function updatePurchase(
+  purchaseId: string,
+  patch: Partial<Purchase>
+): Promise<void> {
+  await apiClient.put(`/purchases/${purchaseId}`, patch);
 }
 
-// ---- Invoices -----------------------------------------------------------
+// ============================================================================
+// Invoices
+// ============================================================================
+
 export async function listInvoices(): Promise<Invoice[]> {
-  await delay();
-  return useAdminData.getState().invoices;
+  const response = await apiClient.get("/invoices");
+
+  return normalizeList<Invoice>(response.data);
 }
 
-export async function createInvoice(input: Omit<Invoice, "id">): Promise<Invoice> {
-  await delay();
-  const invoice: Invoice = { ...input, id: id("inv") };
-  const { invoices, setInvoices } = useAdminData.getState();
-  setInvoices([invoice, ...invoices]);
-  return invoice;
+export async function createInvoice(
+  input: Omit<Invoice, "id">
+): Promise<Invoice> {
+  const response = await apiClient.post("/invoices", input);
+
+  return normalize<Invoice>(response.data);
 }
 
-export async function updateInvoice(invoiceId: string, patch: Partial<Invoice>): Promise<void> {
-  await delay();
-  const { invoices, setInvoices } = useAdminData.getState();
-  setInvoices(invoices.map((i) => (i.id === invoiceId ? { ...i, ...patch } : i)));
+export async function updateInvoice(
+  invoiceId: string,
+  patch: Partial<Invoice>
+): Promise<void> {
+  await apiClient.put(`/invoices/${invoiceId}`, patch);
 }
 
-// ---- Reporting ------------------------------------------------------------
+// ============================================================================
+// Reporting
+// ============================================================================
+
 export async function getMonthlyStats(): Promise<MonthlyStat[]> {
-  await delay();
-  // Static for now — a real backend would aggregate this from orders/invoices.
-  return seedMonthlyStats;
+  // Aggregated from live orders.
+  // Backend currently has no dedicated stats endpoint.
+  const orders = await listOrders();
+
+  const map = new Map<
+    string,
+    {
+      revenue: number;
+      orders: number;
+    }
+  >();
+
+  for (const order of orders) {
+    const month = order.createdAt?.slice(0, 7) ?? "Unknown";
+
+    const existing = map.get(month) ?? {
+      revenue: 0,
+      orders: 0,
+    };
+
+    map.set(month, {
+      revenue: existing.revenue + (order.amount ?? 0),
+      orders: existing.orders + 1,
+    });
+  }
+
+  return Array.from(map.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([month, { revenue, orders }]) => ({
+      month,
+      revenue,
+      orders,
+      uptime: 99,
+    }));
 }
+
