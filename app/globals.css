@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 246 243 236;      /* sand */
+  --bg-dim: 236 231 218;  /* sand-dim */
+  --fg: 23 23 22;         /* graphite */
+  --fg-muted: 82 84 79;
+  --accent: 2 214 131;    /* signal */
+  --line: 218 214 201;
+  --card: 255 255 253;
+}
+
+html[data-theme="dark"] {
+  --bg: 4 35 26;          /* ink */
+  --bg-dim: 11 58 42;     /* ink-soft */
+  --fg: 240 245 241;
+  --fg-muted: 168 184 176;
+  --accent: 2 214 131;
+  --line: 18 59 44;
+  --card: 8 46 34;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  background-color: rgb(var(--bg));
+  color: rgb(var(--fg));
+  font-family: var(--font-geist-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  transition: background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1), color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::selection {
+  background: rgb(var(--accent));
+  color: rgb(4 35 26);
+}
+
+/* Visible keyboard focus, always */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.container-edit {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 5rem);
+}
+
+.line-rule {
+  border-color: rgb(var(--line));
+}
+
+.text-muted {
+  color: rgb(var(--fg-muted));
+}
+
+.bg-surface {
+  background-color: rgb(var(--bg));
+}
+
+.bg-surface-dim {
+  background-color: rgb(var(--bg-dim));
+}
+
+.bg-card {
+  background-color: rgb(var(--card));
+}
+
+.accent {
+  color: rgb(var(--accent));
+}
+
+/* GP bolt line-art motif, tileable stroke pattern used behind sections */
+.gp-motif {
+  background-image: url("/svg/gp-lines.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.14;
+}
+
+.gp-cut {
+  clip-path: polygon(0 0, 100% 0, 100% 82%, 78% 100%, 0 100%);
+}
+
+.magnetic-btn {
+  will-change: transform;
+}
+
+.hairline {
+  height: 1px;
+  width: 100%;
+  background: rgb(var(--line));
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
