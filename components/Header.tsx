@@ -4,9 +4,13 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import GPMark from "./GPMark";
+// You can remove the GPMark import if you are completely replacing it with your image logos
 import { useThemeStore, useNavStore } from "@/lib/store";
 import { scrollToTarget } from "@/lib/lenisStore";
+import darkLogo from "@/public/icons/darkLogo.svg";
+import lightGreen from "@/public/icons/lightGreen.svg";
+import Image from "next/image";
+import { lightLogo } from "@/public/icons";
 
 const sectionLinks = [
   { label: "Elegance", href: "/#elegance" },
@@ -43,20 +47,25 @@ export default function Header() {
       e.preventDefault();
       scrollToTarget(href.replace("/", ""));
     }
-    // otherwise let Link navigate to "/#id"; SmoothScroll handles the hash on load
   };
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-500 ${
-        scrolled || pathname !== "/" ? "bg-surface/85 backdrop-blur-md" : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-500 ${scrolled || pathname !== "/" ? "bg-surface/85 backdrop-blur-md" : "bg-transparent"
+        }`}
     >
       <div className="container-edit flex items-center justify-between h-20">
+
+        {/* --- LOGO SWAP IS HERE --- */}
         <Link href="/" className="flex items-center gap-2.5" onClick={() => setMenuOpen(false)}>
-          <GPMark className="w-8 h-6 accent" />
-          <span className="font-display font-extrabold text-lg tracking-tight">GREENPAL</span>
+          <Image
+            // This checks your theme state and loads the correct image!
+            src={theme === "dark" ? lightLogo : lightGreen}
+            alt="Greenpal Logo"
+            className="h-6 md:h-10 w-auto object-contain" // Adjust the height (h-8) as needed to fit your image beautifully
+          />
         </Link>
+        {/* ------------------------- */}
 
         <nav className="hidden lg:flex items-center gap-8">
           {sectionLinks.map((l) => (
@@ -74,9 +83,8 @@ export default function Header() {
             <Link
               key={l.href}
               href={l.href}
-              className={`font-body text-sm transition-colors duration-300 ${
-                pathname === l.href ? "accent" : "text-muted hover:text-current"
-              }`}
+              className={`font-body text-sm transition-colors duration-300 ${pathname === l.href ? "accent" : "text-muted hover:text-current"
+                }`}
             >
               {l.label}
             </Link>
@@ -103,14 +111,12 @@ export default function Header() {
             onClick={() => setMenuOpen(!menuOpen)}
           >
             <span
-              className={`h-px w-full bg-current transition-transform duration-300 ${
-                menuOpen ? "translate-y-[3.5px] rotate-45" : ""
-              }`}
+              className={`h-px w-full bg-current transition-transform duration-300 ${menuOpen ? "translate-y-[3.5px] rotate-45" : ""
+                }`}
             />
             <span
-              className={`h-px w-full bg-current transition-transform duration-300 ${
-                menuOpen ? "-translate-y-[3.5px] -rotate-45" : ""
-              }`}
+              className={`h-px w-full bg-current transition-transform duration-300 ${menuOpen ? "-translate-y-[3.5px] -rotate-45" : ""
+                }`}
             />
           </button>
         </div>

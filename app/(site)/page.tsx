@@ -8,12 +8,16 @@ import Team from "@/components/Team";
 import Work from "@/components/Work";
 import Testimonials from "@/components/Testimonials";
 import ClosingCTA from "@/components/ClosingCTA";
+import ChargingStations from "@/components/Chargingstations";
+import HowItWorks from "@/components/HowItWorks";
 
 export default function Home() {
   return (
     <>
       <Hero />
       <PortalTransition />
+      <ChargingStations />
+      <HowItWorks />
       <Elegance />
       <Services />
       <MarqueeTicker />
