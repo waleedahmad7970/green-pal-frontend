@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { work } from "@/data/content";
 import { IconAirport, IconRetail, IconTransit, IconVenue } from "./Icons";
+import Image from "next/image";
 
 const iconMap: Record<string, typeof IconAirport> = {
   airport: IconAirport,
@@ -13,13 +14,22 @@ const iconMap: Record<string, typeof IconAirport> = {
   venue: IconVenue,
 };
 
-// Alternates through the brand's actual approved logo lockups (dark-green-on-signal,
-// signal-on-dark-green, sand) so cards read as distinct, not one repeated tile.
+// Alternates through the brand's actual approved logo lockups
 const treatments = [
   { bg: "bg-ink", fg: "text-signal", sub: "text-sand/55" },
   { bg: "bg-[#02D683]", fg: "text-ink", sub: "text-ink/60" },
   { bg: "bg-surface-dim", fg: "text-graphite", sub: "text-muted" },
   { bg: "bg-ink", fg: "text-signal", sub: "text-sand/55" },
+];
+
+// Array of your images to map through
+const cardImages = [
+  "https://i.postimg.cc/RFV24K7Q/image.png",
+  "https://i.postimg.cc/d0Hc75tj/image.png",
+  "https://i.postimg.cc/zfN9293j/image.png",
+  "https://i.postimg.cc/gchHrrgD/image.png",
+  "https://i.postimg.cc/766tpD41/image.png",
+
 ];
 
 export default function Work() {
@@ -69,14 +79,10 @@ export default function Work() {
       });
     }, sectionRef);
     return () => {
-      // Route changes can unmount this component mid-pin, after
-      // ScrollTrigger has already restructured the DOM with a pin-spacer.
-      // Revert defensively so a stale reference never throws during
-      // React's own cleanup.
       try {
         ctx.revert();
       } catch {
-        // DOM already torn down by navigation; nothing left to revert.
+        // DOM already torn down
       }
     };
   }, []);
@@ -99,15 +105,22 @@ export default function Work() {
         {work.map((w, i) => {
           const Icon = iconMap[w.icon];
           const t = treatments[i % treatments.length];
+          // Dynamically grab the image based on the index, or use w.image if it exists in your data
+          const imageSrc = w.image || cardImages[i % cardImages.length];
+
           return (
             <div
               key={w.title}
               className="work-card invisible snap-start shrink-0 w-[82vw] sm:w-[60vw] lg:w-[30vw] border line-rule"
             >
-              <div className={`aspect-[4/3] ${t.bg} flex flex-col justify-between p-7`}>
-                <Icon className={`w-12 h-12 ${t.fg}`} />
-                <span className={`font-display text-3xl font-bold ${t.fg}`}>{w.stat}</span>
-              </div>
+              <Image
+                alt={w.title || "Project Image"}
+                width={800}
+                height={600}
+                src={imageSrc}
+                className="w-full h-auto aspect-[4/3] object-cover border-b line-rule"
+              />
+
               <div className="p-7 bg-card">
                 <p className="text-xs text-muted font-body mb-2">{w.place}</p>
                 <h3 className="font-display text-xl font-semibold mb-3">{w.title}</h3>

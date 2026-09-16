@@ -5,6 +5,15 @@ const nextConfig = {
   // well-documented cause of "removeChild ... not a child of this node"
   // errors with GSAP. Turned off for that reason.
   reactStrictMode: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.postimg.cc",
+
+      },
+    ],
+  },
 };
 
 export default nextConfig;
