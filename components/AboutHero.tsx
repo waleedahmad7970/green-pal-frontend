@@ -23,7 +23,7 @@ export default function AboutHero() {
             start: "top top",
             end: "+=140%",
             scrub: 0.7,
-            pin: true,
+            // pin: true,
             anticipatePin: 1,
           },
         });

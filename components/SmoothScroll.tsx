@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation"; // Add this import
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -8,8 +9,10 @@ import { lenisStore } from "@/lib/lenisStore";
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
+  const pathname = usePathname(); // Track the current page route
 
   useEffect(() => {
+    // ... [KEEP YOUR EXISTING GSAP/LENIS SETUP CODE EXACTLY THE SAME] ...
     gsap.registerPlugin(ScrollTrigger);
 
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -32,9 +35,6 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     gsap.ticker.add(update);
     gsap.ticker.lagSmoothing(0);
 
-    // If the page loaded with a hash (e.g. arriving at /#team from another
-    // page), scroll to it once layout has settled instead of leaving Lenis
-    // fighting the browser's native jump.
     if (window.location.hash) {
       const id = window.location.hash;
       requestAnimationFrame(() => {
@@ -51,6 +51,16 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       lenisStore.current = null;
     };
   }, []);
+
+  // ADD THIS NEW EFFECT to handle Next.js page changes properly
+  useEffect(() => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+    }
+  }, [pathname]);
 
   return <div id="smooth-root">{children}</div>;
 }

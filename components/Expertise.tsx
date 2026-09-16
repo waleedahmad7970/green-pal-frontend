@@ -37,7 +37,7 @@ export default function Expertise() {
             start: "top top",
             end: () => `+=${distance + window.innerHeight * 0.5}`,
             scrub: 0.6,
-            pin: true,
+            // pin: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
             onUpdate: (self) => setProgress(self.progress),
