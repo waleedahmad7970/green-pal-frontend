@@ -21,6 +21,7 @@ const sectionLinks = [
 ];
 
 const pageLinks = [
+  { label: "Investment Plans", href: "/investment" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -68,7 +69,7 @@ export default function Header() {
         {/* ------------------------- */}
 
         <nav className="hidden lg:flex items-center gap-8">
-          {sectionLinks.map((l) => (
+          {/* {sectionLinks.map((l) => (
             <Link
               key={l.href}
               href={l.href}
@@ -78,7 +79,7 @@ export default function Header() {
               {l.label}
             </Link>
           ))}
-          <span className="w-px h-4 bg-current opacity-20" />
+          <span className="w-px h-4 bg-current opacity-20" /> */}
           {pageLinks.map((l) => (
             <Link
               key={l.href}

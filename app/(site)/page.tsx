@@ -10,20 +10,22 @@ import Testimonials from "@/components/Testimonials";
 import ClosingCTA from "@/components/ClosingCTA";
 import ChargingStations from "@/components/Chargingstations";
 import HowItWorks from "@/components/HowItWorks";
+import CTA from "@/components/CTA";
 
 export default function Home() {
   return (
     <>
       <Hero />
+      <Work />
       <PortalTransition />
       <ChargingStations />
       <HowItWorks />
-      <Elegance />
-      <Services />
+      <CTA />
+      {/* <Elegance /> */}
+      {/* <Services /> */}
       <MarqueeTicker />
       <Expertise />
-      <Team />
-      <Work />
+      {/* <Team /> */}
       <Testimonials />
       <ClosingCTA />
     </>

@@ -3,6 +3,7 @@ import AboutHero from "@/components/AboutHero";
 import AboutStory from "@/components/AboutStory";
 import AboutValues from "@/components/AboutValues";
 import ClosingCTA from "@/components/ClosingCTA";
+import Team from "@/components/Team";
 
 export const metadata: Metadata = {
   title: "About — Greenpal",
@@ -15,6 +16,7 @@ export default function AboutPage() {
       <AboutHero />
       <AboutStory />
       <AboutValues />
+      <Team />
       <ClosingCTA />
     </>
   );

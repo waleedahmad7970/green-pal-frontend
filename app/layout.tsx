@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Rethink_Sans } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
+import FloatingSupport from "@/components/FloatingSupport";
 
 // Geist is served via the official `geist` package (local font files) rather
 // than next/font/google, since Geist isn't in every Next.js version's Google
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>{children}</body>
+      <FloatingSupport />
     </html>
   );
 }
