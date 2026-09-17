@@ -11,6 +11,9 @@ import ClosingCTA from "@/components/ClosingCTA";
 import ChargingStations from "@/components/Chargingstations";
 import HowItWorks from "@/components/HowItWorks";
 import CTA from "@/components/CTA";
+import WhyGreenpal from "@/components/WhyGreenpal";
+import FAQAndCTA from "@/components/FAQAndCTA";
+import ForVenues from "@/components/ForVenues";
 
 export default function Home() {
   return (
@@ -20,12 +23,15 @@ export default function Home() {
       <PortalTransition />
       <ChargingStations />
       <HowItWorks />
+      <WhyGreenpal />
       <CTA />
       {/* <Elegance /> */}
       {/* <Services /> */}
+      <ForVenues />
       <MarqueeTicker />
       <Expertise />
       {/* <Team /> */}
+      <FAQAndCTA />
       <Testimonials />
       <ClosingCTA />
     </>

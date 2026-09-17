@@ -21,23 +21,60 @@ export default function ClosingCTA() {
     <section className="relative py-28 md:py-44 bg-ink text-sand overflow-hidden">
       <div className="absolute inset-0 gp-motif" aria-hidden="true" />
       <div className="container-edit relative flex flex-col items-start">
-        <h2 className="font-display font-extrabold text-display-lg text-sand max-w-3xl mb-12">
-          Let's put a station where it's needed.
+        <h2 className="font-display font-bold text-2xl text-sand max-w-3xl mb-4">
+          Ready when you are
         </h2>
-        <motion.div
-          ref={btnRef}
-          onMouseMove={handleMove}
-          onMouseLeave={() => setPos({ x: 0, y: 0 })}
-          animate={{ x: pos.x, y: pos.y }}
-          transition={{ type: "spring", stiffness: 150, damping: 12, mass: 0.4 }}
-        >
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-4 bg-signal text-ink font-body font-medium px-10 py-5 rounded-full text-lg"
+
+        <h2 className="font-display font-extrabold text-display-lg text-sand max-w-3xl mb-6">
+          Stay Powered. Bring Greenpal to Your Location.{" "}
+        </h2>
+
+        <h2 className="font-display font-medium text-xl md:text-2xl text-sand/80 max-w-3xl mb-12">
+          Host portable charging for your customers or explore a Greenpal
+          business blueprint.{" "}
+        </h2>
+        <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-start w-full">
+          <motion.div
+            ref={btnRef}
+            onMouseMove={handleMove}
+            onMouseLeave={() => setPos({ x: 0, y: 0 })}
+            animate={{ x: pos.x, y: pos.y }}
+            transition={{
+              type: "spring",
+              stiffness: 150,
+              damping: 12,
+              mass: 0.4,
+            }}
+            className="w-full md:w-auto"
           >
-            Get in touch
-          </Link>
-        </motion.div>
+            <Link
+              href="/contact"
+              className="inline-flex justify-center w-full md:w-auto items-center gap-2 md:gap-4 bg-signal text-ink font-body font-medium px-6 py-3 md:px-10 md:py-5 rounded-full text-base md:text-lg"
+            >
+              Host a Greenpal Station{" "}
+            </Link>
+          </motion.div>
+          <motion.div
+            ref={btnRef}
+            onMouseMove={handleMove}
+            onMouseLeave={() => setPos({ x: 0, y: 0 })}
+            animate={{ x: pos.x, y: pos.y }}
+            transition={{
+              type: "spring",
+              stiffness: 150,
+              damping: 12,
+              mass: 0.4,
+            }}
+            className="w-full md:w-auto"
+          >
+            <Link
+              href="/contact"
+              className="inline-flex justify-center w-full md:w-auto items-center gap-2 md:gap-4 bg-signal text-ink font-body font-medium px-6 py-3 md:px-10 md:py-5 rounded-full text-base md:text-lg"
+            >
+              Explore Business Blueprints
+            </Link>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

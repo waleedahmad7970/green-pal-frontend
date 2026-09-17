@@ -123,7 +123,8 @@ export const testimonials = [
     org: "Metro International Airport",
   },
   {
-    quote: "Installation was fast and the finish matched our storefront on the first try.",
+    quote:
+      "Installation was fast and the finish matched our storefront on the first try.",
     name: "General Manager",
     org: "Riverside Shopping Centre",
   },
@@ -134,4 +135,11 @@ export const stats = [
   { value: 99.2, suffix: "%", label: "Fleet uptime" },
   { value: 18, suffix: "min", label: "Average charge to full" },
   { value: 4, suffix: "", label: "ANAH principles we build to" },
+];
+
+export const stats2 = [
+  { value: 340, suffix: ">", label: "Scan" },
+  { value: 99.2, suffix: ">", label: "Rent" },
+  { value: 18, suffix: ">", label: "Charge" },
+  { value: 4, suffix: "", label: "Return" },
 ];

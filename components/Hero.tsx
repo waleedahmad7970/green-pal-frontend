@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import GPMark from "./GPMark";
-import { stats } from "@/data/content";
+import { stats2 } from "@/data/content";
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -21,19 +21,34 @@ export default function Hero() {
       const lines = headlineRef.current?.querySelectorAll(".reveal-line");
 
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
-      tl.fromTo(lines || [], { yPercent: 115, rotate: 2 }, { yPercent: 0, rotate: 0, duration: 1.2, stagger: 0.1 })
-        .fromTo(subRef.current, { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.7 }, "-=0.6")
+      tl.fromTo(
+        lines || [],
+        { yPercent: 115, rotate: 2 },
+        { yPercent: 0, rotate: 0, duration: 1.2, stagger: 0.1 },
+      )
+        .fromTo(
+          subRef.current,
+          { autoAlpha: 0, y: 14 },
+          { autoAlpha: 1, y: 0, duration: 0.7 },
+          "-=0.6",
+        )
         .fromTo(
           markWrapRef.current,
           { autoAlpha: 0, scale: 0.82, rotate: -8 },
-          { autoAlpha: 1, scale: 1, rotate: 0, duration: 1.3, ease: "expo.out" },
-          "-=1"
+          {
+            autoAlpha: 1,
+            scale: 1,
+            rotate: 0,
+            duration: 1.3,
+            ease: "expo.out",
+          },
+          "-=1",
         )
         .fromTo(
           statsRef.current?.querySelectorAll(".stat-cell") || [],
           { autoAlpha: 0, y: 10 },
           { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08 },
-          "-=0.5"
+          "-=0.5",
         );
 
       // Three independent parallax speeds tied to the same scroll range —
@@ -41,18 +56,33 @@ export default function Hero() {
       gsap.to(motifRef.current, {
         yPercent: 14,
         ease: "none",
-        scrollTrigger: { trigger: sectionRef.current, start: "top top", end: "bottom top", scrub: true },
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
       });
       gsap.to(markWrapRef.current, {
         yPercent: 42,
         scale: 1.08,
         ease: "none",
-        scrollTrigger: { trigger: sectionRef.current, start: "top top", end: "bottom top", scrub: true },
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
       });
       gsap.to(headlineRef.current, {
         yPercent: -26,
         ease: "none",
-        scrollTrigger: { trigger: sectionRef.current, start: "top top", end: "bottom top", scrub: true },
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
       });
 
       // Mouse-reactive tilt on the GP mark — subtle, capped, and skipped on touch.
@@ -93,13 +123,21 @@ export default function Hero() {
       className="relative min-h-[100svh] flex flex-col justify-end overflow-hidden bg-surface"
       style={{ perspective: "1200px" }}
     >
-      <div ref={motifRef} className="absolute inset-0 gp-motif" aria-hidden="true" />
+      <div
+        ref={motifRef}
+        className="absolute inset-0 gp-motif"
+        aria-hidden="true"
+      />
 
       <div
         ref={markWrapRef}
         className="absolute -right-16 sm:-right-8 top-[14%] w-[62vw] max-w-[720px] pointer-events-none invisible"
       >
-        <div ref={markInnerRef} className="accent" style={{ transformStyle: "preserve-3d" }}>
+        <div
+          ref={markInnerRef}
+          className="accent"
+          style={{ transformStyle: "preserve-3d" }}
+        >
           <GPMark className="w-full h-full drop-shadow-[0_30px_60px_rgba(2,214,131,0.18)]" />
         </div>
       </div>
@@ -107,22 +145,30 @@ export default function Hero() {
       <div className="container-edit relative pb-12 md:pb-16 pt-32">
         <div ref={headlineRef} className="overflow-hidden">
           <div className="overflow-hidden">
-            <h1 className="reveal-line font-display font-extrabold text-display-xl">Power,</h1>
-          </div>
-          <div className="overflow-hidden">
             <h1 className="reveal-line font-display font-extrabold text-display-xl">
-              wherever <span className="accent">people</span>
+              Stay Charged. ,
             </h1>
           </div>
           <div className="overflow-hidden">
-            <h1 className="reveal-line font-display font-extrabold text-display-xl">move.</h1>
+            <h1 className="reveal-line font-display font-extrabold text-display-xl">
+              Keep<span className="accent">Moving.</span>
+            </h1>
           </div>
+          {/* <div className="overflow-hidden">
+            <h1 className="reveal-line font-display font-extrabold text-display-xl">
+              move.
+            </h1>
+          </div> */}
         </div>
 
         <div className="mt-8 md:mt-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
-          <p ref={subRef} className="font-body text-lg md:text-xl text-muted max-w-md invisible">
-            Smart charging stations, rentable power banks, and on-the-go utility devices —
-            engineered for the places people move through fastest.
+          <p
+            ref={subRef}
+            className="font-body text-lg md:text-xl text-muted max-w-md invisible"
+          >
+            Rent a Greenpal power bank in seconds and take your charge with you.
+            Simple portable charging for the places where people shop, eat,
+            work, wait and play.
           </p>
           <a
             href="/contact"
@@ -135,14 +181,17 @@ export default function Hero() {
       </div>
 
       <div className="relative border-t line-rule">
-        <div ref={statsRef} className="container-edit grid grid-cols-2 md:grid-cols-4 gap-6 py-8">
-          {stats.map((s) => (
+        <div
+          ref={statsRef}
+          className="container-edit grid grid-cols-2 md:grid-cols-4 gap-6 py-8"
+        >
+          {stats2.map((s) => (
             <div key={s.label} className="stat-cell invisible">
               <div className="font-display text-2xl md:text-3xl font-bold">
-                {s.value}
-                <span className="accent">{s.suffix}</span>
+                {/* {s.value} */}
+                {s.label}
+                <span className="accent mt-1">{s.suffix}</span>
               </div>
-              <div className="text-xs md:text-sm text-muted font-body mt-1">{s.label}</div>
             </div>
           ))}
         </div>
