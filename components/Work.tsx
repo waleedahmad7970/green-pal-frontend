@@ -29,7 +29,6 @@ const cardImages = [
   "https://i.postimg.cc/zfN9293j/image.png",
   "https://i.postimg.cc/gchHrrgD/image.png",
   "https://i.postimg.cc/766tpD41/image.png",
-
 ];
 
 export default function Work() {
@@ -61,7 +60,7 @@ export default function Work() {
           stagger: 0.1,
           ease: "power3.out",
           scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
-        }
+        },
       );
       gsap.utils.toArray<HTMLElement>(".work-card").forEach((card, i) => {
         gsap.fromTo(
@@ -74,7 +73,7 @@ export default function Work() {
             delay: (i % 3) * 0.06,
             ease: "power3.out",
             scrollTrigger: { trigger: card, start: "top 92%" },
-          }
+          },
         );
       });
     }, sectionRef);
@@ -88,7 +87,11 @@ export default function Work() {
   }, []);
 
   return (
-    <section id="work" ref={sectionRef} className="relative py-28 md:py-40 bg-surface">
+    <section
+      id="work"
+      ref={sectionRef}
+      className="relative py-28 md:py-40 bg-surface"
+    >
       <div className="container-edit mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <h2 className="work-heading invisible font-display font-bold text-display-lg max-w-xl">
           Deployed and running.
@@ -106,8 +109,7 @@ export default function Work() {
           const Icon = iconMap[w.icon];
           const t = treatments[i % treatments.length];
           // Dynamically grab the image based on the index, or use w.image if it exists in your data
-          const imageSrc = w.image || cardImages[i % cardImages.length];
-
+          const imageSrc = cardImages[i % cardImages.length];
           return (
             <div
               key={w.title}
@@ -123,8 +125,12 @@ export default function Work() {
 
               <div className="p-7 bg-card">
                 <p className="text-xs text-muted font-body mb-2">{w.place}</p>
-                <h3 className="font-display text-xl font-semibold mb-3">{w.title}</h3>
-                <p className="text-muted font-body text-sm leading-relaxed">{w.copy}</p>
+                <h3 className="font-display text-xl font-semibold mb-3">
+                  {w.title}
+                </h3>
+                <p className="text-muted font-body text-sm leading-relaxed">
+                  {w.copy}
+                </p>
               </div>
             </div>
           );

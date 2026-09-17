@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+// Comprehensive database covering all 6 series
 const getProduct = (slug: string) => {
   const db: Record<string, any> = {
     "ownership-series": {
@@ -71,37 +72,99 @@ const getProduct = (slug: string) => {
         },
       ],
     },
-    "enterprise-bundle": {
-      title: "Complete Portfolio Bundle",
-      subtitle: "Series 03 — Comprehensive Strategic Collection",
-      price: "$49.00",
+    "transit-hub-blueprint": {
+      title: "Transit Hub Deployment Model",
+      subtitle: "Series 03 — High-Velocity Commuter Architecture",
+      price: "$34.00",
       overview:
-        "The complete strategic suite combining both the Ownership and Co-Invest planning architectures. Ideal for institutional evaluators, developers, and entrepreneurs seeking deep data models across multiple deployment methodologies.",
+        "Tailored for ultra-high traffic environments like airports, central train terminals, and subway interchanges where dwell time is short and transaction velocity is at its peak.",
       metrics: [
-        { label: "Included Series", value: "Ownership + Co-Invest" },
-        { label: "Analytical Depth", value: "Full Sensitivity Suite" },
-        { label: "Strategic Value", value: "Complete Framework" },
+        { label: "Traffic Density", value: "Ultra-High Volume" },
+        { label: "Station Format", value: "Multi-Tower Clusters" },
+        { label: "Focus", value: "Rapid-Swap Inventory" },
       ],
       sections: [
         {
-          heading: "Side-by-Side Structural Comparison",
+          heading: "Commuter Flow & Peak-Hour Capacity",
           content:
-            "Direct financial and operational comparison tables evaluating full asset ownership versus co-investment leverage.",
+            "Calculations mapping passenger throughput to power bank availability, minimizing empty slots during morning and evening rush windows.",
         },
         {
-          heading: "Advanced Sensitivity & Stress Testing",
+          heading: "Security & Municipal Concessions",
           content:
-            "Financial modeling under variable conditions: sudden foot traffic shifts, economic downturns, energy cost spikes, and venue churn scenarios.",
+            "Guidelines for navigating transit authority approvals, fire safety clearances, and ADA accessibility compliance in public concourses.",
+        },
+      ],
+    },
+    "hospitality-hospital-blueprint": {
+      title: "Hospitality & Healthcare Framework",
+      subtitle: "Series 04 — Extended Dwell Optimization",
+      price: "$39.00",
+      overview:
+        "Specialized positioning blueprint designed for hotels, resorts, tourist destination centers, and large multi-building hospital complexes prioritizing visitor convenience.",
+      metrics: [
+        { label: "Environment", value: "Extended Dwell Spaces" },
+        { label: "Integration", value: "Concierge & Lobby Tier" },
+        { label: "Support Level", value: "White-Glove Setup" },
+      ],
+      sections: [
+        {
+          heading: "Guest Amenity Value Projections",
+          content:
+            "Evaluating how mobile power availability increases guest satisfaction scores and reduces front-desk friction caused by dead phone batteries.",
         },
         {
-          heading: "Network Growth & Multi-City Expansion",
+          heading: "Facility Concession Structuring",
           content:
-            "Guidelines for scaling from a single high-dwell venue cluster to city-wide transit hubs, airports, and major shopping complexes.",
+            "Revenue share models tailored specifically for hotel management groups and hospital auxiliary service departments.",
+        },
+      ],
+    },
+    "campus-retail-blueprint": {
+      title: "Campus & Retail Ecosystem",
+      subtitle: "Series 05 — Multi-Building Routing Network",
+      price: "$44.00",
+      overview:
+        "Engineered for university student unions, sprawling campus grounds, and major regional shopping malls with fragmented student and shopper footprints.",
+      metrics: [
+        { label: "Deployment", value: "Multi-Node Network" },
+        { label: "Target Audience", value: "Students & Shoppers" },
+        { label: "Seasonality", value: "Academic Calendar Adjusted" },
+      ],
+      sections: [
+        {
+          heading: "Student Union & Mall Placement Strategy",
+          content:
+            "Pinpointing optimal high-dwell anchor locations near food courts, libraries, and central corridors to maximize organic appless scans.",
         },
         {
-          heading: "Due Diligence Documentation Pack",
+          heading: "Semester Volume Dips & Adjustments",
           content:
-            "Complete checklist of legal inquiries, technical safety certifications, regulatory compliance points, and partner vetting criteria.",
+            "Pro forma adjustments accounting for summer breaks, holidays, and heavy retail shopping peaks like Black Friday.",
+        },
+      ],
+    },
+    "enterprise-bundle": {
+      title: "Complete Portfolio Bundle",
+      subtitle: "Series 06 — Comprehensive Strategic Collection",
+      price: "$79.00",
+      overview:
+        "The complete strategic suite combining all series and deployment architectures. Ideal for institutional evaluators and multi-market developers seeking complete cross-model data visibility.",
+      metrics: [
+        { label: "Included Series", value: "All 5 Core Frameworks" },
+        { label: "Analysis Depth", value: "Full Sensitivity Suite" },
+        { label: "Strategic Value", value: "Master Collection" },
+      ],
+      sections: [
+        {
+          heading: "Cross-Model Comparative Matrix",
+          content:
+            "Side-by-side financial statements evaluating ownership yields versus co-investment models across diverse urban markets.",
+        },
+        {
+          heading: "Stress Testing & Macro Volatility",
+          content:
+            "Modeled performance during utility cost spikes, supply chain disruptions, and retail foot traffic contraction.",
         },
       ],
     },
@@ -110,12 +173,13 @@ const getProduct = (slug: string) => {
   return db[slug];
 };
 
-export default function ProductDetailPage({
+export default async function ProductDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const product = getProduct(params.slug);
+  const resolvedParams = await params;
+  const product = getProduct(resolvedParams.slug);
 
   if (!product) {
     notFound();
@@ -150,7 +214,7 @@ export default function ProductDetailPage({
           <p className="font-body text-sm font-bold uppercase tracking-widest text-[#02d683] mb-4">
             {product.subtitle}
           </p>
-          <h1 className="font-display font-extrabold text-4xl md:text-6xl lg:text-7xl mb-6 tracking-tight">
+          <h1 className="font-display font-extrabold text-4xl md:text-6xl lg:text-7xl mb-6 tracking-tight text-ink dark:text-white">
             {product.title}
           </h1>
           <p className="font-body text-lg md:text-xl text-muted leading-relaxed">
@@ -165,7 +229,7 @@ export default function ProductDetailPage({
               <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">
                 {m.label}
               </p>
-              <p className="font-display font-bold text-lg md:text-xl text-ink">
+              <p className="font-display font-bold text-lg md:text-xl text-ink dark:text-white">
                 {m.value}
               </p>
             </div>
@@ -176,13 +240,13 @@ export default function ProductDetailPage({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
           {/* Left Column: Comprehensive Sections */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-12">
-            <h2 className="font-display font-bold text-3xl md:text-4xl mb-8">
+            <h2 className="font-display font-bold text-3xl md:text-4xl text-ink dark:text-white mb-8">
               Inside the Blueprint
             </h2>
 
             {product.sections.map((sec: any, i: number) => (
               <div key={i} className="border-t line-rule pt-8">
-                <h3 className="font-display font-bold text-xl md:text-2xl mb-3 text-ink">
+                <h3 className="font-display font-bold text-xl md:text-2xl mb-3 text-ink dark:text-white">
                   {sec.heading}
                 </h3>
                 <p className="font-body text-muted leading-relaxed text-base md:text-lg">
@@ -199,7 +263,7 @@ export default function ProductDetailPage({
                 <span className="font-body text-xs font-bold uppercase tracking-wider text-[#02d683]">
                   Instant Digital PDF
                 </span>
-                <span className="font-display font-bold text-3xl md:text-4xl">
+                <span className="font-display font-bold text-3xl md:text-4xl text-ink dark:text-white">
                   {product.price}
                 </span>
               </div>
