@@ -3,16 +3,20 @@
 import { useEffect, useState, useRef } from "react";
 import gsap from "gsap";
 import { scrollToTarget } from "@/lib/lenisStore";
-
+import { useRouter } from "next/navigation";
 // Updated with your live Postimg URLs
+
+
+
 const products = [
-    { name: "GP Mini", bays: 5, image: "https://i.postimg.cc/gcB9LVMs/image-removebg-preview-(6).png" },
-    { name: "GP 10", bays: 10, image: "https://i.postimg.cc/L6rrNHKb/image-removebg-preview-(5).png" },
-    { name: "GP 15", bays: 15, image: "https://i.postimg.cc/qBFYvkRj/image-removebg-preview-(1).png" },
-    { name: "GP 25", bays: 25, image: "https://i.postimg.cc/NMfV5FmP/image-removebg-preview-(3).png" },
-    { name: "GP 45", bays: 45, image: "https://i.postimg.cc/zvycFQd7/image-removebg-preview-(2).png" },
+    { model: "ZBJ-SP04-SP", name: "Shared Charging Station", bays: 1, image: "https://i.postimg.cc/gcB9LVMs/image-removebg-preview-(6).png" },
+    { model: "ZBJ-SP08-SP", name: "Shared Charging Station", bays: 4, image: "https://i.postimg.cc/L6rrNHKb/image-removebg-preview-(5).png" },
+    { model: "ZBJ-SP04-SP", name: "Shared Charging Station", bays: 12, image: "https://i.postimg.cc/qBFYvkRj/image-removebg-preview-(1).png" },
+    { model: "ZBJ-SP04-SP", name: "Shared Charging Station", bays: 12, image: "https://i.postimg.cc/NMfV5FmP/image-removebg-preview-(3).png" },
+    { model: "ZBJ-166", name: "Shared Charging Station", bays: 18, image: "https://i.postimg.cc/zvycFQd7/image-removebg-preview-(2).png" },
 ];
 export default function ChargingStationsSpotlight() {
+    const router = useRouter();
     const [activeIndex, setActiveIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
     const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -98,7 +102,7 @@ export default function ChargingStationsSpotlight() {
     };
 
     return (
-        <section className="relative py-24 md:py-32 bg-surface overflow-hidden min-h-screen flex flex-col items-center justify-center">
+        <section className="relative py-10 md:py-32 bg-surface overflow-hidden min-h-screen flex flex-col items-center justify-center">
 
             <div className="text-center mb-16 relative z-50 pointer-events-none">
                 <h2 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl mb-4 tracking-tight text-ink pointer-events-auto">
@@ -141,18 +145,22 @@ export default function ChargingStationsSpotlight() {
                         </div>
 
                         <div className="mt-6 text-center w-full">
-                            <h3 className="font-display text-2xl md:text-3xl font-bold text-ink mb-1">
-                                {product.name}
+                            <h3 className="font-display text-2xl md:text-3xl font-bold  mb-1">
+                                {product?.model}
                             </h3>
                             <p className="text-sm md:text-base text-muted font-body mb-4">
-                                Holds {product.bays} power banks
+                                Holds {product?.bays} power banks
+                            </p>
+
+                            <p className="text-sm md:text-base text-muted font-body mb-4">
+                                {product?.name}
                             </p>
 
                             <div className={`transition-opacity duration-500 ${activeIndex === i ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        scrollToTarget("#services");
+                                        router.push(`/products`);
                                     }}
                                     className="px-6 py-2.5 rounded-full bg-signal text-ink font-semibold text-sm hover:opacity-80 transition-opacity cursor-pointer"
                                 >

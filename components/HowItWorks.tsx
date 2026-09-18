@@ -93,7 +93,7 @@ export default function HowItWorksAccordion() {
   };
 
   return (
-    <section className="relative py-24 md:py-32 bg-surface overflow-hidden">
+    <section className="relative py-10 md:py-32 bg-surface overflow-hidden">
       <div className="container-edit">
         {/* Header */}
         <div className="mb-12 md:mb-16">
@@ -115,11 +115,10 @@ export default function HowItWorksAccordion() {
                 key={step.id}
                 onClick={() => handleTabClick(i)}
                 className={`group relative overflow-hidden rounded-[2rem] border line-rule transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer
-                                    ${
-                                      isActive
-                                        ? "flex-[4] md:flex-[5] bg-surface shadow-2xl"
-                                        : "flex-[0.8] md:flex-[0.7] bg-ink/5 hover:bg-ink/10 shadow-sm"
-                                    }`}
+                                    ${isActive
+                    ? "flex-[4] md:flex-[5] bg-surface shadow-2xl"
+                    : "flex-[0.8] md:flex-[0.7] bg-ink/5 hover:bg-ink/10 shadow-sm"
+                  }`}
               >
                 {/* 
                                   --- 1. THE TAB (Always Visible) ---

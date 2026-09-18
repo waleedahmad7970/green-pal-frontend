@@ -53,11 +53,10 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-500 ${
-        scrolled || pathname !== "/"
+      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-500 ${scrolled || pathname !== "/"
           ? "bg-surface/85 backdrop-blur-md"
           : "bg-transparent"
-      }`}
+        }`}
     >
       <div className="container-edit flex items-center justify-between h-20">
         {/* --- LOGO SWAP IS HERE --- */}
@@ -91,9 +90,8 @@ export default function Header() {
             <Link
               key={l.href}
               href={l.href}
-              className={`font-body text-sm transition-colors duration-300 ${
-                pathname === l.href ? "accent" : "text-muted hover:text-current"
-              }`}
+              className={`font-body text-sm transition-colors duration-300 ${pathname === l.href ? "accent" : "text-muted hover:text-current"
+                }`}
             >
               {l.label}
             </Link>
@@ -120,14 +118,12 @@ export default function Header() {
             onClick={() => setMenuOpen(!menuOpen)}
           >
             <span
-              className={`h-px w-full bg-current transition-transform duration-300 ${
-                menuOpen ? "translate-y-[3.5px] rotate-45" : ""
-              }`}
+              className={`h-px w-full bg-current transition-transform duration-300 ${menuOpen ? "translate-y-[3.5px] rotate-45" : ""
+                }`}
             />
             <span
-              className={`h-px w-full bg-current transition-transform duration-300 ${
-                menuOpen ? "-translate-y-[3.5px] -rotate-45" : ""
-              }`}
+              className={`h-px w-full bg-current transition-transform duration-300 ${menuOpen ? "-translate-y-[3.5px] -rotate-45" : ""
+                }`}
             />
           </button>
         </div>
@@ -143,7 +139,7 @@ export default function Header() {
             className="lg:hidden overflow-hidden bg-surface border-t line-rule"
           >
             <nav className="container-edit flex flex-col py-6 gap-5">
-              {sectionLinks.map((l) => (
+              {/* {sectionLinks.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
@@ -152,7 +148,7 @@ export default function Header() {
                 >
                   {l.label}
                 </Link>
-              ))}
+              ))} */}
               {pageLinks.map((l) => (
                 <Link
                   key={l.href}

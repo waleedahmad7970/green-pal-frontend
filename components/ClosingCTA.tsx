@@ -49,7 +49,7 @@ export default function ClosingCTA() {
           >
             <Link
               href="/contact"
-              className="inline-flex justify-center w-full md:w-auto items-center gap-2 md:gap-4 bg-signal text-ink font-body font-medium px-6 py-3 md:px-10 md:py-5 rounded-full text-base md:text-lg"
+              className="inline-flex justify-center w-full md:w-auto items-center gap-2 md:gap-4 bg-signal text-ink font-body font-medium px-6 py-3 md:px-10 md:py-5 rounded-full text-base md:text-lg max-w-max"
             >
               Host a Greenpal Station{" "}
             </Link>
@@ -69,7 +69,7 @@ export default function ClosingCTA() {
           >
             <Link
               href="/contact"
-              className="inline-flex justify-center w-full md:w-auto items-center gap-2 md:gap-4 bg-signal text-ink font-body font-medium px-6 py-3 md:px-10 md:py-5 rounded-full text-base md:text-lg"
+              className="inline-flex justify-center w-full md:w-auto items-center gap-2 md:gap-4 bg-signal text-ink font-body font-medium px-6 py-3 md:px-10 md:py-5 rounded-full text-base md:text-lg max-w-max"
             >
               Explore Business Blueprints
             </Link>

@@ -46,7 +46,7 @@ export default function Testimonials() {
   const current = testimonials[index];
 
   return (
-    <section ref={sectionRef} className="relative py-28 md:py-40 bg-surface">
+    <section ref={sectionRef} className="relative py-10 md:py-32 bg-surface">
       <div className="container-edit">
         <p className="testimonial-label invisible text-sm text-muted font-body mb-10">
           From the venues we're already in

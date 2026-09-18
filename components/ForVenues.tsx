@@ -13,7 +13,7 @@ const venues = [
 
 export default function ForVenues() {
   return (
-    <section className="bg-surface transition-colors duration-300 py-24 md:py-32 border-t line-rule">
+    <section className="bg-surface transition-colors duration-300 py-10 md:py-32 border-t line-rule">
       <div className="container-edit flex flex-col items-center text-center max-w-4xl mx-auto">
         {/* Label */}
         <h2 className="font-body text-sm font-bold uppercase tracking-widest text-[#02d683] dark:text-green-400 mb-6 transition-colors duration-300">

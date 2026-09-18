@@ -142,7 +142,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="container-edit relative pb-12 md:pb-16 pt-32">
+      <div className="container-edit relative pb-12 md:pb-16 pt-10 md:pt-32">
         <div ref={headlineRef} className="overflow-hidden">
           <div className="overflow-hidden">
             <h1 className="reveal-line font-display font-extrabold text-display-xl">
@@ -172,10 +172,14 @@ export default function Hero() {
           </p>
           <a
             href="/contact"
-            className="group inline-flex items-center gap-3 font-body text-base border-b line-rule pb-1 w-fit shrink-0"
+            className="group relative max-w-max inline-flex items-center gap-3 px-6 py-3 rounded-full bg-signal text-ink font-body font-bold text-base overflow-hidden transition-transform duration-300 hover:scale-105 shrink-0 shadow-lg"
           >
-            Talk to us
-            <span className="w-8 h-px bg-current transition-all duration-300 group-hover:w-12" />
+            {/* Pulsing background effect */}
+            <span className="absolute inset-0 rounded-full bg-signal animate-ping opacity-25 pointer-events-none" />
+
+            <span className="relative z-10">Talk to us</span>
+
+            <span className="relative z-10 w-6 h-px bg-ink transition-all duration-300 group-hover:w-10" />
           </a>
         </div>
       </div>

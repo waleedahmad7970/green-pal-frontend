@@ -19,7 +19,6 @@ const iconMap: Record<string, typeof IconHardware> = {
   ethics: IconEthics,
 };
 
-// Replaced expertise with your new Blueprint content
 const blueprints = [
   {
     title: "Ownership Series",
@@ -127,28 +126,32 @@ export default function PowerBlueprints() {
         </div>
       </div>
 
-      <div
-        ref={trackRef}
-        className="flex flex-nowrap gap-6 md:gap-10 px-[clamp(1.25rem,5vw,5rem)] pb-20 w-max"
-      >
-        {blueprints.map((e) => {
-          const Icon = iconMap[e.icon];
-          return (
-            <div
-              key={e.title}
-              className="w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[32vw] shrink-0 border-t border-signal/30 pt-8"
-            >
-              <Icon className="w-14 h-14 text-signal mb-8" />
-              <h3 className="font-display text-2xl md:text-3xl font-semibold mb-3 text-sand">
-                {e.title}
-              </h3>
-              <p className="text-signal/90 font-body text-sm mb-4 leading-relaxed">
-                {e.metric}
-              </p>
-              <p className="text-sand/65 font-body leading-relaxed">{e.copy}</p>
-            </div>
-          );
-        })}
+      {/* NEW NATIVE SCROLL WRAPPER FOR MOBILE */}
+      <div className="w-full overflow-x-auto md:overflow-x-visible snap-x snap-mandatory md:snap-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div
+          ref={trackRef}
+          className="flex flex-nowrap gap-6 md:gap-10 px-[clamp(1.25rem,5vw,5rem)] pb-20 w-max"
+        >
+          {blueprints.map((e) => {
+            const Icon = iconMap[e.icon];
+            return (
+              <div
+                key={e.title}
+                // Added snap-center for mobile swipe locking
+                className="w-[85vw] sm:w-[60vw] md:w-[40vw] lg:w-[32vw] shrink-0 border-t border-signal/30 pt-8 snap-center md:snap-align-none"
+              >
+                <Icon className="w-14 h-14 text-signal mb-8" />
+                <h3 className="font-display text-2xl md:text-3xl font-semibold mb-3 text-sand">
+                  {e.title}
+                </h3>
+                <p className="text-signal/90 font-body text-sm mb-4 leading-relaxed">
+                  {e.metric}
+                </p>
+                <p className="text-sand/65 font-body leading-relaxed">{e.copy}</p>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Footer CTA & Disclaimer */}

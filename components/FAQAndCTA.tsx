@@ -39,7 +39,7 @@ export default function FAQ() {
 
   return (
     <section className="bg-surface transition-colors duration-300">
-      <div className="py-24 md:py-20 border-t line-rule transition-colors duration-300">
+      <div className="py-10 md:py-20 border-t line-rule transition-colors duration-300">
         <div className="container-edit max-w-4xl mx-auto">
           <div className="mb-12 md:mb-16">
             {/* Stripped text-ink so it inherits standard light/dark text color automatically */}
@@ -66,9 +66,8 @@ export default function FAQ() {
                       {faq.question}
                     </span>
                     <span
-                      className={`flex-shrink-0 ml-4 transition-all duration-300 group-hover:text-[#02d683] ${
-                        isOpen ? "rotate-45" : "rotate-0"
-                      }`}
+                      className={`flex-shrink-0 ml-4 transition-all duration-300 group-hover:text-[#02d683] ${isOpen ? "rotate-45" : "rotate-0"
+                        }`}
                     >
                       <svg
                         className="w-6 h-6"
@@ -87,11 +86,10 @@ export default function FAQ() {
                   </button>
 
                   <div
-                    className={`grid transition-all duration-300 ease-in-out ${
-                      isOpen
+                    className={`grid transition-all duration-300 ease-in-out ${isOpen
                         ? "grid-rows-[1fr] opacity-100"
                         : "grid-rows-[0fr] opacity-0"
-                    }`}
+                      }`}
                   >
                     <div className="overflow-hidden">
                       <p className="font-body text-muted px-6 md:px-8 pb-6 md:pb-8 leading-relaxed transition-colors duration-300">

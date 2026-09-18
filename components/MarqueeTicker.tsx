@@ -57,7 +57,7 @@ export default function OurApproach() {
   const loopContent = [...WORDS, ...WORDS, ...WORDS, ...WORDS];
 
   return (
-    <section className="bg-surface transition-colors duration-300 pt-24 md:pt-32">
+    <section className="bg-surface transition-colors duration-300 pt-10 md:pt-32">
       {/* Intro Text Section */}
       <div className="container-edit mb-16 md:mb-24 max-w-4xl">
         <h2 className="font-body text-sm font-bold uppercase tracking-widest text-[#02d683] dark:text-green-400 mb-6 transition-colors duration-300">

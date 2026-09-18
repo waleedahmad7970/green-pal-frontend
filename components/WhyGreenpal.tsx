@@ -165,14 +165,14 @@ export default function WhyGreenpal() {
     return () => {
       try {
         ctx.revert();
-      } catch {}
+      } catch { }
     };
   }, []);
 
   return (
     <section
       ref={sectionRef}
-      className="py-28 md:py-40 bg-surface border-t line-rule overflow-hidden transition-colors duration-300"
+      className="py-10 md:py-32 bg-surface border-t line-rule overflow-hidden transition-colors duration-300"
     >
       <div className="container-edit">
         <div
@@ -195,11 +195,10 @@ export default function WhyGreenpal() {
           {features.map((feature, i) => (
             <div
               key={feature.title}
-              className={`bento-card invisible relative p-8 md:p-10 border line-rule bg-card overflow-hidden group rounded-2xl transition-colors duration-300 ${
-                i === 0 || i === 1
+              className={`bento-card invisible relative p-8 md:p-10 border line-rule bg-card overflow-hidden group rounded-2xl transition-colors duration-300 ${i === 0 || i === 1
                   ? "md:col-span-1 lg:col-span-2"
                   : "col-span-1"
-              }`}
+                }`}
             >
               {/* Premium Vertical Sweep (Strictly using bg-ink) */}
               <div className="absolute inset-0 bg-ink scale-y-0 origin-bottom group-hover:scale-y-100 transition-transform duration-[600ms] ease-signature pointer-events-none" />
