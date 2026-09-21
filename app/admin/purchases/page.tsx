@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { listPurchases, createPurchase, updatePurchase } from "@/lib/admin/api";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { listPurchases, createPurchase, updatePurchase } from "@/lib/admin/services/purchases";
 import type { Purchase } from "@/lib/admin/types";
 import {
   PageHeader,
@@ -12,11 +14,17 @@ import {
   inputClass,
 } from "@/components/admin/ui";
 
+const PurchaseSchema = Yup.object().shape({
+  supplier: Yup.string().required("Required"),
+  item: Yup.string().required("Required"),
+  quantity: Yup.number().positive("Must be positive").required("Required"),
+  cost: Yup.number().positive("Must be positive").required("Required"),
+});
+
 export default function AdminPurchasesPage() {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [form, setForm] = useState({ supplier: "", item: "", quantity: "1", cost: "" });
 
   const refresh = () => listPurchases().then(setPurchases);
 
@@ -24,18 +32,17 @@ export default function AdminPurchasesPage() {
     refresh().then(() => setLoading(false));
   }, []);
 
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCreate = async (values: any, { resetForm }: any) => {
     await createPurchase({
-      supplier: form.supplier,
-      item: form.item,
-      quantity: parseInt(form.quantity, 10) || 0,
-      cost: parseFloat(form.cost) || 0,
+      supplier: values.supplier,
+      item: values.item,
+      quantity: parseInt(values.quantity, 10) || 0,
+      cost: parseFloat(values.cost) || 0,
       purchasedAt: new Date().toISOString().slice(0, 10),
       received: false,
     });
     setModalOpen(false);
-    setForm({ supplier: "", item: "", quantity: "1", cost: "" });
+    resetForm();
     refresh();
   };
 
@@ -90,21 +97,35 @@ export default function AdminPurchasesPage() {
       )}
 
       <AdminModal open={modalOpen} onClose={() => setModalOpen(false)} title="New purchase">
-        <form onSubmit={handleCreate}>
-          <FormField label="Supplier">
-            <input required className={inputClass} value={form.supplier} onChange={(e) => setForm({ ...form, supplier: e.target.value })} />
-          </FormField>
-          <FormField label="Item">
-            <input required className={inputClass} value={form.item} onChange={(e) => setForm({ ...form, item: e.target.value })} />
-          </FormField>
-          <FormField label="Quantity">
-            <input required type="number" className={inputClass} value={form.quantity} onChange={(e) => setForm({ ...form, quantity: e.target.value })} />
-          </FormField>
-          <FormField label="Cost (USD)">
-            <input required type="number" step="0.01" className={inputClass} value={form.cost} onChange={(e) => setForm({ ...form, cost: e.target.value })} />
-          </FormField>
-          <PrimaryButton type="submit">Create purchase</PrimaryButton>
-        </form>
+        <Formik
+          initialValues={{ supplier: "", item: "", quantity: "1", cost: "" }}
+          validationSchema={PurchaseSchema}
+          onSubmit={handleCreate}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <FormField label="Supplier">
+                <Field name="supplier" className={inputClass} />
+                <ErrorMessage name="supplier" component="div" className="text-red-400 text-xs mt-1" />
+              </FormField>
+              <FormField label="Item">
+                <Field name="item" className={inputClass} />
+                <ErrorMessage name="item" component="div" className="text-red-400 text-xs mt-1" />
+              </FormField>
+              <FormField label="Quantity">
+                <Field name="quantity" type="number" className={inputClass} />
+                <ErrorMessage name="quantity" component="div" className="text-red-400 text-xs mt-1" />
+              </FormField>
+              <FormField label="Cost (USD)">
+                <Field name="cost" type="number" step="0.01" className={inputClass} />
+                <ErrorMessage name="cost" component="div" className="text-red-400 text-xs mt-1" />
+              </FormField>
+              <PrimaryButton type="submit">
+                Create purchase
+              </PrimaryButton>
+            </Form>
+          )}
+        </Formik>
       </AdminModal>
     </div>
   );

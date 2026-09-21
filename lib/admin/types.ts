@@ -51,3 +51,29 @@ export interface MonthlyStat {
   orders: number;
   uptime: number;
 }
+
+export interface Product {
+  id: string;
+  model: string;
+  productName: string;
+  category: string;
+  image: string;
+  slots: number;
+  stationColor: string[];
+  maxPower: string;
+  networkSupport: string;
+  material: string;
+  powerInput: string;
+  powerProtection: string;
+  certification: string;
+  singlePowerOutput: string;
+  adsSizeAndResolution: string;
+  temperature: string;
+  workingHumidity: string;
+  paymentMethods: string[];
+  functionalCharacteristics: string;
+  weight: string;
+  singleGrossWeight: string;
+  packageSize: string;
+  pricing: { qty: string; price: number }[];
+}

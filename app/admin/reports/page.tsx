@@ -14,7 +14,7 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
-import { getMonthlyStats } from "@/lib/admin/api";
+import { getMonthlyStats } from "@/lib/admin/services/reports";
 import type { MonthlyStat } from "@/lib/admin/types";
 import { PageHeader } from "@/components/admin/ui";
 

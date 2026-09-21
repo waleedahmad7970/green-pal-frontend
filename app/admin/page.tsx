@@ -12,7 +12,9 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-import { getMonthlyStats, listOrders, listInvoices } from "@/lib/admin/api";
+import { getMonthlyStats } from "@/lib/admin/services/reports";
+import { listOrders } from "@/lib/admin/services/orders";
+import { listInvoices } from "@/lib/admin/services/invoices";
 import type { MonthlyStat, Order, Invoice } from "@/lib/admin/types";
 import { PageHeader, StatCard, StatusBadge } from "@/components/admin/ui";
 
@@ -20,7 +22,7 @@ export default function AdminDashboardPage() {
   const [stats, setStats] = useState<MonthlyStat[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([getMonthlyStats(), listOrders(), listInvoices()]).then(

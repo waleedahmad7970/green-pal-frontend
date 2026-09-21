@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { listLocations, createLocation, updateLocation } from "@/lib/admin/api";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { listLocations, createLocation, updateLocation } from "@/lib/admin/services/locations";
 import type { Location, LocationStatus } from "@/lib/admin/types";
 import {
   PageHeader,
@@ -14,11 +16,17 @@ import {
 
 const statuses: LocationStatus[] = ["live", "installing", "offline"];
 
+const LocationSchema = Yup.object().shape({
+  name: Yup.string().required("Required"),
+  venue: Yup.string().required("Required"),
+  city: Yup.string().required("Required"),
+  bays: Yup.number().positive("Must be positive").required("Required"),
+});
+
 export default function AdminLocationsPage() {
   const [locations, setLocations] = useState<Location[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", venue: "", city: "", bays: "6" });
 
   const refresh = () => listLocations().then(setLocations);
 
@@ -26,18 +34,17 @@ export default function AdminLocationsPage() {
     refresh().then(() => setLoading(false));
   }, []);
 
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCreate = async (values: any, { resetForm }: any) => {
     await createLocation({
-      name: form.name,
-      venue: form.venue,
-      city: form.city,
-      bays: parseInt(form.bays, 10) || 0,
+      name: values.name,
+      venue: values.venue,
+      city: values.city,
+      bays: parseInt(values.bays, 10) || 0,
       status: "installing",
       installedAt: new Date().toISOString().slice(0, 10),
     });
     setModalOpen(false);
-    setForm({ name: "", venue: "", city: "", bays: "6" });
+    resetForm();
     refresh();
   };
 
@@ -88,21 +95,35 @@ export default function AdminLocationsPage() {
       )}
 
       <AdminModal open={modalOpen} onClose={() => setModalOpen(false)} title="New location">
-        <form onSubmit={handleCreate}>
-          <FormField label="Station name">
-            <input required className={inputClass} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-          </FormField>
-          <FormField label="Venue">
-            <input required className={inputClass} value={form.venue} onChange={(e) => setForm({ ...form, venue: e.target.value })} />
-          </FormField>
-          <FormField label="City">
-            <input required className={inputClass} value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
-          </FormField>
-          <FormField label="Charging bays">
-            <input required type="number" className={inputClass} value={form.bays} onChange={(e) => setForm({ ...form, bays: e.target.value })} />
-          </FormField>
-          <PrimaryButton type="submit">Create location</PrimaryButton>
-        </form>
+        <Formik
+          initialValues={{ name: "", venue: "", city: "", bays: "6" }}
+          validationSchema={LocationSchema}
+          onSubmit={handleCreate}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <FormField label="Station name">
+                <Field name="name" className={inputClass} />
+                <ErrorMessage name="name" component="div" className="text-red-400 text-xs mt-1" />
+              </FormField>
+              <FormField label="Venue">
+                <Field name="venue" className={inputClass} />
+                <ErrorMessage name="venue" component="div" className="text-red-400 text-xs mt-1" />
+              </FormField>
+              <FormField label="City">
+                <Field name="city" className={inputClass} />
+                <ErrorMessage name="city" component="div" className="text-red-400 text-xs mt-1" />
+              </FormField>
+              <FormField label="Charging bays">
+                <Field name="bays" type="number" className={inputClass} />
+                <ErrorMessage name="bays" component="div" className="text-red-400 text-xs mt-1" />
+              </FormField>
+              <PrimaryButton type="submit">
+                Create location
+              </PrimaryButton>
+            </Form>
+          )}
+        </Formik>
       </AdminModal>
     </div>
   );

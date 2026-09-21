@@ -7,6 +7,7 @@ import { useAdminAuth } from "@/lib/admin/auth";
 
 const navItems = [
   { label: "Dashboard", href: "/admin" },
+  { label: "Products", href: "/admin/product" },
   { label: "Orders", href: "/admin/orders" },
   { label: "Locations", href: "/admin/locations" },
   { label: "Purchases", href: "/admin/purchases" },
@@ -37,9 +38,8 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
               <Link
                 key={item.href}
                 href={item.href}
-                className={`font-body text-sm px-3 py-2.5 rounded-lg transition-colors duration-200 ${
-                  active ? "bg-signal text-ink font-medium" : "text-sand/70 hover:bg-sand/10 hover:text-sand"
-                }`}
+                className={`font-body text-sm px-3 py-2.5 rounded-lg transition-colors duration-200 ${active ? "bg-signal text-ink font-medium" : "text-sand/70 hover:bg-sand/10 hover:text-sand"
+                  }`}
               >
                 {item.label}
               </Link>

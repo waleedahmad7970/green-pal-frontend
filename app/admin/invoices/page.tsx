@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { listInvoices, createInvoice, updateInvoice, listOrders } from "@/lib/admin/api";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { listInvoices, createInvoice, updateInvoice } from "@/lib/admin/services/invoices";
+import { listOrders } from "@/lib/admin/services/orders";
 import type { Invoice, InvoiceStatus, Order } from "@/lib/admin/types";
 import {
   PageHeader,
@@ -13,12 +16,15 @@ import {
 
 const statuses: InvoiceStatus[] = ["draft", "sent", "paid", "overdue"];
 
+const InvoiceSchema = Yup.object().shape({
+  orderId: Yup.string().required("Required"),
+});
+
 export default function AdminInvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [orderId, setOrderId] = useState("");
 
   const refresh = () => listInvoices().then(setInvoices);
 
@@ -26,14 +32,12 @@ export default function AdminInvoicesPage() {
     Promise.all([listInvoices(), listOrders()]).then(([i, o]) => {
       setInvoices(i);
       setOrders(o);
-      setOrderId(o[0]?.id ?? "");
       setLoading(false);
     });
   }, []);
 
-  const handleCreate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const order = orders.find((o) => o.id === orderId);
+  const handleCreate = async (values: any, { resetForm }: any) => {
+    const order = orders.find((o) => o.id === values.orderId);
     if (!order) return;
     const today = new Date();
     const due = new Date(today);
@@ -47,6 +51,7 @@ export default function AdminInvoicesPage() {
       dueAt: due.toISOString().slice(0, 10),
     });
     setModalOpen(false);
+    resetForm();
     refresh();
   };
 
@@ -109,18 +114,30 @@ export default function AdminInvoicesPage() {
       )}
 
       <AdminModal open={modalOpen} onClose={() => setModalOpen(false)} title="New invoice">
-        <form onSubmit={handleCreate}>
-          <FormField label="From order">
-            <select className={inputClass} value={orderId} onChange={(e) => setOrderId(e.target.value)}>
-              {orders.map((o) => (
-                <option key={o.id} value={o.id} className="bg-ink">
-                  {o.id} — {o.customerName} (${o.amount.toFixed(2)})
-                </option>
-              ))}
-            </select>
-          </FormField>
-          <PrimaryButton type="submit">Create invoice</PrimaryButton>
-        </form>
+        <Formik
+          initialValues={{ orderId: orders[0]?.id ?? "" }}
+          validationSchema={InvoiceSchema}
+          onSubmit={handleCreate}
+          enableReinitialize
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <FormField label="From order">
+                <Field as="select" name="orderId" className={inputClass}>
+                  {orders.map((o) => (
+                    <option key={o.id} value={o.id} className="bg-ink">
+                      {o.id} — {o.customerName} (${o.amount.toFixed(2)})
+                    </option>
+                  ))}
+                </Field>
+                <ErrorMessage name="orderId" component="div" className="text-red-400 text-xs mt-1" />
+              </FormField>
+              <PrimaryButton type="submit">
+                Create invoice
+              </PrimaryButton>
+            </Form>
+          )}
+        </Formik>
       </AdminModal>
     </div>
   );
