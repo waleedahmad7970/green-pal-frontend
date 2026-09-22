@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { productData } from '../../../data/products/products';
+import { productData } from "../../../data/products/products";
 
 export default function ProductsPage() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -66,7 +66,7 @@ export default function ProductsPage() {
               trigger: gridRef.current,
               start: "top 85%",
             },
-          }
+          },
         );
       }
     }, gridRef);
@@ -108,7 +108,11 @@ export default function ProductsPage() {
               stroke="currentColor"
               strokeWidth={2}
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
             <input
               type="text"
@@ -125,10 +129,11 @@ export default function ProductsPage() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`shrink-0 px-6 py-2.5 rounded-full font-body text-sm font-bold transition-colors ${activeCategory === cat
+                className={`shrink-0 px-6 py-2.5 rounded-full font-body text-sm font-bold transition-colors ${
+                  activeCategory === cat
                     ? "bg-[#02d683] text-ink border-[#02d683]"
                     : "bg-card border line-rule text-muted hover:border-[#02d683]"
-                  }`}
+                }`}
               >
                 {cat}
               </button>
@@ -154,7 +159,8 @@ export default function ProductsPage() {
                     alt={item.productName}
                     className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
-                      e.currentTarget.src = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%239ca3af'%3ENo Image%3C/text%3E%3C/svg%3E";
+                      e.currentTarget.src =
+                        "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%239ca3af'%3ENo Image%3C/text%3E%3C/svg%3E";
                     }}
                   />
                 </div>
@@ -172,18 +178,26 @@ export default function ProductsPage() {
                   <ul className="space-y-2 mb-8 mt-auto">
                     <li className="flex items-center gap-2 text-xs font-body text-muted">
                       <div className="w-1.5 h-1.5 rounded-full bg-[#02d683] shrink-0" />
-                      <span className="truncate">{item.capacity ? `${item.capacity} Capacity` : "Station Unit"}</span>
+                      <span className="truncate">
+                        {item.capacity
+                          ? `${item.capacity} Capacity`
+                          : "Station Unit"}
+                      </span>
                     </li>
                     <li className="flex items-center gap-2 text-xs font-body text-muted">
                       <div className="w-1.5 h-1.5 rounded-full bg-[#02d683] shrink-0" />
-                      <span className="truncate">{item.outputInterface ? `Outputs: ${item.outputInterface}` : "Multi-Slot Cabinet"}</span>
+                      <span className="truncate">
+                        {item.outputInterface
+                          ? `Outputs: ${item.outputInterface}`
+                          : "Multi-Slot Cabinet"}
+                      </span>
                     </li>
                   </ul>
 
                   <div className="flex items-center justify-between pt-5 border-t line-rule">
-                    <span className="font-display font-bold text-xl">
+                    {/* <span className="font-display font-bold text-xl">
                       ${item?.pricing?.[1]?.price?.toFixed(2) || "TBD"}
-                    </span>
+                    </span> */}
                     <span className="w-8 h-8 rounded-full bg-surface border line-rule flex items-center justify-center group-hover:bg-[#02d683] group-hover:border-[#02d683] group-hover:text-ink transition-colors">
                       <svg
                         className="w-4 h-4"
@@ -192,7 +206,11 @@ export default function ProductsPage() {
                         stroke="currentColor"
                         strokeWidth={2}
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M17 8l4 4m0 0l-4 4m4-4H3"
+                        />
                       </svg>
                     </span>
                   </div>
@@ -202,7 +220,9 @@ export default function ProductsPage() {
           ) : (
             <div className="col-span-full py-20 text-center">
               <h3 className="font-display text-2xl mb-2">No products found</h3>
-              <p className="font-body text-muted">Try adjusting your search or filter criteria.</p>
+              <p className="font-body text-muted">
+                Try adjusting your search or filter criteria.
+              </p>
             </div>
           )}
         </div>
@@ -224,7 +244,10 @@ export default function ProductsPage() {
             Wholesale Procurement & Logistics
           </h4>
           <p className="font-body text-sm text-muted leading-relaxed max-w-2xl mx-auto">
-            Hardware pricing is determined by volume tiers. Minimum order quantities apply for custom ambient light logo manufacturing. All units ship fully certified (CE/FCC/RoHS) in standard 50-piece master cartons.
+            Hardware pricing is determined by volume tiers. Minimum order
+            quantities apply for custom ambient light logo manufacturing. All
+            units ship fully certified (CE/FCC/RoHS) in standard 50-piece master
+            cartons.
           </p>
         </div>
       </div>

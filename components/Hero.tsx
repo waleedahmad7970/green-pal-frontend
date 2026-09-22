@@ -146,7 +146,7 @@ export default function Hero() {
         <div ref={headlineRef} className="overflow-hidden">
           <div className="overflow-hidden">
             <h1 className="reveal-line font-display font-extrabold text-display-xl">
-              Stay Charged,
+              Stay Charged.
             </h1>
           </div>
           <div className="overflow-hidden">

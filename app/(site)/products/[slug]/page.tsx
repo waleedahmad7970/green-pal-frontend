@@ -4,13 +4,15 @@ import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 
 // 1. Import your JSON catalog directly
-import { productData } from '../../../../data/products/products';
+import { productData } from "../../../../data/products/products";
 import Image from "next/image";
 
 // 2. Find the specific hardware model by its slug
 const getProduct = (slug: string) => {
   const products = productData.products || [];
-  return products.find((p: any) => p.model.toLowerCase() === slug.toLowerCase());
+  return products.find(
+    (p: any) => p.model.toLowerCase() === slug.toLowerCase(),
+  );
 };
 
 export default function ProductDetailPage() {
@@ -19,16 +21,17 @@ export default function ProductDetailPage() {
   const slug = params?.slug as string;
 
   const product = getProduct(slug);
-  console.log("product", product)
+  console.log("product", product);
 
   if (!product) {
     notFound();
   }
 
   // Get the lowest price for the main display, fallback to TBD
-  const lowestPrice = product.pricing && product.pricing.length > 0
-    ? product.pricing[product.pricing.length - 1].price.toFixed(2)
-    : "TBD";
+  const lowestPrice =
+    product.pricing && product.pricing.length > 0
+      ? product.pricing[product.pricing.length - 1].price.toFixed(2)
+      : "TBD";
 
   return (
     <main className="min-h-screen bg-surface transition-colors duration-300 pt-28 md:pt-36 pb-32">
@@ -45,7 +48,11 @@ export default function ProductDetailPage() {
             stroke="currentColor"
             strokeWidth={2}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           Back to Hardware Catalog
         </Link>
@@ -66,25 +73,35 @@ export default function ProductDetailPage() {
         {/* Key Metrics Bar */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
           <div className="border line-rule rounded-2xl bg-card p-6">
-            <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">Capacity</p>
-            <p className="font-display font-bold text-lg md:text-xl">{product.capacity || "N/A"}</p>
+            <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">
+              Capacity
+            </p>
+            <p className="font-display font-bold text-lg md:text-xl">
+              {product.capacity || "N/A"}
+            </p>
           </div>
           <div className="border line-rule rounded-2xl bg-card p-6">
-            <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">Battery</p>
-            <p className="font-display font-bold text-lg md:text-xl">{product.batteryMaterial} ({product.batteryCycleTimes})</p>
+            <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">
+              Battery
+            </p>
+            <p className="font-display font-bold text-lg md:text-xl">
+              {product.batteryMaterial} ({product.batteryCycleTimes})
+            </p>
           </div>
           <div className="border line-rule rounded-2xl bg-card p-6">
-            <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">Certification</p>
-            <p className="font-display font-bold text-base md:text-lg truncate">{product.certification || "Standard"}</p>
+            <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">
+              Certification
+            </p>
+            <p className="font-display font-bold text-base md:text-lg truncate">
+              {product.certification || "Standard"}
+            </p>
           </div>
         </div>
 
         {/* Two-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
-
           {/* Left Column: Image & Specifications */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-12">
-
             {/* Product Image */}
             <div className="relative w-full bg-card border line-rule rounded-3xl p-8 flex items-center justify-center overflow-hidden aspect-video">
               <img
@@ -92,7 +109,8 @@ export default function ProductDetailPage() {
                 alt={product.productName}
                 className="w-full h-full object-contain"
                 onError={(e) => {
-                  e.currentTarget.src = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%239ca3af'%3ENo Image%3C/text%3E%3C/svg%3E";
+                  e.currentTarget.src =
+                    "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23f3f4f6'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%239ca3af'%3ENo Image%3C/text%3E%3C/svg%3E";
                 }}
               />
             </div>
@@ -107,11 +125,22 @@ export default function ProductDetailPage() {
                 Charging & Interfaces
               </h3>
               <ul className="space-y-3 font-body text-muted">
-                <li><strong>Input Interface:</strong> {product.inputInterface}</li>
-                <li><strong>Output Interface:</strong> {product.outputInterface}</li>
-                <li><strong>Input/Output Power:</strong> {product.inputOutput}</li>
-                <li><strong>Converter Efficiency:</strong> {product.converterEfficiency}</li>
-                <li><strong>Charge Time:</strong> {product.chargeTime}</li>
+                <li>
+                  <strong>Input Interface:</strong> {product.inputInterface}
+                </li>
+                <li>
+                  <strong>Output Interface:</strong> {product.outputInterface}
+                </li>
+                <li>
+                  <strong>Input/Output Power:</strong> {product.inputOutput}
+                </li>
+                <li>
+                  <strong>Converter Efficiency:</strong>{" "}
+                  {product.converterEfficiency}
+                </li>
+                <li>
+                  <strong>Charge Time:</strong> {product.chargeTime}
+                </li>
               </ul>
             </div>
 
@@ -120,11 +149,17 @@ export default function ProductDetailPage() {
                 Build & Safety
               </h3>
               <ul className="space-y-3 font-body text-muted">
-                <li><strong>Shell Material:</strong> {product.shellMaterial}</li>
-                <li><strong>Safety Testing:</strong> {product.safetyPerformance}</li>
+                <li>
+                  <strong>Shell Material:</strong> {product.shellMaterial}
+                </li>
+                <li>
+                  <strong>Safety Testing:</strong> {product.safetyPerformance}
+                </li>
                 <li>
                   <strong>Protections:</strong>{" "}
-                  {product.protection ? product.protection.join(", ") : "Standard BMS"}
+                  {product.protection
+                    ? product.protection.join(", ")
+                    : "Standard BMS"}
                 </li>
               </ul>
             </div>
@@ -134,10 +169,18 @@ export default function ProductDetailPage() {
                 Logistics & Dimensions
               </h3>
               <ul className="space-y-3 font-body text-muted">
-                <li><strong>Unit Size:</strong> {product.size}</li>
-                <li><strong>Unit Weight:</strong> {product.weight}</li>
-                <li><strong>Master Carton:</strong> {product.packageSize}</li>
-                <li><strong>Gross Weight:</strong> {product.grossWeight}</li>
+                <li>
+                  <strong>Unit Size:</strong> {product.size}
+                </li>
+                <li>
+                  <strong>Unit Weight:</strong> {product.weight}
+                </li>
+                <li>
+                  <strong>Master Carton:</strong> {product.packageSize}
+                </li>
+                <li>
+                  <strong>Gross Weight:</strong> {product.grossWeight}
+                </li>
               </ul>
             </div>
           </div>
@@ -152,17 +195,26 @@ export default function ProductDetailPage() {
                 <span className="font-display font-bold text-4xl md:text-5xl">
                   ${lowestPrice}
                 </span>
-                <span className="font-body text-sm text-muted ml-2">/ unit</span>
+                <span className="font-body text-sm text-muted ml-2">
+                  / unit
+                </span>
               </div>
 
               {/* Dynamic Pricing Tiers from JSON */}
               {product.pricing && product.pricing.length > 0 && (
                 <div className="mb-8 space-y-3">
-                  <p className="font-body text-xs font-bold uppercase tracking-wider text-muted border-b line-rule pb-2">Volume Tiers</p>
+                  <p className="font-body text-xs font-bold uppercase tracking-wider text-muted border-b line-rule pb-2">
+                    Volume Tiers
+                  </p>
                   {product.pricing.map((tier: any, i: number) => (
-                    <div key={i} className="flex justify-between items-center font-body text-sm">
+                    <div
+                      key={i}
+                      className="flex justify-between items-center font-body text-sm"
+                    >
                       <span className="text-muted">{tier.qty}</span>
-                      <span className="font-bold">${tier.price.toFixed(2)}</span>
+                      <span className="font-bold">
+                        ${tier.price.toFixed(2)}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -174,14 +226,34 @@ export default function ProductDetailPage() {
 
               <div className="pt-6 border-t line-rule space-y-4">
                 <div className="flex items-center gap-3 text-xs font-body text-muted">
-                  <svg className="w-4 h-4 text-[#02d683]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  <svg
+                    className="w-4 h-4 text-[#02d683]"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                   Custom ambient light logo available
                 </div>
                 <div className="flex items-center gap-3 text-xs font-body text-muted">
-                  <svg className="w-4 h-4 text-[#02d683]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  <svg
+                    className="w-4 h-4 text-[#02d683]"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                   Ships in 50-piece master cartons
                 </div>

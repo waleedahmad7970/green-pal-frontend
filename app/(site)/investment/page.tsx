@@ -989,7 +989,7 @@ export default function InvestmentPlansPage() {
         {/* --- Card Grid Matching Reference Layout --- */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20"
+          className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-20"
         >
           {filteredPlans.length > 0 ? (
             filteredPlans.map((plan: any, i: number) => {
@@ -1005,7 +1005,7 @@ export default function InvestmentPlansPage() {
               return (
                 <div
                   key={plan.id}
-                  className="plan-card invisible flex flex-col justify-between border line-rule bg-card rounded-[2.5rem] overflow-hidden transition-all duration-300 group hover:border-[#02d683] hover:-translate-y-1.5 hover:shadow-2xl shadow-black/5 relative p-6 md:p-8"
+                  className="plan-card invisible flex flex-col justify-between border line-rule bg-card rounded-2xl overflow-hidden transition-all duration-300 group hover:border-[#02d683] hover:-translate-y-1.5 hover:shadow-2xl shadow-black/5 relative p-3 md:p-4"
                 >
                   <div>
                     {/* Top Cover Image Box with Badges */}
@@ -1018,13 +1018,13 @@ export default function InvestmentPlansPage() {
                       <div className="absolute inset-0 bg-gradient-to-t from-card/60 via-transparent to-transparent" />
 
                       {/* Series Badge (Top Left) */}
-                      <div className="absolute top-3 left-3 bg-ink/90 backdrop-blur-md px-3 py-1 rounded-full border border-signal/20">
+                      {/* <div className="absolute top-3 left-3 bg-ink/90 backdrop-blur-md px-3 py-1 rounded-full border border-signal/20">
                         <span className="text-[10px] text-[#02d683] font-mono uppercase tracking-widest font-bold">
                           {isCoInvest
                             ? "CO-INVESTMENT SERIES"
                             : "OWNERSHIP SERIES"}
                         </span>
-                      </div>
+                      </div> */}
 
                       {/* PDF Guide Pill (Top Right) */}
                       <div className="absolute top-3 right-3 bg-surface/90 backdrop-blur-md px-3 py-1 rounded-full border line-rule flex items-center gap-1.5 shadow-sm">
@@ -1058,14 +1058,14 @@ export default function InvestmentPlansPage() {
                     </div>
 
                     {/* Station Setup Box */}
-                    <div className="mb-6 p-4 rounded-2xl bg-surface border line-rule">
+                    {/* <div className="mb-6 p-4 rounded-2xl bg-surface border line-rule">
                       <p className="text-[9px] font-mono uppercase text-muted tracking-wider mb-1">
                         Station Setup
                       </p>
                       <p className="font-display font-bold text-sm text-foreground">
                         {stationSetupText}
                       </p>
-                    </div>
+                    </div> */}
 
                     {/* What's Inside Section */}
                     <div className="mb-8">
@@ -1104,7 +1104,7 @@ export default function InvestmentPlansPage() {
                   </div>
 
                   {/* Pricing & Buy Business Plan Footer */}
-                  <div className="pt-6 border-t line-rule mt-auto">
+                  <div className=" border-t line-rule mt-auto">
                     <div className="flex items-baseline justify-between mb-4">
                       <div className="flex items-baseline gap-1.5">
                         <span className="font-display font-extrabold text-2xl md:text-3xl text-foreground">

@@ -27,9 +27,18 @@ const config: Config = {
         body: ["var(--font-geist-sans)", "sans-serif"],
       },
       fontSize: {
-        "display-xl": ["clamp(3.2rem, 9vw, 9rem)", { lineHeight: "0.92", letterSpacing: "-0.02em" }],
-        "display-lg": ["clamp(2.4rem, 6vw, 5.5rem)", { lineHeight: "0.96", letterSpacing: "-0.02em" }],
-        "display-md": ["clamp(1.8rem, 3.6vw, 3.2rem)", { lineHeight: "1.02", letterSpacing: "-0.01em" }],
+        "display-xl": [
+          "clamp(3.2rem, 9vw, 9rem)",
+          { lineHeight: "0.92", letterSpacing: "-0.02em" },
+        ],
+        "display-lg": [
+          "clamp(2.4rem, 6vw, 5.5rem)",
+          { lineHeight: "0.96", letterSpacing: "-0.02em" },
+        ],
+        "display-md": [
+          "clamp(1.8rem, 3.6vw, 3.2rem)",
+          { lineHeight: "1.02", letterSpacing: "-0.01em" },
+        ],
       },
       letterSpacing: {
         tightest: "-0.03em",

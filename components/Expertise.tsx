@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   IconHardware,
   IconFleet,
@@ -42,28 +41,71 @@ const blueprints = [
   },
 ];
 
+// Below this width we fall back to native touch scrolling (overflow-x-auto)
+// and skip all the JS drag / auto-scroll logic entirely.
+const DESKTOP_MIN_WIDTH = 900;
+
+// How fast the track auto-advances, in pixels per second.
+const AUTO_SCROLL_SPEED = 40;
+
+const clamp = (val: number, min: number, max: number) =>
+  Math.min(Math.max(val, min), max);
+
 export default function PowerBlueprints() {
   const sectionRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
 
-  // Interaction States for Drag & Auto-Scroll
+  // Interaction state
   const isDragging = useRef(false);
-  const startX = useRef(0);
   const isHovered = useRef(false);
+  const startX = useRef(0);
+  const currentX = useRef(0); // current translateX applied to the track (<= 0)
+  const maxDistance = useRef(0); // how far the track can travel (scrollWidth - visible width)
+  const isDesktop = useRef(false);
 
-  // Pointer Drag Handlers (translates horizontal drag into vertical scroll scrub)
+  // Move the track to a given x (clamped) and update the progress bar.
+  // This ONLY transforms the track element — it never touches window scroll.
+  const applyX = useCallback((x: number) => {
+    const clamped = clamp(x, -maxDistance.current, 0);
+    currentX.current = clamped;
+    if (trackRef.current) {
+      gsap.set(trackRef.current, { x: clamped });
+    }
+    setProgress(maxDistance.current > 0 ? -clamped / maxDistance.current : 0);
+  }, []);
+
+  // Recalculate available drag distance (on mount + resize).
+  const measure = useCallback(() => {
+    isDesktop.current = window.innerWidth >= DESKTOP_MIN_WIDTH;
+
+    if (!isDesktop.current || !trackRef.current || !containerRef.current) {
+      maxDistance.current = 0;
+      applyX(0);
+      return;
+    }
+
+    const trackWidth = trackRef.current.scrollWidth;
+    const containerWidth = containerRef.current.clientWidth;
+    maxDistance.current = Math.max(trackWidth - containerWidth, 0);
+
+    // Re-clamp current position in case the viewport changed size.
+    applyX(currentX.current);
+  }, [applyX]);
+
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDesktop.current) return; // mobile uses native touch scrolling
     isDragging.current = true;
     startX.current = e.clientX;
     e.currentTarget.setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging.current) return;
+    if (!isDragging.current || !isDesktop.current) return;
     const deltaX = e.clientX - startX.current;
     startX.current = e.clientX;
-    window.scrollBy({ top: -deltaX * 1.5, behavior: "auto" });
+    applyX(currentX.current + deltaX);
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -71,72 +113,39 @@ export default function PowerBlueprints() {
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {
-      // Ignore if pointer capture already released
+      // Ignore if pointer capture was already released
     }
   };
 
-  // GSAP Setup & Auto-Scroll Ticker Loop
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    let stInstance: ScrollTrigger | null = null;
+    measure();
+    window.addEventListener("resize", measure);
 
-    const ctx = gsap.context(() => {
-      const mm = gsap.matchMedia();
-
-      mm.add("(min-width: 900px)", () => {
-        const track = trackRef.current;
-        if (!track) return;
-        const distance = track.scrollWidth - window.innerWidth;
-
-        if (distance > 0) {
-          const st = gsap.to(track, {
-            x: -distance,
-            ease: "none",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              pin: true,
-              start: "top top",
-              end: () => `+=${distance + window.innerHeight * 0.5}`,
-              scrub: 0.6,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-              onUpdate: (self) => setProgress(self.progress),
-            },
-          });
-
-          stInstance = st.scrollTrigger || null;
-
-          return () => {
-            st.scrollTrigger?.kill();
-            st.kill();
-          };
-        }
-      });
-    }, sectionRef);
-
-    // Auto-scroll loop when section is pinned and user is not actively interacting
-    const autoScrollInterval = setInterval(() => {
+    // Self-contained auto-scroll: nudges the track transform on every frame.
+    // It never calls window.scrollBy, so the page's vertical scroll is
+    // completely unaffected. It pauses on hover/drag and stops (rather than
+    // looping) once the end of the track is reached.
+    const tick = (_time: number, deltaTimeMs: number) => {
       if (
-        stInstance &&
-        stInstance.isActive &&
-        !isDragging.current &&
-        !isHovered.current &&
-        progress > 0 &&
-        progress < 0.98
+        !isDesktop.current ||
+        isDragging.current ||
+        isHovered.current ||
+        maxDistance.current <= 0
       ) {
-        window.scrollBy({ top: 0.8, behavior: "auto" });
+        return;
       }
-    }, 25);
+      if (currentX.current <= -maxDistance.current) return; // fully scrolled, stop
+      const step = (AUTO_SCROLL_SPEED * deltaTimeMs) / 1000;
+      applyX(currentX.current - step);
+    };
+
+    gsap.ticker.add(tick);
 
     return () => {
-      clearInterval(autoScrollInterval);
-      try {
-        ctx.revert();
-      } catch {
-        // DOM already torn down by navigation
-      }
+      window.removeEventListener("resize", measure);
+      gsap.ticker.remove(tick);
     };
-  }, [progress]);
+  }, [measure, applyX]);
 
   return (
     <div>
@@ -175,21 +184,22 @@ export default function PowerBlueprints() {
                 />
               </div>
               <p className="text-sand/40 text-xs font-body mt-2">
-                drag or scroll to explore
+                drag to explore
               </p>
             </div>
           </div>
         </div>
 
-        {/* Draggable Track Container */}
+        {/* Draggable Track Container — self-contained, no page scroll involved */}
         <div
+          ref={containerRef}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
           onMouseEnter={() => (isHovered.current = true)}
           onMouseLeave={() => (isHovered.current = false)}
-          className="w-full overflow-x-auto md:overflow-x-visible no-scrollbar cursor-grab active:cursor-grabbing touch-pan-y"
+          className="w-full overflow-x-auto md:overflow-hidden no-scrollbar cursor-grab active:cursor-grabbing touch-pan-y"
         >
           <div
             ref={trackRef}
