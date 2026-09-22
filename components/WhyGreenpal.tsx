@@ -165,7 +165,7 @@ export default function WhyGreenpal() {
     return () => {
       try {
         ctx.revert();
-      } catch { }
+      } catch {}
     };
   }, []);
 
@@ -179,7 +179,6 @@ export default function WhyGreenpal() {
           ref={headingRef}
           className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-6"
         >
-          {/* FIXED: Stripped text-ink so the heading inverts correctly */}
           <h2 className="font-display font-bold text-5xl md:text-7xl tracking-tight max-w-xl transition-colors duration-300">
             Why Greenpal
           </h2>
@@ -188,6 +187,7 @@ export default function WhyGreenpal() {
           </p>
         </div>
 
+        {/* CHANGED: Simplified grid-cols to standard 1, 2, or 3 column layouts without complex spanning logic */}
         <div
           ref={gridRef}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
@@ -195,27 +195,19 @@ export default function WhyGreenpal() {
           {features.map((feature, i) => (
             <div
               key={feature.title}
-              className={`bento-card invisible relative p-8 md:p-10 border line-rule bg-card overflow-hidden group rounded-2xl transition-colors duration-300 ${i === 0 || i === 1
-                  ? "md:col-span-1 lg:col-span-2"
-                  : "col-span-1"
-                }`}
+              // CHANGED: Removed the conditional span logic. Now every card is standard 'col-span-1'
+              className="bento-card col-span-1 invisible relative p-8 md:p-10 border line-rule bg-card overflow-hidden group rounded-2xl transition-colors duration-300"
             >
-              {/* Premium Vertical Sweep (Strictly using bg-ink) */}
               <div className="absolute inset-0 bg-ink scale-y-0 origin-bottom group-hover:scale-y-100 transition-transform duration-[600ms] ease-signature pointer-events-none" />
 
               <div className="relative z-10 flex flex-col h-full justify-between">
-                {/* FIXED: Stripped text-ink from the icon wrapper */}
                 <div className="mb-12 md:mb-16 group-hover:text-[#02d683] transition-colors duration-[600ms]">
                   {feature.icon}
                 </div>
-
                 <div>
-                  {/* FIXED: Stripped text-ink from the title */}
                   <h3 className="font-display font-bold text-2xl md:text-3xl mb-3 group-hover:text-[#02d683] transition-colors duration-[600ms]">
                     {feature.title}
                   </h3>
-
-                  {/* FIXED: Enforced group-hover:text-white since the sweep is always dark */}
                   <p className="font-body text-muted group-hover:text-white group-hover:opacity-90 leading-relaxed transition-all duration-[600ms]">
                     {feature.desc}
                   </p>

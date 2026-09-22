@@ -22,12 +22,16 @@ export default function ContactForm() {
   };
 
   return (
-    <section className="relative py-20 md:py-28 bg-ink text-sand">
+    <section className="relative py-20 md:py-28 bg-white text-ink">
       <div className="container-edit max-w-2xl">
         {submitted ? (
           <div>
-            <p className="font-display text-3xl font-semibold mb-3">Message sent.</p>
-            <p className="text-sand/65 font-body">We'll reply from a real person within a day.</p>
+            <p className="font-display text-3xl font-semibold mb-3 text-ink">
+              Message sent.
+            </p>
+            <p className="text-muted font-body">
+              We'll reply from a real person within a day.
+            </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-8">
@@ -44,8 +48,13 @@ export default function ContactForm() {
               onMouseMove={handleMove}
               onMouseLeave={() => setPos({ x: 0, y: 0 })}
               animate={{ x: pos.x, y: pos.y }}
-              transition={{ type: "spring", stiffness: 150, damping: 12, mass: 0.4 }}
-              className="magnetic-btn bg-signal text-ink font-body font-medium px-8 py-4 rounded-full"
+              transition={{
+                type: "spring",
+                stiffness: 150,
+                damping: 12,
+                mass: 0.4,
+              }}
+              className="magnetic-btn bg-[#02d683] text-ink font-body font-bold px-8 py-4 rounded-full cursor-pointer hover:bg-[#02bc73] transition-colors shadow-lg shadow-[#02d683]/20"
             >
               Send message
             </motion.button>
@@ -69,20 +78,22 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="block text-sm text-sand/45 mb-2 font-body">{label}</span>
+      <span className="block text-sm text-ink/70 mb-2 font-body font-medium">
+        {label}
+      </span>
       {textarea ? (
         <textarea
           name={name}
           rows={4}
           required
-          className="w-full bg-transparent border-b border-sand/25 focus:border-signal outline-none pb-2 font-body text-sand placeholder:text-sand/30 resize-none transition-colors duration-300"
+          className="w-full bg-transparent border-b-2 border-ink/25 focus:border-[#02d683] outline-none pb-2 font-body text-ink placeholder:text-ink/30 resize-none transition-colors duration-300"
         />
       ) : (
         <input
           name={name}
           type={type}
           required
-          className="w-full bg-transparent border-b border-sand/25 focus:border-signal outline-none pb-2 font-body text-sand placeholder:text-sand/30 transition-colors duration-300"
+          className="w-full bg-transparent border-b-2 border-ink/25 focus:border-[#02d683] outline-none pb-2 font-body text-ink placeholder:text-ink/30 transition-colors duration-300"
         />
       )}
     </label>

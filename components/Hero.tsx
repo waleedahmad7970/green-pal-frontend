@@ -146,7 +146,7 @@ export default function Hero() {
         <div ref={headlineRef} className="overflow-hidden">
           <div className="overflow-hidden">
             <h1 className="reveal-line font-display font-extrabold text-display-xl">
-              Stay Charged. ,
+              Stay Charged,
             </h1>
           </div>
           <div className="overflow-hidden">
@@ -154,33 +154,33 @@ export default function Hero() {
               Keep<span className="accent">Moving.</span>
             </h1>
           </div>
-          {/* <div className="overflow-hidden">
-            <h1 className="reveal-line font-display font-extrabold text-display-xl">
-              move.
-            </h1>
-          </div> */}
         </div>
 
-        <div className="mt-8 md:mt-10 flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div className="mt-8 md:mt-10 flex flex-col xl:flex-row xl:items-end justify-between gap-8">
           <p
             ref={subRef}
-            className="font-body text-lg md:text-xl text-muted max-w-md invisible"
+            className="font-body text-lg md:text-xl text-muted max-w-lg invisible"
           >
             Rent a Greenpal power bank in seconds and take your charge with you.
             Simple portable charging for the places where people shop, eat,
             work, wait and play.
           </p>
-          <a
-            href="/contact"
-            className="group relative max-w-max inline-flex items-center gap-3 px-6 py-3 rounded-full bg-signal text-ink font-body font-bold text-base overflow-hidden transition-transform duration-300 hover:scale-105 shrink-0 shadow-lg"
-          >
-            {/* Pulsing background effect */}
-            <span className="absolute inset-0 rounded-full bg-signal animate-ping opacity-25 pointer-events-none" />
 
-            <span className="relative z-10">Talk to us</span>
-
-            <span className="relative z-10 w-6 h-px bg-ink transition-all duration-300 group-hover:w-10" />
-          </a>
+          {/* Replaced old button with the two side-by-side buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 shrink-0 relative z-10">
+            <a
+              href="#host"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-signal text-ink font-body font-bold text-base transition-transform duration-300 hover:scale-105 shadow-[0_10px_20px_rgba(2,214,131,0.15)]"
+            >
+              Host a Greenpal Station
+            </a>
+            <a
+              href="#blueprints"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-signal text-ink font-body font-bold text-base transition-transform duration-300 hover:scale-105 shadow-[0_10px_20px_rgba(2,214,131,0.15)]"
+            >
+              Explore Business Blueprints
+            </a>
+          </div>
         </div>
       </div>
 
@@ -190,11 +190,15 @@ export default function Hero() {
           className="container-edit grid grid-cols-2 md:grid-cols-4 gap-6 py-8"
         >
           {stats2.map((s) => (
-            <div key={s.label} className="stat-cell invisible">
-              <div className="font-display text-2xl md:text-3xl font-bold">
-                {/* {s.value} */}
-                {s.label}
-                <span className="accent mt-1">{s.suffix}</span>
+            <div
+              key={s.label}
+              className="stat-cell invisible group cursor-pointer"
+            >
+              <div className="font-display text-2xl flex md:text-3xl font-bold items-center gap-2">
+                <span>{s.label}</span>
+                <span className="accent inline-block transition-transform duration-300 group-hover:translate-x-1.5">
+                  {s.suffix}
+                </span>
               </div>
             </div>
           ))}

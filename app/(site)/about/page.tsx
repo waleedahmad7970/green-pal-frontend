@@ -7,7 +7,8 @@ import Team from "@/components/Team";
 
 export const metadata: Metadata = {
   title: "About — Greenpal",
-  description: "The story, timeline, and charter behind Greenpal's charging infrastructure.",
+  description:
+    "The story, timeline, and charter behind Greenpal's charging infrastructure.",
 };
 
 export default function AboutPage() {
@@ -16,7 +17,7 @@ export default function AboutPage() {
       <AboutHero />
       <AboutStory />
       <AboutValues />
-      <Team />
+      {/* <Team /> */}
       <ClosingCTA />
     </>
   );
