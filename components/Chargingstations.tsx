@@ -11,7 +11,7 @@ const products = [
     model: "ZBJ-SP04-SP",
     name: "Shared Charging Station",
     bays: 1,
-    image: "https://i.postimg.cc/gcB9LVMs/image-removebg-preview-(6).png",
+    image: "https://i.postimg.cc/qBFYvkRj/image-removebg-preview-(1).png",
   },
   {
     model: "ZBJ-SP08-SP",
