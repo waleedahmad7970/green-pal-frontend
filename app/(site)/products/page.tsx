@@ -195,12 +195,9 @@ export default function ProductsPage() {
                   </ul>
 
                   <div className="flex items-center justify-between pt-5 border-t line-rule">
-                    <Link
-                      href="/contact"
-                      className="inline-flex items-center justify-center px-5 h-8 rounded-full bg-surface border line-rule text-xs font-mono uppercase tracking-widest font-bold group-hover:bg-[#02d683] group-hover:border-[#02d683] group-hover:text-ink transition-colors"
-                    >
+                    <span className="inline-flex items-center justify-center px-5 h-8 rounded-full bg-surface border line-rule text-xs font-mono uppercase tracking-widest font-bold group-hover:bg-[#02d683] group-hover:border-[#02d683] group-hover:text-ink transition-colors">
                       Inquire for order
-                    </Link>
+                    </span>
                     <span className="w-8 h-8 rounded-full bg-surface border line-rule flex items-center justify-center group-hover:bg-[#02d683] group-hover:border-[#02d683] group-hover:text-ink transition-colors">
                       <svg
                         className="w-4 h-4"
