@@ -77,10 +77,11 @@ export default function PowerBlueprints() {
   }, []);
 
   // Recalculate available drag distance (on mount + resize).
+  // Runs at every width now — drag/swipe works on mobile too, not just desktop.
   const measure = useCallback(() => {
     isDesktop.current = window.innerWidth >= DESKTOP_MIN_WIDTH;
 
-    if (!isDesktop.current || !trackRef.current || !containerRef.current) {
+    if (!trackRef.current || !containerRef.current) {
       maxDistance.current = 0;
       applyX(0);
       return;
@@ -95,14 +96,13 @@ export default function PowerBlueprints() {
   }, [applyX]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDesktop.current) return; // mobile uses native touch scrolling
     isDragging.current = true;
     startX.current = e.clientX;
     e.currentTarget.setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging.current || !isDesktop.current) return;
+    if (!isDragging.current) return;
     const deltaX = e.clientX - startX.current;
     startX.current = e.clientX;
     applyX(currentX.current + deltaX);
@@ -199,7 +199,7 @@ export default function PowerBlueprints() {
           onPointerCancel={handlePointerUp}
           onMouseEnter={() => (isHovered.current = true)}
           onMouseLeave={() => (isHovered.current = false)}
-          className="w-full overflow-x-auto md:overflow-hidden no-scrollbar cursor-grab active:cursor-grabbing touch-pan-y"
+          className="w-full overflow-hidden no-scrollbar cursor-grab active:cursor-grabbing touch-pan-y"
         >
           <div
             ref={trackRef}

@@ -29,7 +29,13 @@ const treatments = [
   },
   {
     bg: "bg-surface-dim",
-    fg: "text-graphite",
+    // text-graphite was a fixed dark hex that never adapted, so this card's
+    // text stayed dark even after bg-surface-dim correctly flipped dark in
+    // dark mode. text-fg reads the same --fg variable bg-surface-dim's
+    // sibling tokens use, so it now flips to light in dark mode too — and
+    // matches exactly in light mode, since --fg's light value is the same
+    // RGB as graphite.
+    fg: "text-fg",
     sub: "text-muted",
     border: "border-graphite/20",
   },

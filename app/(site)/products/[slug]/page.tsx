@@ -5,7 +5,6 @@ import { notFound, useParams } from "next/navigation";
 
 // 1. Import your JSON catalog directly
 import { productData } from "../../../../data/products/products";
-import Image from "next/image";
 
 // 2. Find the specific hardware model by its slug
 const getProduct = (slug: string) => {
@@ -16,22 +15,14 @@ const getProduct = (slug: string) => {
 };
 
 export default function ProductDetailPage() {
-  // Use the Next.js hook to grab the slug from the URL safely in a Client Component
   const params = useParams();
   const slug = params?.slug as string;
 
   const product = getProduct(slug);
-  console.log("product", product);
 
   if (!product) {
     notFound();
   }
-
-  // Get the lowest price for the main display, fallback to TBD
-  const lowestPrice =
-    product.pricing && product.pricing.length > 0
-      ? product.pricing[product.pricing.length - 1].price.toFixed(2)
-      : "TBD";
 
   return (
     <main className="min-h-screen bg-surface transition-colors duration-300 pt-28 md:pt-36 pb-32">
@@ -39,7 +30,7 @@ export default function ProductDetailPage() {
         {/* Breadcrumb Navigation */}
         <Link
           href="/products"
-          className="inline-flex items-center gap-2 text-sm font-body font-bold text-muted hover:text-[#02d683] transition-colors duration-300 mb-12 group"
+          className="inline-flex items-center gap-2 text-sm font-body font-bold text-muted hover:text-signal transition-colors duration-300 mb-12 group"
         >
           <svg
             className="w-4 h-4 transition-transform group-hover:-translate-x-1"
@@ -57,52 +48,19 @@ export default function ProductDetailPage() {
           Back to Hardware Catalog
         </Link>
 
-        {/* Main Header */}
-        <div className="max-w-4xl mb-16">
-          <p className="font-body text-sm font-bold uppercase tracking-widest text-[#02d683] mb-4">
-            {product.category}
-          </p>
-          <h1 className="font-display font-extrabold text-4xl md:text-6xl lg:text-7xl mb-6 tracking-tight transition-colors duration-300">
-            Model {product.model}
-          </h1>
-          <p className="font-body text-lg md:text-xl text-muted leading-relaxed">
-            {product.productName}. {product.functionalCharacteristics}
-          </p>
-        </div>
+        {/* 
+          Four grid children instead of two nested columns, so mobile
+          (single column) can show them in a different order than desktop
+          without touching the desktop layout:
 
-        {/* Key Metrics Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-16">
-          <div className="border line-rule rounded-2xl bg-card p-6">
-            <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">
-              Capacity
-            </p>
-            <p className="font-display font-bold text-lg md:text-xl">
-              {product.capacity || "N/A"}
-            </p>
-          </div>
-          <div className="border line-rule rounded-2xl bg-card p-6">
-            <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">
-              Battery
-            </p>
-            <p className="font-display font-bold text-lg md:text-xl">
-              {product.batteryMaterial} ({product.batteryCycleTimes})
-            </p>
-          </div>
-          <div className="border line-rule rounded-2xl bg-card p-6">
-            <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">
-              Certification
-            </p>
-            <p className="font-display font-bold text-base md:text-lg truncate">
-              {product.certification || "Standard"}
-            </p>
-          </div>
-        </div>
-
-        {/* Two-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
-          {/* Left Column: Image & Specifications */}
-          <div className="lg:col-span-7 xl:col-span-8 space-y-12">
-            {/* Product Image */}
+            Mobile order:  Image -> Pricing/CTA -> Key metrics -> Specs
+            Desktop grid:  Image (row 1, left) + Key metrics (row 2, left)
+                           + Specs (row 3, left)
+                           Pricing (rows 1-3, right, sticky)
+        */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-10 items-start">
+          {/* Product Image — shown first on mobile, right after the title */}
+          <div className="order-1 lg:order-none lg:col-span-7 xl:col-span-8 lg:row-start-1">
             <div className="relative w-full bg-card border line-rule rounded-3xl p-8 flex items-center justify-center overflow-hidden aspect-video">
               <img
                 src={product?.image}
@@ -114,7 +72,117 @@ export default function ProductDetailPage() {
                 }}
               />
             </div>
+          </div>
 
+          {/* Pricing / CTA card — shown second on mobile (right after the image); sticky on desktop, spanning all three rows */}
+          <div className="order-2 lg:order-none lg:col-span-5 xl:col-span-4 lg:row-start-1 lg:row-span-3 w-full md:sticky top-32">
+            <div className="border line-rule bg-card rounded-3xl p-8 md:p-10 shadow-xl shadow-black/5">
+              {/* Product Header Title & Description inside the right box */}
+              <div className="mb-8 pb-6 border-b line-rule">
+                <p className="font-body text-xs font-bold uppercase tracking-widest text-signal mb-2">
+                  {product.category}
+                </p>
+                <h1 className="font-display font-extrabold text-2xl md:text-3xl mb-3 tracking-tight text-[rgb(var(--fg))]">
+                  Model {product.model}
+                </h1>
+                <p className="font-body text-xs md:text-sm text-muted leading-relaxed">
+                  {product.productName}. {product.functionalCharacteristics}
+                </p>
+              </div>
+
+              {/* Dynamic Pricing Tiers from JSON */}
+              {product.pricing && product.pricing.length > 0 && (
+                <div className="mb-8 space-y-3">
+                  <p className="font-body text-xs font-bold uppercase tracking-wider text-muted border-b line-rule pb-2">
+                    Volume Tiers
+                  </p>
+                  {product.pricing.map((tier: any, i: number) => (
+                    <div
+                      key={i}
+                      className="flex justify-between items-center font-body text-sm"
+                    >
+                      <span className="text-muted">{tier.qty}</span>
+                      <span className="font-bold">
+                        ${tier.price.toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <button className="w-full inline-flex items-center justify-center px-8 py-5 rounded-full bg-signal font-display font-bold text-lg hover:scale-[1.02] transition-transform duration-300 mb-6 shadow-md text-ink cursor-pointer">
+                Inquire for Order
+              </button>
+
+              <div className="pt-6 border-t line-rule space-y-4">
+                <div className="flex items-center gap-3 text-xs font-body text-muted">
+                  <svg
+                    className="w-4 h-4 text-signal shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Custom ambient light logo available
+                </div>
+                <div className="flex items-center gap-3 text-xs font-body text-muted">
+                  <svg
+                    className="w-4 h-4 text-signal shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Ships in 50-piece master cartons
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Key Metrics Bar — shown third on mobile, below pricing, above specs */}
+          <div className="order-3 lg:order-none lg:col-span-7 xl:col-span-8 lg:row-start-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="border line-rule rounded-2xl bg-card p-6">
+                <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">
+                  Capacity
+                </p>
+                <p className="font-display font-bold text-lg md:text-xl">
+                  {product.capacity || "N/A"}
+                </p>
+              </div>
+              <div className="border line-rule rounded-2xl bg-card p-6">
+                <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">
+                  Battery
+                </p>
+                <p className="font-display font-bold text-lg md:text-xl">
+                  {product.batteryMaterial} ({product.batteryCycleTimes})
+                </p>
+              </div>
+              <div className="border line-rule rounded-2xl bg-card p-6">
+                <p className="font-body text-xs font-bold uppercase tracking-wider text-muted mb-1">
+                  Certification
+                </p>
+                <p className="font-display font-bold text-base md:text-lg truncate">
+                  {product.certification || "Standard"}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Technical specifications — shown last on mobile */}
+          <div className="order-4 lg:order-none lg:col-span-7 xl:col-span-8 lg:row-start-3 space-y-12">
             <h2 className="font-display font-bold text-3xl md:text-4xl mb-8">
               Technical Specifications
             </h2>
@@ -182,82 +250,6 @@ export default function ProductDetailPage() {
                   <strong>Gross Weight:</strong> {product.grossWeight}
                 </li>
               </ul>
-            </div>
-          </div>
-
-          {/* Right Column: Sticky Pricing Card */}
-          <div className="lg:col-span-5 xl:col-span-4 w-full sticky top-32">
-            <div className="border line-rule bg-card rounded-3xl p-8 md:p-10 shadow-xl shadow-black/5">
-              <div className="mb-8">
-                <span className="font-body text-xs font-bold uppercase tracking-wider text-[#02d683] block mb-2">
-                  Wholesale Pricing
-                </span>
-                <span className="font-display font-bold text-4xl md:text-5xl">
-                  ${lowestPrice}
-                </span>
-                <span className="font-body text-sm text-muted ml-2">
-                  / unit
-                </span>
-              </div>
-
-              {/* Dynamic Pricing Tiers from JSON */}
-              {product.pricing && product.pricing.length > 0 && (
-                <div className="mb-8 space-y-3">
-                  <p className="font-body text-xs font-bold uppercase tracking-wider text-muted border-b line-rule pb-2">
-                    Volume Tiers
-                  </p>
-                  {product.pricing.map((tier: any, i: number) => (
-                    <div
-                      key={i}
-                      className="flex justify-between items-center font-body text-sm"
-                    >
-                      <span className="text-muted">{tier.qty}</span>
-                      <span className="font-bold">
-                        ${tier.price.toFixed(2)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <button className="w-full inline-flex items-center justify-center px-8 py-5 rounded-full bg-signal font-display font-bold text-lg hover:scale-[1.02] transition-transform duration-300 mb-6 shadow-md text-gray-900">
-                Inquire for Order
-              </button>
-
-              <div className="pt-6 border-t line-rule space-y-4">
-                <div className="flex items-center gap-3 text-xs font-body text-muted">
-                  <svg
-                    className="w-4 h-4 text-[#02d683]"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  Custom ambient light logo available
-                </div>
-                <div className="flex items-center gap-3 text-xs font-body text-muted">
-                  <svg
-                    className="w-4 h-4 text-[#02d683]"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  Ships in 50-piece master cartons
-                </div>
-              </div>
             </div>
           </div>
         </div>
