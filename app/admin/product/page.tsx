@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import { PageHeader } from "@/components/admin/ui";
-import { listProducts, createProduct, updateProduct, deleteProduct } from "@/lib/admin/services/products";
+import {
+  listProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from "@/lib/admin/services/products";
 import type { Product } from "@/lib/admin/types";
 
 // Empty form state matching the schema
@@ -39,7 +44,10 @@ const ProductSchema = Yup.object().shape({
   productName: Yup.string().required("Product name is required"),
   category: Yup.string().required("Category is required"),
   image: Yup.string().required("Image URL is required"),
-  slots: Yup.number().min(0, "Cannot be negative").typeError("Must be a number").required("Total slots is required"),
+  slots: Yup.number()
+    .min(0, "Cannot be negative")
+    .typeError("Must be a number")
+    .required("Total slots is required"),
   stationColor: Yup.string().required("Colors are required"),
   maxPower: Yup.string().required("Max power is required"),
   networkSupport: Yup.string().required("Network support is required"),
@@ -52,7 +60,9 @@ const ProductSchema = Yup.object().shape({
   temperature: Yup.string().required("Working temperature is required"),
   workingHumidity: Yup.string().required("Working humidity is required"),
   paymentMethods: Yup.string().required("Payment methods are required"),
-  functionalCharacteristics: Yup.string().required("Functional characteristics are required"),
+  functionalCharacteristics: Yup.string().required(
+    "Functional characteristics are required",
+  ),
   weight: Yup.string().required("Weight is required"),
   singleGrossWeight: Yup.string().required("Gross weight is required"),
   packageSize: Yup.string().required("Package size is required"),
@@ -61,23 +71,34 @@ const ProductSchema = Yup.object().shape({
       Yup.object().shape({
         qty: Yup.string().required("Required"),
         price: Yup.number().typeError("Must be a number").required("Required"),
-      })
+      }),
     )
     .min(1, "At least one pricing tier is required") // Ensures the array isn't empty
     .required("Pricing is required"),
 });
 
 // Helper to render standard fields cleanly
-const renderField = (name: string, label: string, type = "text", placeholder = "") => (
+const renderField = (
+  name: string,
+  label: string,
+  type = "text",
+  placeholder = "",
+) => (
   <div className="space-y-1">
-    <label className="text-[10px] text-sand/60 font-body uppercase tracking-wider">{label}</label>
+    <label className="text-[10px] text-sand/60 font-body uppercase tracking-wider">
+      {label}
+    </label>
     <Field
       name={name}
       type={type}
       placeholder={placeholder}
       className="w-full bg-black/20 border border-sand/10 rounded-lg px-3 py-2 text-sand text-sm font-body focus:border-signal outline-none transition-colors"
     />
-    <ErrorMessage name={name} component="div" className="text-red-400 text-xs mt-1" />
+    <ErrorMessage
+      name={name}
+      component="div"
+      className="text-red-400 text-xs mt-1"
+    />
   </div>
 );
 
@@ -96,7 +117,7 @@ export default function AdminProductsPage() {
   const filteredProducts = products.filter(
     (p) =>
       p.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.model.toLowerCase().includes(searchQuery.toLowerCase())
+      p.model.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleOpenAdd = () => {
@@ -125,23 +146,41 @@ export default function AdminProductsPage() {
     // Convert comma-separated UI strings back to arrays for the database
     const formattedValues = {
       ...values,
-      stationColor: values.stationColor.split(",").map((s: string) => s.trim()).filter(Boolean),
-      paymentMethods: values.paymentMethods.split(",").map((s: string) => s.trim()).filter(Boolean),
+      stationColor: values.stationColor
+        .split(",")
+        .map((s: string) => s.trim())
+        .filter(Boolean),
+      paymentMethods: values.paymentMethods
+        .split(",")
+        .map((s: string) => s.trim())
+        .filter(Boolean),
     };
 
-    if (editingProduct) {
-      await updateProduct(editingProduct.id, formattedValues);
-    } else {
-      await createProduct(formattedValues);
+    try {
+      if (editingProduct) {
+        await updateProduct(editingProduct.id, formattedValues);
+      } else {
+        await createProduct(formattedValues);
+      }
+
+      // Close form and reset fields first
+      setIsFormOpen(false);
+      resetForm();
+
+      // Explicitly await the fresh data list from the backend
+      const updatedProducts = await listProducts();
+      setProducts(updatedProducts);
+    } catch (error) {
+      console.error("Failed to save product:", error);
     }
-    setIsFormOpen(false);
-    resetForm();
-    refresh();
   };
 
   return (
     <div>
-      <PageHeader title="Products" description="Manage full product specifications and tiered pricing." />
+      <PageHeader
+        title="Products"
+        description="Manage full product specifications and tiered pricing."
+      />
 
       <div className="grid gap-6 max-w-[1400px]">
         {/* Top Actions */}
@@ -168,7 +207,10 @@ export default function AdminProductsPage() {
               <h3 className="font-display text-xl font-semibold text-sand">
                 {editingProduct ? "Edit Product Specifications" : "New Product"}
               </h3>
-              <button onClick={() => setIsFormOpen(false)} className="text-sand/50 hover:text-sand text-sm font-body">
+              <button
+                onClick={() => setIsFormOpen(false)}
+                className="text-sand/50 hover:text-sand text-sm font-body"
+              >
                 Close
               </button>
             </div>
@@ -180,10 +222,11 @@ export default function AdminProductsPage() {
             >
               {({ values, isSubmitting, errors }) => (
                 <Form className="space-y-8">
-
                   {/* Basic Info */}
                   <div>
-                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">Basic Info</h4>
+                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
+                      Basic Info
+                    </h4>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       {renderField("model", "Model *")}
                       {renderField("productName", "Product Name *")}
@@ -194,24 +237,40 @@ export default function AdminProductsPage() {
 
                   {/* Technical Specs */}
                   <div>
-                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">Technical Specs</h4>
+                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
+                      Technical Specs
+                    </h4>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       {renderField("slots", "Total Slots *", "number")}
                       {renderField("maxPower", "Max Power *")}
                       {renderField("powerInput", "Power Input *")}
-                      {renderField("singlePowerOutput", "Single Power Output *")}
-                      {renderField("networkSupport", "Network Support (4G/WiFi) *")}
+                      {renderField(
+                        "singlePowerOutput",
+                        "Single Power Output *",
+                      )}
+                      {renderField(
+                        "networkSupport",
+                        "Network Support (4G/WiFi) *",
+                      )}
                       {renderField("material", "Material *")}
                       {renderField("powerProtection", "Power Protection *")}
-                      {renderField("certification", "Certification (CE/FCC/RoHS) *")}
+                      {renderField(
+                        "certification",
+                        "Certification (CE/FCC/RoHS) *",
+                      )}
                     </div>
                   </div>
 
                   {/* Physical & Environmental */}
                   <div>
-                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">Physical & Environment</h4>
+                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
+                      Physical & Environment
+                    </h4>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      {renderField("adsSizeAndResolution", "Ads Screen Size/Res *")}
+                      {renderField(
+                        "adsSizeAndResolution",
+                        "Ads Screen Size/Res *",
+                      )}
                       {renderField("temperature", "Working Temp *")}
                       {renderField("workingHumidity", "Working Humidity *")}
                       {renderField("weight", "Net Weight *")}
@@ -222,28 +281,61 @@ export default function AdminProductsPage() {
 
                   {/* Features & Options (Arrays) */}
                   <div>
-                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">Features & Options</h4>
+                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
+                      Features & Options
+                    </h4>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {renderField("stationColor", "Colors (Comma separated) *", "text", "e.g., Black, White")}
-                      {renderField("paymentMethods", "Payment Methods (Comma separated) *", "text", "e.g., Credit Card, PayPal")}
-                      {renderField("functionalCharacteristics", "Functional Characteristics *")}
+                      {renderField(
+                        "stationColor",
+                        "Colors (Comma separated) *",
+                        "text",
+                        "e.g., Black, White",
+                      )}
+                      {renderField(
+                        "paymentMethods",
+                        "Payment Methods (Comma separated) *",
+                        "text",
+                        "e.g., Credit Card, PayPal",
+                      )}
+                      {renderField(
+                        "functionalCharacteristics",
+                        "Functional Characteristics *",
+                      )}
                     </div>
                   </div>
 
                   {/* Tiered Pricing (FieldArray) */}
                   <div>
-                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">Tiered Pricing *</h4>
-                    {typeof errors.pricing === 'string' && (
-                      <div className="text-red-400 text-xs mb-2">{errors.pricing}</div>
+                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
+                      Tiered Pricing *
+                    </h4>
+                    {typeof errors.pricing === "string" && (
+                      <div className="text-red-400 text-xs mb-2">
+                        {errors.pricing}
+                      </div>
                     )}
                     <FieldArray name="pricing">
                       {({ remove, push }) => (
                         <div className="space-y-3 max-w-2xl">
                           {values.pricing.length > 0 &&
                             values.pricing.map((tier: any, index: number) => (
-                              <div key={index} className="flex gap-4 items-start">
-                                <div className="flex-1">{renderField(`pricing.${index}.qty`, `Quantity Label *`)}</div>
-                                <div className="flex-1">{renderField(`pricing.${index}.price`, `Price ($) *`, "number")}</div>
+                              <div
+                                key={index}
+                                className="flex gap-4 items-start"
+                              >
+                                <div className="flex-1">
+                                  {renderField(
+                                    `pricing.${index}.qty`,
+                                    `Quantity Label *`,
+                                  )}
+                                </div>
+                                <div className="flex-1">
+                                  {renderField(
+                                    `pricing.${index}.price`,
+                                    `Price ($) *`,
+                                    "number",
+                                  )}
+                                </div>
                                 <button
                                   type="button"
                                   onClick={() => remove(index)}
@@ -272,7 +364,9 @@ export default function AdminProductsPage() {
                       disabled={isSubmitting}
                       className="bg-signal text-black px-8 py-3 rounded-lg font-body font-medium hover:bg-signal/80 transition-colors disabled:opacity-50"
                     >
-                      {editingProduct ? "Save Product Settings" : "Create Product"}
+                      {editingProduct
+                        ? "Save Product Settings"
+                        : "Create Product"}
                     </button>
                   </div>
                 </Form>
@@ -286,31 +380,56 @@ export default function AdminProductsPage() {
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="border-b border-sand/10 bg-black/20">
-                <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Model</th>
-                <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Product</th>
-                <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Slots</th>
-                <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Starting Price</th>
-                <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider text-right">Actions</th>
+                <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">
+                  Model
+                </th>
+                <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">
+                  Product
+                </th>
+                <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">
+                  Slots
+                </th>
+                <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">
+                  Starting Price
+                </th>
+                <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider text-right">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="font-body text-sm divide-y divide-sand/10">
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-sand/[0.02] transition-colors">
-                    <td className="p-4 text-signal font-medium whitespace-nowrap">{product.model}</td>
+                  <tr
+                    key={product.id}
+                    className="hover:bg-sand/[0.02] transition-colors"
+                  >
+                    <td className="p-4 text-signal font-medium whitespace-nowrap">
+                      {product.model}
+                    </td>
                     <td className="p-4 text-sand">
                       <div className="font-medium">{product.productName}</div>
-                      <div className="text-sand/50 text-xs mt-1">{product.category}</div>
+                      <div className="text-sand/50 text-xs mt-1">
+                        {product.category}
+                      </div>
                     </td>
                     <td className="p-4 text-sand/80">{product.slots}</td>
                     <td className="p-4 text-sand/80">
-                      {product.pricing?.length > 0 ? `$${product.pricing[0].price}` : "N/A"}
+                      {product.pricing?.length > 0
+                        ? `$${product.pricing[0].price}`
+                        : "N/A"}
                     </td>
                     <td className="p-4 text-right space-x-3 whitespace-nowrap">
-                      <button onClick={() => handleOpenEdit(product)} className="text-sand/60 hover:text-signal transition-colors">
+                      <button
+                        onClick={() => handleOpenEdit(product)}
+                        className="text-sand/60 hover:text-signal transition-colors"
+                      >
                         Edit
                       </button>
-                      <button onClick={() => handleDelete(product.id)} className="text-sand/60 hover:text-red-400 transition-colors">
+                      <button
+                        onClick={() => handleDelete(product.id)}
+                        className="text-sand/60 hover:text-red-400 transition-colors"
+                      >
                         Delete
                       </button>
                     </td>

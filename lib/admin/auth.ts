@@ -5,30 +5,32 @@ import { persist } from "zustand/middleware";
 
 interface AdminAuthState {
   isAuthed: boolean;
-  login: (password: string) => boolean;
+  token: string | null;
+  user: any | null;
+  setAuth: (token: string, user?: any) => void;
   logout: () => void;
 }
-
-// NOTE — placeholder auth only.
-// This checks the password entirely client-side against
-// NEXT_PUBLIC_ADMIN_DEMO_PASSWORD, which means the "password" ships in the
-// JS bundle and offers no real security. It exists purely so the admin UI
-// isn't wide open during development. When the backend exists, replace this
-// with real authentication (e.g. NextAuth, a session cookie set by your API,
-// etc.) and remove NEXT_PUBLIC_ADMIN_DEMO_PASSWORD entirely.
-const DEMO_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_DEMO_PASSWORD || "greenpal-admin";
 
 export const useAdminAuth = create<AdminAuthState>()(
   persist(
     (set) => ({
       isAuthed: false,
-      login: (password: string) => {
-        const ok = password === DEMO_PASSWORD;
-        if (ok) set({ isAuthed: true });
-        return ok;
+      token: null,
+      user: null,
+      setAuth: (token: string, user: any = null) => {
+        // Save token to localStorage for apiClient to pick up
+        if (typeof window !== "undefined") {
+          localStorage.setItem("token", token);
+        }
+        set({ isAuthed: true, token, user });
       },
-      logout: () => set({ isAuthed: false }),
+      logout: () => {
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("token");
+        }
+        set({ isAuthed: false, token: null, user: null });
+      },
     }),
-    { name: "greenpal-admin-auth" }
-  )
+    { name: "greenpal-admin-auth" },
+  ),
 );

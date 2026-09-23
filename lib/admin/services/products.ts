@@ -7,12 +7,17 @@ export async function listProducts(): Promise<Product[]> {
   return normalizeList<Product>(response as any);
 }
 
-export async function createProduct(data: Omit<Product, "id">): Promise<Product> {
+export async function createProduct(
+  data: Omit<Product, "id">,
+): Promise<Product> {
   const response = await apiClient.post("/products", data);
   return normalize<Product>(response as any);
 }
 
-export async function updateProduct(id: string, data: Partial<Product>): Promise<Product> {
+export async function updateProduct(
+  id: string,
+  data: Partial<Product>,
+): Promise<Product> {
   const response = await apiClient.put(`/products/${id}`, data);
   return normalize<Product>(response as any);
 }

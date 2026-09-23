@@ -3,7 +3,7 @@ import { Rethink_Sans } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import FloatingSupport from "@/components/FloatingSupport";
-
+import { Toaster } from "react-hot-toast";
 // Geist is served via the official `geist` package (local font files) rather
 // than next/font/google, since Geist isn't in every Next.js version's Google
 // Fonts manifest and next/font/google will throw "Unknown font" if it's missing.
@@ -41,7 +41,11 @@ const themeInitScript = `
 // element. The public site (marketing pages) and /admin each bring their own
 // chrome via their own nested layouts, so admin doesn't inherit the public
 // Header/Footer/smooth-scroll.
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className={`${rethink.variable} ${GeistSans.variable}`}>
       <head>
@@ -49,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>{children}</body>
       <FloatingSupport />
+      <Toaster position="bottom-right" reverseOrder={false} />
     </html>
   );
 }

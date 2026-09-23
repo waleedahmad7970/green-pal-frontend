@@ -97,6 +97,17 @@ export default function Work() {
     }
   };
 
+  // Scrolls roughly one viewport-width per click; snap-mandatory on the
+  // track settles it onto the nearest card automatically.
+  const scrollByViewport = (direction: 1 | -1) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    el.scrollBy({
+      left: el.clientWidth * 0.85 * direction,
+      behavior: "smooth",
+    });
+  };
+
   useEffect(() => {
     const el = scrollerRef.current;
     if (!el) return;
@@ -147,6 +158,9 @@ export default function Work() {
     };
   }, []);
 
+  const atStart = progress <= 0.01;
+  const atEnd = progress >= 0.99;
+
   return (
     <section
       id="work"
@@ -157,9 +171,58 @@ export default function Work() {
         <h2 className="work-heading invisible font-display font-bold text-display-lg max-w-xl">
           Deployed and running.
         </h2>
-        <p className="work-heading invisible text-muted font-body max-w-xs">
-          Drag or scroll — a sample of live deployments.
-        </p>
+
+        <div className="work-heading invisible flex items-center gap-6">
+          <p className="text-muted font-body max-w-xs">
+            Drag or scroll — a sample of live deployments.
+          </p>
+
+          {/* Left / right arrow navigation for the track below */}
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              type="button"
+              onClick={() => scrollByViewport(-1)}
+              disabled={atStart}
+              aria-label="Scroll left"
+              className="w-11 h-11 rounded-full border line-rule bg-card flex items-center justify-center transition-colors hover:border-signal hover:text-signal disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollByViewport(1)}
+              disabled={atEnd}
+              aria-label="Scroll right"
+              className="w-11 h-11 rounded-full border line-rule bg-card flex items-center justify-center transition-colors hover:border-signal hover:text-signal disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div

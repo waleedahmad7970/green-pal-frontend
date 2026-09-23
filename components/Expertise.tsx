@@ -41,12 +41,9 @@ const blueprints = [
   },
 ];
 
-// Below this width we fall back to native touch scrolling (overflow-x-auto)
-// and skip all the JS drag / auto-scroll logic entirely.
 const DESKTOP_MIN_WIDTH = 900;
-
-// How fast the track auto-advances, in pixels per second.
 const AUTO_SCROLL_SPEED = 40;
+const SCROLL_STEP = 400; // How many pixels to move per button click
 
 const clamp = (val: number, min: number, max: number) =>
   Math.min(Math.max(val, min), max);
@@ -57,27 +54,28 @@ export default function PowerBlueprints() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
 
-  // Interaction state
   const isDragging = useRef(false);
   const isHovered = useRef(false);
   const startX = useRef(0);
-  const currentX = useRef(0); // current translateX applied to the track (<= 0)
-  const maxDistance = useRef(0); // how far the track can travel (scrollWidth - visible width)
+  const currentX = useRef(0);
+  const maxDistance = useRef(0);
   const isDesktop = useRef(false);
 
-  // Move the track to a given x (clamped) and update the progress bar.
-  // This ONLY transforms the track element — it never touches window scroll.
-  const applyX = useCallback((x: number) => {
+  // Added `animate` flag so manual dragging is instant, but button clicks are smooth
+  const applyX = useCallback((x: number, animate = false) => {
     const clamped = clamp(x, -maxDistance.current, 0);
     currentX.current = clamped;
+
     if (trackRef.current) {
-      gsap.set(trackRef.current, { x: clamped });
+      if (animate) {
+        gsap.to(trackRef.current, { x: clamped, duration: 0.5, ease: "power2.out" });
+      } else {
+        gsap.set(trackRef.current, { x: clamped });
+      }
     }
     setProgress(maxDistance.current > 0 ? -clamped / maxDistance.current : 0);
   }, []);
 
-  // Recalculate available drag distance (on mount + resize).
-  // Runs at every width now — drag/swipe works on mobile too, not just desktop.
   const measure = useCallback(() => {
     isDesktop.current = window.innerWidth >= DESKTOP_MIN_WIDTH;
 
@@ -91,7 +89,6 @@ export default function PowerBlueprints() {
     const containerWidth = containerRef.current.clientWidth;
     maxDistance.current = Math.max(trackWidth - containerWidth, 0);
 
-    // Re-clamp current position in case the viewport changed size.
     applyX(currentX.current);
   }, [applyX]);
 
@@ -105,7 +102,7 @@ export default function PowerBlueprints() {
     if (!isDragging.current) return;
     const deltaX = e.clientX - startX.current;
     startX.current = e.clientX;
-    applyX(currentX.current + deltaX);
+    applyX(currentX.current + deltaX, false);
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -113,18 +110,17 @@ export default function PowerBlueprints() {
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {
-      // Ignore if pointer capture was already released
+      // Ignore
     }
   };
+
+  const handlePrev = () => applyX(currentX.current + SCROLL_STEP, true);
+  const handleNext = () => applyX(currentX.current - SCROLL_STEP, true);
 
   useEffect(() => {
     measure();
     window.addEventListener("resize", measure);
 
-    // Self-contained auto-scroll: nudges the track transform on every frame.
-    // It never calls window.scrollBy, so the page's vertical scroll is
-    // completely unaffected. It pauses on hover/drag and stops (rather than
-    // looping) once the end of the track is reached.
     const tick = (_time: number, deltaTimeMs: number) => {
       if (
         !isDesktop.current ||
@@ -134,9 +130,9 @@ export default function PowerBlueprints() {
       ) {
         return;
       }
-      if (currentX.current <= -maxDistance.current) return; // fully scrolled, stop
+      if (currentX.current <= -maxDistance.current) return;
       const step = (AUTO_SCROLL_SPEED * deltaTimeMs) / 1000;
-      applyX(currentX.current - step);
+      applyX(currentX.current - step, false);
     };
 
     gsap.ticker.add(tick);
@@ -176,8 +172,28 @@ export default function PowerBlueprints() {
                 outlook, launch planning, reporting, risk and due diligence.
               </p>
             </div>
-            <div className="hidden md:block w-40 shrink-0 mb-2">
-              <div className="h-px bg-sand/15 relative overflow-hidden rounded-full">
+
+            {/* Desktop Navigation Controls */}
+            <div className=" md:flex flex-col items-end w-40 shrink-0 mb-2" onMouseEnter={() => (isHovered.current = true)} onMouseLeave={() => (isHovered.current = false)}>
+              <div className="flex items-center gap-3 mb-4">
+                <button
+                  onClick={handlePrev}
+                  disabled={progress <= 0}
+                  className="w-10 h-10 rounded-full border border-sand/20 flex items-center justify-center text-sand hover:bg-signal hover:text-ink hover:border-signal transition-all duration-300 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:border-sand/20 disabled:hover:text-sand cursor-pointer"
+                  aria-label="Previous slide"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+                </button>
+                <button
+                  onClick={handleNext}
+                  disabled={progress >= 1}
+                  className="w-10 h-10 rounded-full border border-sand/20 flex items-center justify-center text-sand hover:bg-signal hover:text-ink hover:border-signal transition-all duration-300 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:border-sand/20 disabled:hover:text-sand cursor-pointer"
+                  aria-label="Next slide"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                </button>
+              </div>
+              <div className="w-full h-px bg-sand/15 relative overflow-hidden rounded-full">
                 <div
                   className="absolute inset-y-0 left-0 bg-signal transition-[width] duration-150 rounded-full"
                   style={{ width: `${progress * 100}%` }}
@@ -190,7 +206,7 @@ export default function PowerBlueprints() {
           </div>
         </div>
 
-        {/* Draggable Track Container — self-contained, no page scroll involved */}
+        {/* Draggable Track Container */}
         <div
           ref={containerRef}
           onPointerDown={handlePointerDown}
@@ -249,7 +265,7 @@ export default function PowerBlueprints() {
 
         <div className="container-edit pb-24 md:pb-32 flex flex-col items-start md:items-center text-left md:text-center">
           <a
-            href="#"
+            href="/investment"
             className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-signal text-ink font-display font-bold text-lg hover:scale-105 transition-transform duration-300 mb-8 shadow-lg shadow-signal/10"
           >
             Browse Greenpal Power Portfolio Blueprints
