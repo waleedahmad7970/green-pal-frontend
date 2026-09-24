@@ -1,14 +1,43 @@
-export type OrderStatus = "pending" | "active" | "returned" | "cancelled";
+
+export type OrderStatus = "pending" | "paid" | "active" | "returned" | "cancelled";
+
+export interface PaymentDetails {
+  stripeSessionId?: string;
+  stripePaymentIntentId?: string;
+  paymentMethod?: string;
+  cardBrand?: string;
+  last4?: string;
+  receiptUrl?: string;
+}
+
+export interface UserRef {
+  _id: string;
+  name?: string;
+  email?: string;
+}
 
 export interface Order {
-  id: string;
+  _id: string;
+  id?: string; // Fallback mapping
+  user?: UserRef | string;
   customerName: string;
   customerEmail: string;
-  locationId: string;
-  item: "Power Bank Rental" | "Charging Session" | "Utility Device";
-  amount: number;
+  locationId?: string;
+  product?: string;
+  item: string;
+  quantity?: number;
+  total: number;
   status: OrderStatus;
-  createdAt: string; // ISO date
+  isPaid: boolean;
+  paidAt?: string;
+  paymentDetails?: PaymentDetails;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Location {
+  id: string;
+  name: string;
 }
 
 export type LocationStatus = "live" | "installing" | "offline";
@@ -16,6 +45,7 @@ export type LocationStatus = "live" | "installing" | "offline";
 export interface Location {
   id: string;
   name: string;
+  image: string;
   venue: string;
   city: string;
   bays: number;

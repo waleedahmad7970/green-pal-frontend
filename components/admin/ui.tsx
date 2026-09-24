@@ -38,9 +38,8 @@ const statusStyles: Record<string, string> = {
 export function StatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-body capitalize ${
-        statusStyles[status] || "bg-sand/10 text-sand/60"
-      }`}
+      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-body capitalize ${statusStyles[status] || "bg-sand/10 text-sand/60"
+        }`}
     >
       {status}
     </span>
@@ -71,6 +70,7 @@ export function PrimaryButton({
   children,
   onClick,
   type = "button",
+  ...props
 }: {
   children: React.ReactNode;
   onClick?: () => void;
@@ -79,6 +79,7 @@ export function PrimaryButton({
   return (
     <button
       type={type}
+      {...props}
       onClick={onClick}
       className="bg-signal text-ink font-body font-medium text-sm px-5 py-2.5 rounded-lg whitespace-nowrap"
     >

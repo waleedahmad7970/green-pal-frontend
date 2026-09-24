@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { listLocations, createLocation, updateLocation } from "@/lib/admin/services/locations";
-import type { Location, LocationStatus } from "@/lib/admin/types";
+import { useLocationStore } from "@/lib/admin/slices/useLocationStore";
+import type { LocationStatus } from "@/lib/admin/types";
 import {
   PageHeader,
   PrimaryButton,
@@ -19,20 +19,21 @@ const statuses: LocationStatus[] = ["live", "installing", "offline"];
 const LocationSchema = Yup.object().shape({
   name: Yup.string().required("Required"),
   venue: Yup.string().required("Required"),
+
   city: Yup.string().required("Required"),
   bays: Yup.number().positive("Must be positive").required("Required"),
 });
 
 export default function AdminLocationsPage() {
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [loading, setLoading] = useState(false);
+  // Pull state and actions directly from Zustand
+  const { locations, isLoading, fetchLocations, createLocation, updateLocation } = useLocationStore();
+
+  // Keep UI-only state local
   const [modalOpen, setModalOpen] = useState(false);
 
-  const refresh = () => listLocations().then(setLocations);
-
   useEffect(() => {
-    refresh().then(() => setLoading(false));
-  }, []);
+    fetchLocations();
+  }, [fetchLocations]);
 
   const handleCreate = async (values: any, { resetForm }: any) => {
     await createLocation({
@@ -42,15 +43,15 @@ export default function AdminLocationsPage() {
       bays: parseInt(values.bays, 10) || 0,
       status: "installing",
       installedAt: new Date().toISOString().slice(0, 10),
+      image: "",
     });
     setModalOpen(false);
     resetForm();
-    refresh();
+    // No need to call refresh manually; Zustand does it automatically
   };
 
-  const handleStatusChange = async (locationId: string, status: LocationStatus) => {
-    await updateLocation(locationId, { status });
-    refresh();
+  const handleStatusChange = async (locationId: string, name: string, status: LocationStatus) => {
+    await updateLocation(locationId, { name, status });
   };
 
   return (
@@ -61,7 +62,7 @@ export default function AdminLocationsPage() {
         action={<PrimaryButton onClick={() => setModalOpen(true)}>New location</PrimaryButton>}
       />
 
-      {loading ? (
+      {isLoading && !locations.length ? (
         <p className="text-sand/40 font-body text-sm">Loading…</p>
       ) : (
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -80,8 +81,7 @@ export default function AdminLocationsPage() {
               </div>
               <select
                 value={l.status}
-                onChange={(e) => handleStatusChange(l.id, e.target.value as LocationStatus)}
-                className="w-full bg-transparent text-xs font-body border border-sand/15 rounded-lg px-2.5 py-1.5 outline-none"
+                onChange={(e) => handleStatusChange(l.id, l.name, e.target.value as LocationStatus)} className="w-full bg-transparent text-xs font-body border border-sand/15 rounded-lg px-2.5 py-1.5 outline-none"
               >
                 {statuses.map((s) => (
                   <option key={s} value={s} className="bg-ink">
@@ -118,8 +118,8 @@ export default function AdminLocationsPage() {
                 <Field name="bays" type="number" className={inputClass} />
                 <ErrorMessage name="bays" component="div" className="text-red-400 text-xs mt-1" />
               </FormField>
-              <PrimaryButton type="submit">
-                Create location
+              <PrimaryButton type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Creating..." : "Create location"}
               </PrimaryButton>
             </Form>
           )}

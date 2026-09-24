@@ -361,9 +361,9 @@ export default function ProductDetailPage() {
           <h1 className="font-display font-extrabold text-4xl md:text-6xl mb-6 tracking-tight text-[rgb(var(--fg))]">
             Model {product.model}
           </h1>
-          <p className="font-display font-extrabold text-3xl md:text-4xl text-signal mb-6">
+          {/* <p className="font-display font-extrabold text-3xl md:text-4xl text-signal mb-6">
             ${startingPrice}
-          </p>
+          </p> */}
           <p className="font-body text-lg text-muted leading-relaxed">
             {product.productName}. {product.functionalCharacteristics}
           </p>
