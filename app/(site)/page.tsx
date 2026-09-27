@@ -43,7 +43,8 @@ export default function Home() {
     <>
       <Hero />
       <Work />
-      <PortalTransition />
+      <MarqueeTicker />
+      {/* <PortalTransition /> */}
       <ChargingStations />
       <HowItWorks />
       <WhyGreenpal />
@@ -51,7 +52,6 @@ export default function Home() {
       {/* <Elegance /> */}
       {/* <Services /> */}
       <ForVenues />
-      <MarqueeTicker />
       <Expertise />
       {/* <Team /> */}
       <FAQAndCTA />

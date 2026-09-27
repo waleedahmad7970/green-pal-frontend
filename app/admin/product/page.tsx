@@ -5,59 +5,43 @@ import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import { PageHeader } from "@/components/admin/ui";
 import { useProductStore } from "@/lib/admin/slices/useProductStore";
+import toast from "react-hot-toast";
+import { uploadImage } from "@/lib/admin/services/upload";
 
-// Empty form state matching the schema
 const emptyProduct = {
   model: "",
   productName: "",
-  category: "",
+  category: "Power Bank",
   image: "",
-  slots: "",
-  stationColor: "",
-  maxPower: "",
-  networkSupport: "",
-  material: "",
-  powerInput: "",
-  powerProtection: "",
+  colors: "",
+  capacity: "",
+  inputOutput: "",
+  shellMaterial: "",
+  outputInterface: "",
+  inputInterface: "",
+  protection: "",
+  converterEfficiency: "",
+  chargeTime: "",
+  batteryCycleTimes: "",
+  batteryMaterial: "",
+  maxChargeDischargeCurrent: "",
   certification: "",
-  singlePowerOutput: "",
-  adsSizeAndResolution: "",
-  temperature: "",
-  workingHumidity: "",
-  paymentMethods: "",
+  safetyPerformance: "",
   functionalCharacteristics: "",
+  size: "",
   weight: "",
-  singleGrossWeight: "",
   packageSize: "",
+  grossWeight: "",
   pricing: [],
 };
 
-// --- UPDATED YUP SCHEMA: ALL FIELDS REQUIRED ---
 const ProductSchema = Yup.object().shape({
   model: Yup.string().required("Model is required"),
   productName: Yup.string().required("Product name is required"),
   category: Yup.string().required("Category is required"),
-  image: Yup.string().required("Image URL is required"),
-  slots: Yup.number()
-    .min(0, "Cannot be negative")
-    .typeError("Must be a number")
-    .required("Total slots is required"),
-  stationColor: Yup.string().required("Colors are required"),
-  maxPower: Yup.string().required("Max power is required"),
-  networkSupport: Yup.string().required("Network support is required"),
-  material: Yup.string().required("Material is required"),
-  powerInput: Yup.string().required("Power input is required"),
-  powerProtection: Yup.string().required("Power protection is required"),
-  certification: Yup.string().required("Certification is required"),
-  singlePowerOutput: Yup.string().required("Single power output is required"),
-  adsSizeAndResolution: Yup.string().required("Screen size/res is required"),
-  temperature: Yup.string().required("Working temperature is required"),
-  workingHumidity: Yup.string().required("Working humidity is required"),
-  paymentMethods: Yup.string().required("Payment methods are required"),
-  functionalCharacteristics: Yup.string().required("Functional characteristics are required"),
-  weight: Yup.string().required("Weight is required"),
-  singleGrossWeight: Yup.string().required("Gross weight is required"),
-  packageSize: Yup.string().required("Package size is required"),
+  image: Yup.string().required("You must upload an image to S3 first"),
+  colors: Yup.string().required("Colors are required"),
+  capacity: Yup.string().required("Capacity is required"),
   pricing: Yup.array()
     .of(
       Yup.object().shape({
@@ -69,7 +53,6 @@ const ProductSchema = Yup.object().shape({
     .required("Pricing is required"),
 });
 
-// Helper to render standard fields cleanly
 const renderField = (name: string, label: string, type = "text", placeholder = "") => (
   <div className="space-y-1">
     <label className="text-[10px] text-sand/60 font-body uppercase tracking-wider">
@@ -86,64 +69,92 @@ const renderField = (name: string, label: string, type = "text", placeholder = "
 );
 
 export default function AdminProductsPage() {
-  // Pull state and actions directly from Zustand
   const { products, isLoading, fetchProducts, createProduct, updateProduct, deleteProduct } = useProductStore();
 
-  // Local UI State
   const [searchQuery, setSearchQuery] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
+
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
-  const filteredProducts = products.filter(
-    (p: any) =>
-      p.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.model.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredProducts = Array.isArray(products)
+    ? products.filter(
+      (p: any) =>
+        p.productName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.model?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    : [];
 
   const handleOpenAdd = () => {
     setEditingProduct(null);
+    setSelectedFile(null);
     setIsFormOpen(true);
   };
 
   const handleOpenEdit = (product: any) => {
-    // Convert arrays back to comma-separated strings for the UI inputs
     setEditingProduct({
       ...product,
-      stationColor: product.stationColor?.join(", ") || "",
-      paymentMethods: product.paymentMethods?.join(", ") || "",
+      colors: product.colors?.join(", ") || "",
+      protection: product.protection?.join(", ") || "",
     });
+    setSelectedFile(null);
     setIsFormOpen(true);
   };
 
   const handleDelete = async (id: string) => {
-    await deleteProduct(id);
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      await deleteProduct(id);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setSelectedFile(file);
+  };
+
+  const handleUploadToS3 = async (setFieldValue: any) => {
+    if (!selectedFile) return toast.error("Please select a file to upload");
+
+    setIsUploading(true);
+    try {
+      const { url } = await uploadImage(selectedFile, "products");
+
+      if (typeof url !== "string" || !url.startsWith("http")) {
+        toast.error("Upload succeeded but no valid image URL was returned");
+        return;
+      }
+
+      setFieldValue("image", url);
+      toast.success("Image successfully uploaded to S3!");
+    } catch (error) {
+      toast.error("Upload failed. Check your backend.");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleSubmit = async (values: any, { resetForm }: any) => {
-    // Convert comma-separated UI strings back to arrays for the database
     const formattedValues = {
       ...values,
-      stationColor: values.stationColor
-        .split(",")
-        .map((s: string) => s.trim())
-        .filter(Boolean),
-      paymentMethods: values.paymentMethods
-        .split(",")
-        .map((s: string) => s.trim())
-        .filter(Boolean),
+      colors: typeof values.colors === "string"
+        ? values.colors.split(",").map((s: string) => s.trim()).filter(Boolean)
+        : values.colors,
+      protection: typeof values.protection === "string"
+        ? values.protection.split(",").map((s: string) => s.trim()).filter(Boolean)
+        : values.protection,
     };
 
     try {
       if (editingProduct) {
-        await updateProduct(editingProduct.id, formattedValues);
+        await updateProduct(editingProduct._id || editingProduct.id, formattedValues);
       } else {
         await createProduct(formattedValues);
       }
-
       setIsFormOpen(false);
       resetForm();
     } catch (error) {
@@ -155,11 +166,10 @@ export default function AdminProductsPage() {
     <div>
       <PageHeader
         title="Products"
-        description="Manage full product specifications and tiered pricing."
+        description="Manage hardware specifications, power bank details, and tiered volume pricing."
       />
 
       <div className="grid gap-6 max-w-[1400px]">
-        {/* Top Actions */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <input
             type="text"
@@ -176,7 +186,6 @@ export default function AdminProductsPage() {
           </button>
         </div>
 
-        {/* Form Overlay/Section */}
         {isFormOpen && (
           <section className="bg-sand/[0.04] border border-sand/10 rounded-xl p-6 shadow-2xl">
             <div className="flex justify-between items-center mb-6 border-b border-sand/10 pb-4">
@@ -196,74 +205,117 @@ export default function AdminProductsPage() {
               validationSchema={ProductSchema}
               onSubmit={handleSubmit}
             >
-              {({ values, isSubmitting, errors }) => (
+              {({ values, isSubmitting, errors, setFieldValue }) => (
                 <Form className="space-y-8">
-                  {/* Basic Info */}
                   <div>
                     <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
                       Basic Info
                     </h4>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      {renderField("model", "Model *")}
-                      {renderField("productName", "Product Name *")}
-                      {renderField("category", "Category *")}
-                      {renderField("image", "Image URL *")}
+                      {renderField("model", "Model *", "text", "e.g. PS886")}
+                      {renderField("productName", "Product Name *", "text", "Shared Power Bank")}
+                      {renderField("category", "Category *", "text", "Power Bank")}
+
+                      <div className="space-y-2">
+                        <label className="text-[10px] text-sand/60 font-body uppercase tracking-wider">
+                          Product Image *
+                        </label>
+
+                        {values.image ? (
+                          <div className="flex items-center gap-3 bg-black/20 border border-sand/10 rounded-lg p-2">
+                            <img
+                              src={values.image}
+                              alt="Product preview"
+                              className="h-14 w-14 object-contain rounded border border-sand/10 bg-black/20 shrink-0"
+                            />
+                            <div className="min-w-0">
+                              <p className="text-xs text-signal font-body">Image attached</p>
+                              <p className="text-[10px] text-sand/40 font-body truncate" title={values.image}>
+                                {values.image}
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="bg-black/20 border border-dashed border-sand/20 rounded-lg p-3 text-center">
+                            <p className="text-xs text-sand/40 font-body">No image uploaded yet</p>
+                          </div>
+                        )}
+
+                        <div className="flex flex-col gap-2">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileSelect}
+                            className="w-full bg-black/20 border border-sand/10 rounded-lg px-3 py-1.5 text-sand text-sm font-body focus:border-signal outline-none transition-colors file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:bg-signal file:text-black cursor-pointer"
+                          />
+
+                          <button
+                            type="button"
+                            onClick={() => handleUploadToS3(setFieldValue)}
+                            disabled={!selectedFile || isUploading}
+                            className="bg-signal text-black px-4 py-2 rounded-lg text-sm font-body font-semibold hover:bg-signal/80 transition-colors disabled:bg-sand/10 disabled:text-sand/40 disabled:cursor-not-allowed"
+                          >
+                            {isUploading ? "Uploading to S3..." : values.image ? "Upload New Image" : "Upload Selected File"}
+                          </button>
+                        </div>
+
+                        <Field type="hidden" name="image" />
+                        <ErrorMessage name="image" component="div" className="text-red-400 text-xs mt-1" />
+                      </div>
                     </div>
                   </div>
 
-                  {/* Technical Specs */}
                   <div>
                     <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
                       Technical Specs
                     </h4>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      {renderField("slots", "Total Slots *", "number")}
-                      {renderField("maxPower", "Max Power *")}
-                      {renderField("powerInput", "Power Input *")}
-                      {renderField("singlePowerOutput", "Single Power Output *")}
-                      {renderField("networkSupport", "Network Support (4G/WiFi) *")}
-                      {renderField("material", "Material *")}
-                      {renderField("powerProtection", "Power Protection *")}
-                      {renderField("certification", "Certification (CE/FCC/RoHS) *")}
+                      {renderField("colors", "Colors (Comma separated) *", "text", "Yellow, Black, Gray")}
+                      {renderField("capacity", "Capacity *", "text", "6000mAh")}
+                      {renderField("inputOutput", "Input/Output", "text", "5V/2A (Max)")}
+                      {renderField("shellMaterial", "Shell Material", "text", "V0 Fireproof")}
+                      {renderField("outputInterface", "Output Interface", "text", "Lightning/Micro/Type-C")}
+                      {renderField("inputInterface", "Input Interface", "text", "Type-C / Contact PIN")}
+                      {renderField("converterEfficiency", "Converter Efficiency", "text", "≥80%")}
+                      {renderField("chargeTime", "Charge Time", "text", "3.5 Hours")}
+                      {renderField("batteryCycleTimes", "Battery Cycle Times", "text", "300 Times")}
+                      {renderField("batteryMaterial", "Battery Material", "text", "Polymer")}
+                      {renderField("maxChargeDischargeCurrent", "Max Current", "text", "0.5C")}
                     </div>
                   </div>
 
-                  {/* Physical & Environmental */}
                   <div>
                     <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
-                      Physical & Environment
-                    </h4>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      {renderField("adsSizeAndResolution", "Ads Screen Size/Res *")}
-                      {renderField("temperature", "Working Temp *")}
-                      {renderField("workingHumidity", "Working Humidity *")}
-                      {renderField("weight", "Net Weight *")}
-                      {renderField("singleGrossWeight", "Gross Weight *")}
-                      {renderField("packageSize", "Package Size *")}
-                    </div>
-                  </div>
-
-                  {/* Features & Options */}
-                  <div>
-                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
-                      Features & Options
+                      Protection & Compliance
                     </h4>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {renderField("stationColor", "Colors (Comma separated) *", "text", "e.g., Black, White")}
-                      {renderField("paymentMethods", "Payment Methods (Comma separated) *", "text", "e.g., Credit Card, PayPal")}
-                      {renderField("functionalCharacteristics", "Functional Characteristics *")}
+                      {renderField("protection", "Protections (Comma separated)", "text", "Overcharge, Short-circuit")}
+                      {renderField("certification", "Certification", "text", "CE/FCC/RoHS/MSDS")}
+                      {renderField("safetyPerformance", "Safety Performance", "text", "Crash test/Free fall")}
+                    </div>
+                    <div className="mt-4">
+                      {renderField("functionalCharacteristics", "Functional Characteristics", "text", "BMS, Ambient light logo customization")}
                     </div>
                   </div>
 
-                  {/* Tiered Pricing */}
                   <div>
                     <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
-                      Tiered Pricing *
+                      Dimensions & Packaging
+                    </h4>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {renderField("size", "Size", "text", "14.1*6.8*1.7cm")}
+                      {renderField("weight", "Weight", "text", "0.18kg (1pcs)")}
+                      {renderField("packageSize", "Package Size", "text", "34*16.5*21cm (50pcs)")}
+                      {renderField("grossWeight", "Gross Weight", "text", "9.68kg (50pcs)")}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
+                      Volume Pricing Tiers *
                     </h4>
                     {typeof errors.pricing === "string" && (
-                      <div className="text-red-400 text-xs mb-2">
-                        {errors.pricing}
-                      </div>
+                      <div className="text-red-400 text-xs mb-2">{errors.pricing}</div>
                     )}
                     <FieldArray name="pricing">
                       {({ remove, push }) => (
@@ -272,10 +324,10 @@ export default function AdminProductsPage() {
                             values.pricing.map((tier: any, index: number) => (
                               <div key={index} className="flex gap-4 items-start">
                                 <div className="flex-1">
-                                  {renderField(`pricing.${index}.qty`, `Quantity Label *`)}
+                                  {renderField(`pricing.${index}.qty`, `Quantity Range *`, "text", "1-999 PCS")}
                                 </div>
                                 <div className="flex-1">
-                                  {renderField(`pricing.${index}.price`, `Price ($) *`, "number")}
+                                  {renderField(`pricing.${index}.price`, `Price ($) *`, "number", "9.6")}
                                 </div>
                                 <button
                                   type="button"
@@ -298,12 +350,11 @@ export default function AdminProductsPage() {
                     </FieldArray>
                   </div>
 
-                  {/* Submit Button */}
                   <div className="pt-4 border-t border-sand/10 flex justify-end">
                     <button
                       type="submit"
-                      disabled={isSubmitting}
-                      className="bg-signal text-black px-8 py-3 rounded-lg font-body font-medium hover:bg-signal/80 transition-colors disabled:opacity-50"
+                      disabled={isSubmitting || isUploading || !values.image}
+                      className="bg-signal text-black px-8 py-3 rounded-lg font-body font-medium hover:bg-signal/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                       {editingProduct ? "Save Product Settings" : "Create Product"}
                     </button>
@@ -314,7 +365,6 @@ export default function AdminProductsPage() {
           </section>
         )}
 
-        {/* Product Table */}
         <section className="bg-sand/[0.04] border border-sand/10 rounded-xl overflow-x-auto">
           {isLoading && !products.length ? (
             <div className="p-8 text-center text-sand/50 font-body text-sm">Loading products...</div>
@@ -322,44 +372,32 @@ export default function AdminProductsPage() {
             <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
                 <tr className="border-b border-sand/10 bg-black/20">
-                  <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">
-                    Model
-                  </th>
-                  <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">
-                    Product
-                  </th>
-                  <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">
-                    Slots
-                  </th>
-                  <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">
-                    Starting Price
-                  </th>
-                  <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider text-right">
-                    Actions
-                  </th>
+                  <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Model</th>
+                  <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Product</th>
+                  <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Capacity</th>
+                  <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Base Price</th>
+                  <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="font-body text-sm divide-y divide-sand/10">
                 {filteredProducts.length > 0 ? (
                   filteredProducts.map((product) => (
-                    <tr
-                      key={product.id}
-                      className="hover:bg-sand/[0.02] transition-colors"
-                    >
-                      <td className="p-4 text-signal font-medium whitespace-nowrap">
-                        {product.model}
-                      </td>
+                    <tr key={product._id || product.id} className="hover:bg-sand/[0.02] transition-colors">
+                      <td className="p-4 text-signal font-medium whitespace-nowrap">{product.model}</td>
                       <td className="p-4 text-sand">
-                        <div className="font-medium">{product.productName}</div>
-                        <div className="text-sand/50 text-xs mt-1">
-                          {product.category}
+                        <div className="flex items-center gap-3">
+                          {product.image && (
+                            <img src={product.image} alt={product.model} className="h-10 w-10 object-contain bg-black/20 rounded border border-sand/10" />
+                          )}
+                          <div>
+                            <div className="font-medium">{product.productName}</div>
+                            <div className="text-sand/50 text-xs mt-1">{product.category}</div>
+                          </div>
                         </div>
                       </td>
-                      <td className="p-4 text-sand/80">{product.slots}</td>
+                      <td className="p-4 text-sand/80">{product.capacity}</td>
                       <td className="p-4 text-sand/80">
-                        {product.pricing?.length > 0
-                          ? `$${product.pricing[0].price}`
-                          : "N/A"}
+                        {product.pricing?.length > 0 ? `$${product.pricing[0].price}` : "N/A"}
                       </td>
                       <td className="p-4 text-right space-x-3 whitespace-nowrap">
                         <button
@@ -369,8 +407,7 @@ export default function AdminProductsPage() {
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(product.id)}
-                          className="text-sand/60 hover:text-red-400 transition-colors"
+                          onClick={() => handleDelete(product._id as string)} className="text-sand/60 hover:text-red-400 transition-colors"
                         >
                           Delete
                         </button>

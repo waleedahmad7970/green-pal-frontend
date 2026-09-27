@@ -23,8 +23,7 @@ export async function getMonthlyStats(): Promise<MonthlyStat[]> {
     };
 
     map.set(month, {
-      revenue: existing.revenue + (order.amount ?? 0),
-      orders: existing.orders + 1,
+      revenue: existing.revenue + (order.total ?? 0), orders: existing.orders + 1,
     });
   }
 

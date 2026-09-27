@@ -23,8 +23,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
         try {
             const data = await listOrders();
             // Handle response wrapping gracefully
-            const ordersList = Array.isArray(data) ? data : data?.data || [];
-            set({ orders: ordersList, loading: false });
+            const ordersList = Array.isArray(data) ? data : (data as any)?.data || []; set({ orders: ordersList, loading: false });
         } catch (err: any) {
             set({
                 error: err?.message || "Failed to fetch orders",
@@ -36,8 +35,7 @@ export const useOrderStore = create<OrderState>((set, get) => ({
     addOrder: async (orderData) => {
         set({ loading: true, error: null });
         try {
-            await createOrder(orderData);
-            await get().fetchOrders(); // Refresh list after creation
+            await createOrder(orderData as any); await get().fetchOrders(); // Refresh list after creation
         } catch (err: any) {
             set({
                 error: err?.message || "Failed to create order",

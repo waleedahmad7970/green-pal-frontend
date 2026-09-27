@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { listLocations } from "@/lib/admin/services/locations";
+// FIXED: Alias the imported function to match what your code expects
+import { fetchLocations as listLocations } from "@/lib/admin/services/locations";
 import type { OrderStatus, Location } from "@/lib/admin/types";
 import {
   PageHeader,
@@ -53,7 +54,6 @@ export default function AdminOrdersPage() {
       <PageHeader
         title="Orders"
         description="Every rental, charging session, and utility device order."
-        action={<PrimaryButton onClick={() => setModalOpen(true)}>New order</PrimaryButton>}
       />
 
       {loading && orders.length === 0 ? (
@@ -119,59 +119,7 @@ export default function AdminOrdersPage() {
         </div>
       )}
 
-      <AdminModal open={modalOpen} onClose={() => setModalOpen(false)} title="New order">
-        <Formik
-          initialValues={{
-            customerName: "",
-            customerEmail: "",
-            locationId: locations[0]?.id ?? "",
-            item: "Power Bank Rental",
-            total: "",
-            status: "pending" as OrderStatus,
-          }}
-          validationSchema={OrderSchema}
-          onSubmit={handleCreate}
-          enableReinitialize
-        >
-          {({ isSubmitting }) => (
-            <Form>
-              <FormField label="Customer name">
-                <Field name="customerName" className={inputClass} />
-                <ErrorMessage name="customerName" component="div" className="text-red-400 text-xs mt-1" />
-              </FormField>
-              <FormField label="Customer email">
-                <Field name="customerEmail" type="email" className={inputClass} />
-                <ErrorMessage name="customerEmail" component="div" className="text-red-400 text-xs mt-1" />
-              </FormField>
-              <FormField label="Location">
-                <Field as="select" name="locationId" className={inputClass}>
-                  {locations.map((l) => (
-                    <option key={l.id} value={l.id} className="bg-ink">
-                      {l.name}
-                    </option>
-                  ))}
-                </Field>
-                <ErrorMessage name="locationId" component="div" className="text-red-400 text-xs mt-1" />
-              </FormField>
-              <FormField label="Item">
-                <Field as="select" name="item" className={inputClass}>
-                  <option value="Power Bank Rental" className="bg-ink">Power Bank Rental</option>
-                  <option value="Charging Session" className="bg-ink">Charging Session</option>
-                  <option value="Utility Device" className="bg-ink">Utility Device</option>
-                </Field>
-                <ErrorMessage name="item" component="div" className="text-red-400 text-xs mt-1" />
-              </FormField>
-              <FormField label="Total (USD)">
-                <Field name="total" type="number" step="0.01" className={inputClass} />
-                <ErrorMessage name="total" component="div" className="text-red-400 text-xs mt-1" />
-              </FormField>
-              <PrimaryButton type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Creating…" : "Create order"}
-              </PrimaryButton>
-            </Form>
-          )}
-        </Formik>
-      </AdminModal>
+
     </div>
   );
 }

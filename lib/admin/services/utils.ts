@@ -1,14 +1,12 @@
 /**
- * Converts MongoDB `_id` into the frontend `id` field.
+ * Normalizes a MongoDB document, converting `_id` to a string.
  */
 export function normalize<T>(doc: unknown): T {
   const value = doc as Record<string, unknown>;
 
-  const { _id, id, ...rest } = value;
-
   return {
-    ...rest,
-    id: String(_id ?? id ?? ""),
+    ...value,
+    _id: value._id ? String(value._id) : undefined,
   } as T;
 }
 

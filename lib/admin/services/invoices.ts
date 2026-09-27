@@ -1,22 +1,21 @@
-import type { Invoice } from "../types";
-import apiClient from "../../apiClient";
-import { normalize, normalizeList } from "./utils";
+// lib/admin/services/invoices.ts
+import apiClient from "@/lib/apiClient";
 
-export async function listInvoices(): Promise<Invoice[]> {
+export async function listInvoices() {
   const response = await apiClient.get("/invoices");
-  return normalizeList<Invoice>(response.data);
+  const body = response?.data || response;
+  const target = body?.data || body;
+  return Array.isArray(target) ? target : [];
 }
 
-export async function createInvoice(
-  input: Omit<Invoice, "id">
-): Promise<Invoice> {
-  const response = await apiClient.post("/invoices", input);
-  return normalize<Invoice>(response.data);
+export async function createInvoice(data: any) {
+  const response = await apiClient.post("/invoices", data);
+  const body = response?.data || response;
+  return body?.data || body;
 }
 
-export async function updateInvoice(
-  invoiceId: string,
-  patch: Partial<Invoice>
-): Promise<void> {
-  await apiClient.put(`/invoices/${invoiceId}`, patch);
+export async function updateInvoice(id: string, data: any) {
+  const response = await apiClient.put(`/invoices/${id}`, data);
+  const body = response?.data || response;
+  return body?.data || body;
 }

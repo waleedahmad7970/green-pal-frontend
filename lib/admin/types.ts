@@ -21,12 +21,12 @@ export interface Order {
   id?: string; // Fallback mapping
   user?: UserRef | string;
   customerName: string;
-  customerEmail: string;
+  customerEmail?: string;
   locationId?: string;
   product?: string;
-  item: string;
+  item?: string;
   quantity?: number;
-  total: number;
+  total?: number;
   status: OrderStatus;
   isPaid: boolean;
   paidAt?: string;
@@ -83,6 +83,33 @@ export interface MonthlyStat {
 }
 
 export interface Product {
+  id: string;
+  model: string;
+  productName: string;
+  category: string;
+  image: string;
+  slots: number;
+  stationColor: string[];
+  maxPower: string;
+  networkSupport: string;
+  material: string;
+  powerInput: string;
+  powerProtection: string;
+  certification: string;
+  singlePowerOutput: string;
+  adsSizeAndResolution: string;
+  temperature: string;
+  workingHumidity: string;
+  paymentMethods: string[];
+  functionalCharacteristics: string;
+  weight: string;
+  singleGrossWeight: string;
+  packageSize: string;
+  pricing: { qty: string; price: number }[];
+}
+
+
+export interface Plan {
   id: string;
   model: string;
   productName: string;

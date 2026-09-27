@@ -75,13 +75,13 @@ export function PrimaryButton({
   children: React.ReactNode;
   onClick?: () => void;
   type?: "button" | "submit";
-}) {
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
       type={type}
       {...props}
       onClick={onClick}
-      className="bg-signal text-ink font-body font-medium text-sm px-5 py-2.5 rounded-lg whitespace-nowrap"
+      className="bg-signal text-ink font-body font-medium text-sm px-5 py-2.5 rounded-lg whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {children}
     </button>
@@ -103,7 +103,7 @@ export function AdminModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative bg-ink border border-sand/15 rounded-xl w-full max-w-lg p-6 md:p-8 max-h-[85vh] overflow-y-auto">
+      <div className="relative bg-ink border border-sand/15 rounded-xl w-full max-w-lg p-6 md:p-8 max-h-[85vh] no-scrollbar overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-display text-xl font-semibold text-sand">{title}</h2>
           <button onClick={onClose} className="text-sand/50 hover:text-sand text-xl leading-none">

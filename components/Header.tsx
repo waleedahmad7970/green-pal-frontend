@@ -53,11 +53,10 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-[1000] transition-colors duration-500 ${
-        scrolled || pathname !== "/"
-          ? "bg-surface/85 backdrop-blur-md"
-          : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-[1000] transition-colors duration-500 ${scrolled || pathname !== "/"
+        ? "bg-surface/85 backdrop-blur-md"
+        : "bg-transparent"
+        }`}
     >
       <div className="container-edit flex items-center justify-between h-20">
         {/* --- LOGO SWAP IS HERE --- */}
@@ -76,24 +75,12 @@ export default function Header() {
         {/* ------------------------- */}
 
         <nav className="hidden lg:flex items-center gap-8">
-          {/* {sectionLinks.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={(e) => handleAnchorClick(e, l.href)}
-              className="font-body text-sm text-muted hover:text-current transition-colors duration-300"
-            >
-              {l.label}
-            </Link>
-          ))}
-          <span className="w-px h-4 bg-current opacity-20" /> */}
           {pageLinks.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className={`font-body text-sm transition-colors duration-300 ${
-                pathname === l.href ? "accent" : "text-muted hover:text-current"
-              }`}
+              className={`font-body text-sm transition-colors duration-300 ${pathname === l.href ? "accent" : "text-muted hover:text-current"
+                }`}
             >
               {l.label}
             </Link>
@@ -101,6 +88,14 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-4">
+          {/* Talk to Sales Button - Desktop */}
+          <Link
+            href="/contact"
+            className="hidden lg:flex items-center justify-center px-5 py-2 text-sm font-medium rounded-full bg-black text-white dark:bg-white dark:text-black hover:opacity-80 transition-opacity duration-300"
+          >
+            Talk to Sales
+          </Link>
+
           <button
             aria-label="Toggle theme"
             onClick={toggleTheme}
@@ -120,14 +115,12 @@ export default function Header() {
             onClick={() => setMenuOpen(!menuOpen)}
           >
             <span
-              className={`h-px w-full bg-current transition-transform duration-300 ${
-                menuOpen ? "translate-y-[3.5px] rotate-45" : ""
-              }`}
+              className={`h-px w-full bg-current transition-transform duration-300 ${menuOpen ? "translate-y-[3.5px] rotate-45" : ""
+                }`}
             />
             <span
-              className={`h-px w-full bg-current transition-transform duration-300 ${
-                menuOpen ? "-translate-y-[3.5px] -rotate-45" : ""
-              }`}
+              className={`h-px w-full bg-current transition-transform duration-300 ${menuOpen ? "-translate-y-[3.5px] -rotate-45" : ""
+                }`}
             />
           </button>
         </div>
@@ -143,16 +136,6 @@ export default function Header() {
             className="lg:hidden overflow-hidden bg-surface border-t line-rule"
           >
             <nav className="container-edit flex flex-col py-6 gap-5">
-              {/* {sectionLinks.map((l) => (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  onClick={(e) => handleAnchorClick(e, l.href)}
-                  className="font-display text-2xl font-medium text-left"
-                >
-                  {l.label}
-                </Link>
-              ))} */}
               {pageLinks.map((l) => (
                 <Link
                   key={l.href}
@@ -163,6 +146,17 @@ export default function Header() {
                   {l.label}
                 </Link>
               ))}
+
+              {/* Talk to Sales Button - Mobile */}
+              <div className="pt-4 mt-2 border-t line-rule">
+                <Link
+                  href="/contact"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-center w-full py-3 rounded-full bg-black text-white dark:bg-white dark:text-black font-display text-xl font-medium hover:opacity-80 transition-opacity duration-300"
+                >
+                  Talk to Sales
+                </Link>
+              </div>
             </nav>
           </motion.div>
         )}

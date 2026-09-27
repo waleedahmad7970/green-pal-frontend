@@ -10,7 +10,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "i.postimg.cc",
-
+      },
+      {
+        protocol: "https",
+        hostname: "greenpal-images.s3.eu-north-1.amazonaws.com",
       },
     ],
   },

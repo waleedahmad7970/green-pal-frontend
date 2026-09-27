@@ -1,13 +1,13 @@
 import type { Order, Location, Purchase, Invoice, MonthlyStat } from "./types";
 
-export const seedLocations: Location[] = [
+export const seedLocations: any = [
   { id: "loc_1", name: "Terminal 2 Departures", venue: "Metro International Airport", city: "Metro City", bays: 36, status: "live", installedAt: "2023-03-14" },
   { id: "loc_2", name: "Riverside Atrium", venue: "Riverside Shopping Centre", city: "Riverside", bays: 6, status: "live", installedAt: "2024-01-09" },
   { id: "loc_3", name: "Union Concourse", venue: "Union Station", city: "Union City", bays: 18, status: "live", installedAt: "2024-06-22" },
   { id: "loc_4", name: "Harborview Hall", venue: "Harborview Conference Centre", city: "Harborview", bays: 6, status: "installing", installedAt: "2026-09-01" },
 ];
 
-export const seedOrders: Order[] = [
+export const seedOrders: any[] = [
   { id: "ord_1001", customerName: "Jordan Blake", customerEmail: "jordan@example.com", locationId: "loc_1", item: "Power Bank Rental", amount: 6.5, status: "active", createdAt: "2026-09-10" },
   { id: "ord_1002", customerName: "Priya Shah", customerEmail: "priya@example.com", locationId: "loc_2", item: "Charging Session", amount: 3.0, status: "returned", createdAt: "2026-09-08" },
   { id: "ord_1003", customerName: "Sam Wu", customerEmail: "sam@example.com", locationId: "loc_3", item: "Utility Device", amount: 4.25, status: "pending", createdAt: "2026-09-12" },

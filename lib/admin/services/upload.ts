@@ -1,19 +1,26 @@
+// services/uploads.ts
 import apiClient from "@/lib/apiClient";
+import { normalize } from "./utils";
 
-export async function uploadImageToS3(file: File): Promise<string> {
+interface UploadResult {
+    url: string;
+    folder: string;
+}
+
+export async function uploadImage(
+    file: File,
+    folder: "plans" | "products" = "products",
+): Promise<UploadResult> {
     const formData = new FormData();
-    formData.append("image", file); // Must match the 'upload.single("image")' string
+    formData.append("image", file);
+    formData.append("folder", folder);
 
-    try {
-        const response: any = await apiClient.post("/upload/image", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
+    // ADD THE HEADERS OBJECT HERE
+    const response = await apiClient.post("/upload/image", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        }
+    });
 
-        return response.data?.url || response.url;
-    } catch (error) {
-        console.error("Image upload failed:", error);
-        throw error;
-    }
+    return normalize<UploadResult>(response as any);
 }

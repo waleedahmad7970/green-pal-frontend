@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion } from "motion/react";
-import emailjs from "@emailjs/browser";
+import { submitContact } from "@/lib/site/services/contact";
 
 export default function ContactForm() {
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -20,7 +20,7 @@ export default function ContactForm() {
     setPos({ x, y });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!formRef.current) return;
@@ -29,18 +29,37 @@ export default function ContactForm() {
     setServerError(null);
 
     try {
-      // Replace these 3 strings with your keys from the EmailJS dashboard
-      await emailjs.sendForm(
-        "service_1jb18su",   // e.g., "service_xyz123"
-        "template_qu5qivc",  // e.g., "template_abc456"
-        formRef.current,
-        "JzUVdWjrfeTC3gVUa"    // e.g., "user_789def..."
-      );
+      // 1. Extract data directly from the form submission
+      const formData = new FormData(e.currentTarget);
+      const name = formData.get("name") as string;
+      const company = formData.get("company") as string;
+      const email = formData.get("email") as string;
+      const phone = formData.get("phone") as string;
+      const userMessage = formData.get("message") as string;
 
-      setSubmitted(true);
-    } catch (error) {
-      console.error("EmailJS Error:", error);
-      setServerError("Failed to send message. Please try again.");
+      // 2. Format the message to include the company name
+      const finalMessage = company
+        ? `Company: ${company}\n\n${userMessage}`
+        : userMessage;
+
+      // 3. Send the request to your backend via the custom API client
+      const response = await submitContact({
+        name,
+        email,
+        phone: phone || "",
+        subject: `New Venue Inquiry from ${name}`,
+        message: finalMessage,
+      });
+
+      // 4. Handle success or failure from your Node.js backend
+      if (response && response.success !== false) {
+        setSubmitted(true);
+      } else {
+        throw new Error(response.message || "Failed to send message.");
+      }
+    } catch (error: any) {
+      console.error("API Submission Error:", error);
+      setServerError(error.message || "Failed to send message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

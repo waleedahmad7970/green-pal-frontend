@@ -8,12 +8,13 @@ import { useAdminAuth } from "@/lib/admin/auth";
 const navItems = [
   { label: "Dashboard", href: "/admin" },
   { label: "Products", href: "/admin/product" },
+  { label: "Plans", href: "/admin/plans" },
   { label: "Orders", href: "/admin/orders" },
   { label: "Locations", href: "/admin/locations" },
-  { label: "Purchases", href: "/admin/purchases" },
+  // { label: "Purchases", href: "/admin/purchases" },
   { label: "Invoices", href: "/admin/invoices" },
   { label: "Reports", href: "/admin/reports" },
-  { label: "Settings", href: "/admin/settings" },
+  // { label: "Settings", href: "/admin/settings" },
 ];
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {

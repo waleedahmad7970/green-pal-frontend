@@ -1,48 +1,70 @@
+// lib/admin/slices/useLocationStore.ts
 import { create } from "zustand";
 import {
-    listLocations,
-    createLocation as apiCreateLocation,
-    updateLocation as apiUpdateLocation,
-    deleteLocation as apiDeleteLocation,
+    fetchLocations,
+    createLocation,
+    updateLocation,
+    deleteLocation,
+    LocationItem
 } from "@/lib/admin/services/locations";
-import type { Location } from "@/lib/admin/types";
+import toast from "react-hot-toast";
 
-interface LocationStore {
-    locations: Location[];
+interface LocationState {
+    locations: LocationItem[];
     isLoading: boolean;
     fetchLocations: () => Promise<void>;
-    createLocation: (data: Omit<Location, "id">) => Promise<void>;
-    updateLocation: (id: string, data: Partial<Location>) => Promise<void>;
+    createLocation: (data: LocationItem) => Promise<void>;
+    updateLocation: (id: string, data: Partial<LocationItem>) => Promise<void>;
     deleteLocation: (id: string) => Promise<void>;
 }
 
-export const useLocationStore = create<LocationStore>((set, get) => ({
+export const useLocationStore = create<LocationState>((set, get) => ({
     locations: [],
     isLoading: false,
 
     fetchLocations: async () => {
         set({ isLoading: true });
         try {
-            const locations = await listLocations();
-            set({ locations, isLoading: false });
+            const locationArray = await fetchLocations();
+            set({ locations: Array.isArray(locationArray) ? locationArray : [] });
         } catch (error) {
-            console.error("Failed to fetch locations:", error);
+            toast.error("Failed to fetch locations");
+            set({ locations: [] });
+        } finally {
             set({ isLoading: false });
         }
     },
 
-    createLocation: async (data) => {
-        await apiCreateLocation(data);
-        await get().fetchLocations(); // Auto-refresh the list
+    createLocation: async (data: LocationItem) => {
+        try {
+            await createLocation(data);
+            toast.success("Location created successfully");
+            get().fetchLocations();
+        } catch (error) {
+            toast.error("Failed to create location");
+            throw error;
+        }
     },
 
-    updateLocation: async (id, data) => {
-        await apiUpdateLocation(id, data);
-        await get().fetchLocations(); // Auto-refresh the list
+    updateLocation: async (id: string, data: Partial<LocationItem>) => {
+        try {
+            await updateLocation(id, data);
+            toast.success("Location updated successfully");
+            get().fetchLocations();
+        } catch (error) {
+            toast.error("Failed to update location");
+            throw error;
+        }
     },
 
-    deleteLocation: async (id) => {
-        await apiDeleteLocation(id);
-        await get().fetchLocations(); // Auto-refresh the list
+    deleteLocation: async (id: string) => {
+        try {
+            await deleteLocation(id);
+            toast.success("Location deleted successfully");
+            get().fetchLocations();
+        } catch (error) {
+            toast.error("Failed to delete location");
+            throw error;
+        }
     },
 }));
