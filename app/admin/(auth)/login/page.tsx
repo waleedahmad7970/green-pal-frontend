@@ -69,7 +69,7 @@ export default function AdminLogin() {
               value={formik.values.email}
               onChange={formik.handleChange}
               required
-              placeholder="sameerkhan.prof@gmail.com"
+              placeholder="greenpal@xyz.com"
               className="w-full bg-sand/5 border border-sand/15 focus:border-signal outline-none rounded-lg px-4 py-3 font-body text-sand transition-colors duration-300"
             />
           </label>

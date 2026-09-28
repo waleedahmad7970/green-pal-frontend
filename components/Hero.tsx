@@ -133,13 +133,13 @@ export default function Hero() {
         ref={markWrapRef}
         className="absolute -right-16 sm:-right-8 top-[14%] w-[62vw] max-w-[720px] pointer-events-none invisible"
       >
-        <div
+        {/* <div
           ref={markInnerRef}
           className="accent"
           style={{ transformStyle: "preserve-3d" }}
         >
           <GPMark className="w-full h-full drop-shadow-[0_30px_60px_rgba(2,214,131,0.18)]" />
-        </div>
+        </div> */}
       </div>
 
       <div className="container-edit relative pb-12 md:pb-16 pt-10 md:pt-32">
@@ -169,16 +169,22 @@ export default function Hero() {
           {/* Replaced old button with the two side-by-side buttons */}
           <div className="flex flex-col sm:flex-row gap-4 shrink-0 relative z-10">
             <a
-              href="#host"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-signal text-ink font-body font-bold text-base transition-transform duration-300 hover:scale-105 shadow-[0_10px_20px_rgba(2,214,131,0.15)]"
+              href="/contact"
+              className="max-w-max mx-auto md:max-w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-signal text-ink font-body font-bold text-base transition-transform duration-300 hover:scale-105 shadow-[0_10px_20px_rgba(2,214,131,0.15)]"
             >
               Host a Greenpal Station
             </a>
             <a
-              href="#blueprints"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-signal text-ink font-body font-bold text-base transition-transform duration-300 hover:scale-105 shadow-[0_10px_20px_rgba(2,214,131,0.15)]"
+              href="/contact"
+              className="max-w-max mx-auto md:max-w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-signal text-ink font-body font-bold text-base transition-transform duration-300 hover:scale-105 shadow-[0_10px_20px_rgba(2,214,131,0.15)]"
             >
               Explore Business Blueprints
+            </a>
+            <a
+              href="/investment"
+              className="max-w-max mx-auto md:max-w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-signal text-ink font-body font-bold text-base transition-transform duration-300 hover:scale-105 shadow-[0_10px_20px_rgba(2,214,131,0.15)]"
+            >
+              Invest in a Greenpal Station
             </a>
           </div>
         </div>

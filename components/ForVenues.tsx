@@ -1,5 +1,7 @@
 "use client";
 
+import { motion } from "framer-motion";
+
 const venues = [
   "Restaurants",
   "Gyms",
@@ -12,15 +14,18 @@ const venues = [
 ];
 
 export default function ForVenues() {
+  // Triple the array to guarantee a seamless loop width on ultra-wide screens
+  const marqueeItems = [...venues, ...venues, ...venues];
+
   return (
-    <section className="bg-surface transition-colors duration-300 py-10 md:py-32 border-t line-rule">
+    <section className="bg-surface transition-colors duration-300 py-10 md:py-32 border-t line-rule overflow-hidden">
       <div className="container-edit flex flex-col items-center text-center max-w-4xl mx-auto">
         {/* Label */}
         <h2 className="font-body text-sm font-bold uppercase tracking-widest text-[#02d683] dark:text-green-400 mb-6 transition-colors duration-300">
           For venues
         </h2>
 
-        {/* Main Heading - Inherits standard light/dark text color */}
+        {/* Main Heading */}
         <h3 className="font-display font-bold text-4xl md:text-5xl lg:text-6xl mb-6 leading-tight transition-colors duration-300">
           Give Your Guests Power Without Adding Friction.
         </h3>
@@ -32,19 +37,31 @@ export default function ForVenues() {
           suitable for places where customers spend time and depend on their
           phones.
         </p>
+      </div>
 
-        {/* Venues Pill Grid */}
-        <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-16">
-          {venues.map((venue) => (
+      {/* Venues Framer Motion Marquee Slider */}
+      <div className="relative w-full overflow-hidden mb-16 [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
+        <motion.div
+          className="flex gap-3 md:gap-4 w-max"
+          animate={{ x: ["0%", "-33.333%"] }}
+          transition={{
+            ease: "linear",
+            duration: 25,
+            repeat: Infinity,
+          }}
+        >
+          {marqueeItems.map((venue, index) => (
             <span
-              key={venue}
-              className="px-6 py-3 rounded-full border border-black/10 dark:border-white/10 font-body font-medium text-base md:text-lg transition-colors duration-300 bg-card hover:border-[#02d683] dark:hover:border-green-400"
+              key={`${venue}-${index}`}
+              className="px-6 py-3 rounded-full border border-black/10 dark:border-white/10 font-body font-medium text-base md:text-lg transition-colors duration-300 bg-card hover:border-[#02d683] dark:hover:border-green-400 whitespace-nowrap shrink-0"
             >
               {venue}
             </span>
           ))}
-        </div>
+        </motion.div>
+      </div>
 
+      <div className="container-edit flex flex-col items-center text-center max-w-4xl mx-auto">
         {/* CTA Button */}
         <a
           href="/contact"

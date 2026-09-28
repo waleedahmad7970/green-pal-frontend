@@ -104,7 +104,9 @@ export default function ChargingStationsSpotlight() {
   if (isLoading) {
     return (
       <section className="relative py-10 md:py-10 bg-surface min-h-screen flex items-center justify-center">
-        <p className="text-muted font-body animate-pulse">Loading hardware lineup...</p>
+        <p className="text-muted font-body animate-pulse">
+          Loading hardware lineup...
+        </p>
       </section>
     );
   }
@@ -132,7 +134,7 @@ export default function ChargingStationsSpotlight() {
         between cards, so the percentage-based translateX math stays exact.
       */}
       <div
-        className="relative w-full max-w-[320px] md:max-w-3xl lg:max-w-5xl xl:max-w-full mx-auto h-[480px] md:h-[580px] xl:h-[540px] overflow-hidden touch-pan-y"
+        className="relative w-full max-w-[320px] md:max-w-3xl lg:max-w-5xl xl:max-w-full mx-auto h-[510px] md:h-[580px] xl:h-[540px] overflow-hidden touch-pan-y"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -141,7 +143,9 @@ export default function ChargingStationsSpotlight() {
       >
         <div
           className="flex h-full transition-transform duration-500 ease-out"
-          style={{ transform: `translateX(-${activeIndex * itemWidthPercent}%)` }}
+          style={{
+            transform: `translateX(-${activeIndex * itemWidthPercent}%)`,
+          }}
         >
           {products.map((product, i) => (
             <div
@@ -164,7 +168,7 @@ export default function ChargingStationsSpotlight() {
                 </div>
 
                 <div className="mt-6 text-center w-full">
-                  <h3 className="font-display text-2xl md:text-3xl font-bold mb-1">
+                  <h3 className="font-display text-2xl md:text-3xl text-signal line-clamp-1 font-bold mb-1">
                     {product.model}
                   </h3>
 

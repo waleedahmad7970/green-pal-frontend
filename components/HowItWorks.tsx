@@ -134,7 +134,7 @@ export default function HowItWorksAccordion() {
                     </span>
                     {/* Mobile Only: Show the title next to the number so it doesn't look empty */}
                     <span
-                      className={`md:hidden font-display text-lg font-bold transition-colors duration-500 ${isActive ? "text-ink" : "text-muted group-hover:text-ink"}`}
+                      className={`md:hidden font-display text-lg font-bold transition-colors duration-500 ${isActive ? "text-signal" : "text-muted group-hover:text-ink"}`}
                     >
                       {step.title}
                     </span>
