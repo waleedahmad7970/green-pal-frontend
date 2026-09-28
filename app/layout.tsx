@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import FloatingSupport from "@/components/FloatingSupport";
 import { Toaster } from "react-hot-toast";
+import { WhatsAppFloatingButton } from "@/components/WhatsAppFloatingButton";
 // Geist is served via the official `geist` package (local font files) rather
 // than next/font/google, since Geist isn't in every Next.js version's Google
 // Fonts manifest and next/font/google will throw "Unknown font" if it's missing.
@@ -52,7 +53,8 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>{children}</body>
-      <FloatingSupport />
+      {/* <FloatingSupport /> */}
+      <WhatsAppFloatingButton />
       <Toaster position="bottom-right" reverseOrder={false} />
     </html>
   );
