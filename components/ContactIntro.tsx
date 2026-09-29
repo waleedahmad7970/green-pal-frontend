@@ -36,17 +36,17 @@ export default function ContactIntro() {
         </h1>
         <div className="contact-reveal lg:col-span-4 flex flex-col justify-end">
           <dl className="space-y-5 font-body text-sand/80 text-sm">
-            <div>
+            {/* <div>
               <dt className="text-sand/45 mb-1">Address</dt>
               <dd>374 Elmo Street, Main Boulevard, OT</dd>
-            </div>
+            </div> */}
             <div>
               <dt className="text-sand/45 mb-1">Phone</dt>
               <dd>780-777-0519</dd>
             </div>
             <div>
               <dt className="text-sand/45 mb-1">Email</dt>
-              <dd>hello@thegreenpal.ca</dd>
+              <dd>info@thegreenpal.ca</dd>
             </div>
           </dl>
         </div>
