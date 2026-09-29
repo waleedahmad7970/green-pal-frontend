@@ -19,8 +19,10 @@ export default function ProductDetailPage() {
       try {
         setIsLoading(true);
         const products = await fetchProducts();
-        const found = products.find(
-          (p: any) => p.model.toLowerCase() === slug.toLowerCase()
+        const normalize = (s?: string) => decodeURIComponent(s ?? "").trim().toLowerCase();
+
+        const found = products?.find(
+          (p: any) => normalize(p?.model) === normalize(slug)
         );
         if (found) {
           setProduct(found);
