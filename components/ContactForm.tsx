@@ -133,14 +133,14 @@ export default function ContactForm() {
           </div>
 
           <div className="space-y-5 font-body text-sm">
-            <div>
+            {/* <div>
               <span className="block text-ink/50 mb-1">Address</span>
               <span className="text-ink font-medium">
                 123 Greenpal Ave, Suite 400
                 <br />
                 Toronto, ON M5V 2T6, Canada
               </span>
-            </div>
+            </div> */}
             <div>
               <span className="block text-ink/50 mb-1">Phone</span>
               <a
