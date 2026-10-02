@@ -36,7 +36,8 @@ const emptyPlan = {
   weight: "",
   singleGrossWeight: "",
   packageSize: "",
-  pricing: [],
+  price: "",
+  //pricing: [],//
 };
 
 const PlanSchema = Yup.object().shape({
@@ -69,15 +70,16 @@ const PlanSchema = Yup.object().shape({
   weight: Yup.string().required("Weight is required"),
   singleGrossWeight: Yup.string().required("Gross weight is required"),
   packageSize: Yup.string().required("Package size is required"),
-  pricing: Yup.array()
-    .of(
-      Yup.object().shape({
-        qty: Yup.string().required("Required"),
-        price: Yup.number().typeError("Must be a number").required("Required"),
-      })
-    )
-    .min(1, "At least one pricing tier is required")
-    .required("Pricing is required"),
+  price: Yup.number().typeError("Must be a number").required("Required"),
+  // pricing: Yup.array()
+  //   .of(
+  //     Yup.object().shape({
+  //       qty: Yup.string().required("Required"),
+  //       price: Yup.number().typeError("Must be a number").required("Required"),
+  //     })
+  //   )
+  //   .min(1, "At least one pricing tier is required")
+  //   .required("Pricing is required"),
 });
 
 const renderField = (name: string, label: string, type = "text", placeholder = "") => (
@@ -425,26 +427,26 @@ export default function AdminPlansPage() {
                     </div>
                   </div>
 
-                  <div>
+                  {/* <div>
                     <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
                       Tiered Pricing *
                     </h4>
-                    {typeof errors.pricing === "string" && (
+                    {typeof errors.price === "string" && (
                       <div className="text-red-400 text-xs mb-2">
-                        {errors.pricing}
+                        {errors.price}
                       </div>
                     )}
-                    <FieldArray name="pricing">
+                    <FieldArray name="price">
                       {({ remove, push }) => (
                         <div className="space-y-3 max-w-2xl">
-                          {values.pricing.length > 0 &&
-                            values.pricing.map((tier: any, index: number) => (
+                          {values.price.length > 0 &&
+                            values.price.map((tier: any, index: number) => (
                               <div key={index} className="flex gap-4 items-start">
                                 <div className="flex-1">
-                                  {renderField(`pricing.${index}.qty`, `Quantity Label *`)}
+                                  {renderField(`price.${index}.qty`, `Quantity Label *`)}
                                 </div>
                                 <div className="flex-1">
-                                  {renderField(`pricing.${index}.price`, `Price ($) *`, "number")}
+                                  {renderField(`price.${index}.price`, `Price ($) *`, "number")}
                                 </div>
                                 <button
                                   type="button"
@@ -465,8 +467,17 @@ export default function AdminPlansPage() {
                         </div>
                       )}
                     </FieldArray>
-                  </div>
+                  </div> */}
 
+                  <div>
+                    <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
+                      Plan Price
+                    </h4>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {renderField("price", "Total Price *", "number")}
+
+                    </div>
+                  </div>
                   <div className="pt-4 border-t border-sand/10 flex justify-end">
                     <button
                       type="submit"
@@ -531,9 +542,11 @@ export default function AdminPlansPage() {
                       </td>
                       <td className="p-4 text-sand/80">{plan.slots}</td>
                       <td className="p-4 text-sand/80">
-                        {plan.pricing?.length > 0
+                        {/* {plan.pricing?.length > 0
                           ? `$${plan.pricing[0].price}`
-                          : "N/A"}
+                          : "N/A"} */}
+
+                        {plan?.price || "NA"}
                       </td>
                       <td className="p-4 text-right space-x-3 whitespace-nowrap">
                         <button

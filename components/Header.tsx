@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 // You can remove the GPMark import if you are completely replacing it with your image logos
 import { useThemeStore, useNavStore } from "@/lib/store";
+// ⚠️ adjust the path if your slice file is somewhere else
 import { scrollToTarget } from "@/lib/lenisStore";
 import darkLogo from "@/public/icons/darkLogo.svg";
 import lightGreen from "@/public/icons/lightGreen.svg";
 import Image from "next/image";
 import { lightLogo } from "@/public/icons";
+import { useAdminAuth } from "@/lib/admin/auth";
 
 const sectionLinks = [
   { label: "Elegance", href: "/#elegance" },
@@ -29,11 +31,38 @@ const pageLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
+// Links shown inside the user popup
+const accountLinks = [
+  { label: "My Profile", href: "/profile" },
+  { label: "My Inquiries", href: "/inquiries" },
+];
+
+const UserIcon = () => (
+  <svg
+    className="w-5 h-5"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={1.8}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15.75 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a7.5 7.5 0 0115 0"
+    />
+  </svg>
+);
+
 export default function Header() {
   const { theme, toggleTheme } = useThemeStore();
   const { menuOpen, setMenuOpen } = useNavStore();
+  const { isAuthed, user, logout } = useAdminAuth();
   const [scrolled, setScrolled] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -45,12 +74,44 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // avoids a hydration mismatch if your auth store is persisted
+  useEffect(() => setMounted(true), []);
+
+  // close the user popup when the page changes
+  useEffect(() => setUserMenuOpen(false), [pathname]);
+
+  // close the user popup on outside click / Escape
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    const onClick = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setUserMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [userMenuOpen]);
+
   const handleAnchorClick = (e: React.MouseEvent, href: string) => {
     setMenuOpen(false);
     if (pathname === "/") {
       e.preventDefault();
       scrollToTarget(href.replace("/", ""));
     }
+  };
+
+  const handleLogout = async () => {
+    setUserMenuOpen(false);
+    setMenuOpen(false);
+    await logout?.();
+    router.push("/");
   };
 
   return (
@@ -97,6 +158,77 @@ export default function Header() {
           >
             Talk to Sales
           </Link>
+
+          {/* ---------- USER ICON + POPUP ---------- */}
+          {!mounted ? (
+            <div className="w-9 h-9" />
+          ) : !isAuthed ? (
+            <Link
+              href="/login" // ⚠️ adjust to your login route
+              aria-label="Sign in"
+              className="w-9 h-9 rounded-full border line-rule flex items-center justify-center hover:opacity-80 transition-opacity"
+            >
+              <UserIcon />
+            </Link>
+          ) : (
+            <div ref={userMenuRef} className="relative">
+              <button
+                aria-label="Account menu"
+                aria-expanded={userMenuOpen}
+                aria-haspopup="menu"
+                onClick={() => setUserMenuOpen((v) => !v)}
+                className="relative w-9 h-9 rounded-full border line-rule flex items-center justify-center hover:opacity-80 transition-opacity"
+              >
+                <UserIcon />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#02d683] border-2 border-[var(--surface,#fff)]" />
+              </button>
+
+              <AnimatePresence>
+                {userMenuOpen && (
+                  <motion.div
+                    role="menu"
+                    initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.97 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                    className="absolute right-0 top-full mt-3 w-64 bg-card border line-rule rounded-2xl shadow-xl p-2 origin-top-right"
+                  >
+                    <div className="px-3 py-3 border-b line-rule mb-1">
+                      <p className="font-display font-bold text-sm truncate">
+                        {user?.name || "My Account"}
+                      </p>
+                      {user?.email && (
+                        <p className="font-body text-xs text-muted truncate">
+                          {user.email}
+                        </p>
+                      )}
+                    </div>
+
+                    {accountLinks.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        role="menuitem"
+                        className={`block px-3 py-2.5 rounded-xl font-body text-sm transition-colors hover:bg-black/5 dark:hover:bg-white/10 ${pathname === item.href ? "accent" : ""
+                          }`}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+
+                    <button
+                      role="menuitem"
+                      onClick={handleLogout}
+                      className="w-full text-left px-3 py-2.5 mt-1 rounded-xl font-body text-sm text-red-500 border-t line-rule hover:bg-red-500/10 transition-colors"
+                    >
+                      Sign out
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+          {/* --------------------------------------- */}
 
           <button
             aria-label="Toggle theme"

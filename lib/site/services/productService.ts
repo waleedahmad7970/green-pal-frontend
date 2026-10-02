@@ -27,7 +27,8 @@ export interface Product {
     weight: string;
     packageSize: string;
     grossWeight: string;
-    pricing: { qty: string; price: number }[];
+    price: number;
+    // pricing: { qty: string; price: number }[];
 }
 
 export async function fetchProducts() {

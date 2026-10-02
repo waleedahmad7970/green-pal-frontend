@@ -83,7 +83,8 @@ export interface MonthlyStat {
 }
 
 export interface Product {
-  id: string;
+  id?: string;
+  _id?: string;
   model: string;
   productName: string;
   category: string;
@@ -105,7 +106,8 @@ export interface Product {
   weight: string;
   singleGrossWeight: string;
   packageSize: string;
-  pricing: { qty: string; price: number }[];
+  price: number
+  //pricing: { qty: string; price: number }[];
 }
 
 
@@ -132,5 +134,6 @@ export interface Plan {
   weight: string;
   singleGrossWeight: string;
   packageSize: string;
-  pricing: { qty: string; price: number }[];
+  price: number
+  //pricing: { qty: string; price: number }[];
 }

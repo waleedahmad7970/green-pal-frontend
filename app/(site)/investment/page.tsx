@@ -196,8 +196,8 @@ export default function InvestmentPlansPage() {
             filteredPlans?.map((plan: any) => {
               const thumbnail = plan?.image;
               const planId = plan?._id;
-              const planPrice =
-                plan?.pricing?.[0]?.price ?? plan?.price ?? "19.99";
+              const planPrice = plan?.price || 0;
+              // plan?.pricing?.[0]?.price ?? plan?.price ?? "19.99";
               const isCheckingOut = loadingPlanId === planId;
 
               return (

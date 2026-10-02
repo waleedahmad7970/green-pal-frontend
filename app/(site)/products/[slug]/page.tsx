@@ -5,6 +5,9 @@ import { fetchProducts } from "@/lib/site/services/productService";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAdminAuth } from "@/lib/admin/auth";
+import { useRouter, usePathname } from "next/navigation";
+import { useUserInquiryStore } from "@/lib/site/useUserInquiryStore";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -12,6 +15,13 @@ export default function ProductDetailPage() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const { isAuthed } = useAdminAuth();
+  const { createInquiry, isLoading: submittingInquiry } = useUserInquiryStore();
+  const [inquiryText, setInquiryText] = useState("");
+  const [showInquiryForm, setShowInquiryForm] = useState(false);
 
   // Fetch real products from backend and find the matching model
   useEffect(() => {
@@ -159,13 +169,52 @@ export default function ProductDetailPage() {
                 ))}
               </div>
 
-              {/* Inquiry Button — tap-highlight removed */}
-              <Link
-                href="/contact"
-                className="w-full inline-flex items-center justify-center px-8 py-5 rounded-full bg-[#02d683] font-display font-bold text-lg hover:scale-[1.02] transition-transform duration-300 mt-8 shadow-md text-ink cursor-pointer touch-manipulation [-webkit-tap-highlight-color:transparent]"
-              >
-                Inquire for order
-              </Link>
+              {/* Inquiry Form / Button */}
+              {!showInquiryForm ? (
+                <button
+                  onClick={() => {
+                    if (!isAuthed) {
+                      router.push(`/login?redirect=${pathname}`);
+                      return;
+                    }
+                    setShowInquiryForm(true);
+                  }}
+                  className="w-full inline-flex items-center justify-center px-8 py-5 rounded-full bg-[#02d683] font-display font-bold text-lg hover:scale-[1.02] transition-transform duration-300 mt-8 shadow-md text-ink cursor-pointer touch-manipulation [-webkit-tap-highlight-color:transparent]"
+                >
+                  Inquire for order
+                </button>
+              ) : (
+                <div className="mt-8 space-y-4">
+                  <textarea
+                    value={inquiryText}
+                    onChange={(e) => setInquiryText(e.target.value)}
+                    placeholder="Tell us about your requirements (quantity, custom branding, etc.)"
+                    rows={4}
+                    className="w-full bg-surface border line-rule rounded-2xl p-4 text-ink dark:text-sand placeholder:text-muted text-sm font-body focus:border-signal outline-none transition-colors"
+                  />
+                  <div className="flex gap-4">
+                    <button
+                      onClick={() => setShowInquiryForm(false)}
+                      disabled={submittingInquiry}
+                      className="flex-1 py-4 rounded-full bg-transparent border border-muted/30 text-muted font-display font-bold hover:bg-muted/10 transition-colors disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (!inquiryText.trim()) return;
+                        await createInquiry(product?._id as string, inquiryText);
+                        setShowInquiryForm(false);
+                        setInquiryText("");
+                      }}
+                      disabled={submittingInquiry || !inquiryText.trim()}
+                      className="flex-1 py-4 rounded-full bg-[#02d683] text-ink font-display font-bold hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                    >
+                      {submittingInquiry ? "Sending..." : "Submit Inquiry"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Delivery Information Summary Box */}
