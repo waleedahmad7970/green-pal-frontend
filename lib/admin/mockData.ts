@@ -24,7 +24,7 @@ export const seedPurchases: Purchase[] = [
 export const seedInvoices: Invoice[] = [
   { id: "inv_9001", orderId: "ord_1001", customerName: "Jordan Blake", amount: 6.5, status: "paid", issuedAt: "2026-09-10", dueAt: "2026-09-17" },
   { id: "inv_9002", orderId: "ord_1002", customerName: "Priya Shah", amount: 3.0, status: "paid", issuedAt: "2026-09-08", dueAt: "2026-09-15" },
-  { id: "inv_9003", orderId: "ord_1003", customerName: "Sam Wu", amount: 4.25, status: "sent", issuedAt: "2026-09-12", dueAt: "2026-09-19" },
+  { id: "inv_9003", orderId: "ord_1003", customerName: "Sam Wu", amount: 4.25, status: "pending", issuedAt: "2026-09-12", dueAt: "2026-09-19" }, // was "sent"
   { id: "inv_9004", orderId: "ord_1005", customerName: "Tomas Reyes", amount: 6.5, status: "overdue", issuedAt: "2026-08-28", dueAt: "2026-09-04" },
 ];
 

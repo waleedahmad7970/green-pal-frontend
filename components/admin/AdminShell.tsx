@@ -15,6 +15,7 @@ const navItems = [
   // { label: "Purchases", href: "/admin/purchases" },
   { label: "Invoices", href: "/admin/invoices" },
   { label: "Reports", href: "/admin/reports" },
+  { label: "Users", href: "/admin/admins" },
   // { label: "Settings", href: "/admin/settings" },
 ];
 

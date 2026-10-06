@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { ORDER_STATUSES, type OrderStatus } from "@/lib/admin/constants/orderStatus";
 // FIXED: Alias the imported function to match what your code expects
 import { fetchLocations as listLocations } from "@/lib/admin/services/locations";
-import type { OrderStatus, Location } from "@/lib/admin/types";
+import type { Location } from "@/lib/admin/types";
 import {
   PageHeader,
   PrimaryButton,
@@ -15,7 +16,11 @@ import {
 } from "@/components/admin/ui";
 import { useOrderStore } from "@/lib/admin/slices/useOrderStore";
 
-const statuses: OrderStatus[] = ["pending", "paid", "active", "returned", "cancelled"];
+
+
+// Same rule as the reports: orderType 'product' = product, everything else = plan
+const getType = (o: any): "product" | "plan" =>
+  o.orderType === "product" ? "product" : "plan";
 
 const OrderSchema = Yup.object().shape({
   customerName: Yup.string().required("Required"),
@@ -30,6 +35,7 @@ export default function AdminOrdersPage() {
   const { orders, loading, fetchOrders, addOrder, changeOrderStatus } = useOrderStore();
   const [locations, setLocations] = useState<Location[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [typeFilter, setTypeFilter] = useState<any>("all");
 
   useEffect(() => {
     fetchOrders();
@@ -49,12 +55,33 @@ export default function AdminOrdersPage() {
     resetForm();
   };
 
+  const productCount = orders.filter((o) => getType(o) === "product").length;
+  const planCount = orders.length - productCount;
+
+  const filteredOrders = orders.filter(
+    (o) => typeFilter === "all" || getType(o) === typeFilter
+  );
+
   return (
     <div>
       <PageHeader
         title="Orders"
         description="Every rental, charging session, and utility device order."
       />
+
+      {/* Type filter */}
+      <div className="flex items-center gap-3 mb-4">
+        <label className="text-sm text-sand/60 font-body">Show</label>
+        <select
+          value={typeFilter}
+          onChange={(e) => setTypeFilter(e.target.value as any)}
+          className="bg-sand/[0.04] border border-sand/10 rounded-lg px-3 py-2 text-sand text-sm outline-none cursor-pointer"
+        >
+          <option value="all" className="bg-ink">All orders ({orders.length})</option>
+          <option value="product" className="bg-ink">Product orders ({productCount})</option>
+          <option value="plan" className="bg-ink">Plan orders ({planCount})</option>
+        </select>
+      </div>
 
       {loading && orders.length === 0 ? (
         <p className="text-sand/40 font-body text-sm">Loading orders…</p>
@@ -66,6 +93,7 @@ export default function AdminOrdersPage() {
                 <th className="p-4 font-normal">Order ID</th>
                 <th className="p-4 font-normal">Customer</th>
                 <th className="p-4 font-normal">Item</th>
+                <th className="p-4 font-normal">Type</th>
                 <th className="p-4 font-normal">Total</th>
                 <th className="p-4 font-normal">Payment</th>
                 <th className="p-4 font-normal">Date</th>
@@ -73,8 +101,10 @@ export default function AdminOrdersPage() {
               </tr>
             </thead>
             <tbody>
-              {orders.map((o) => {
-                const orderId = o._id || o.id || "";
+              {filteredOrders.map((o) => {
+                const orderId = o?._id;
+                const type = getType(o);
+                const locked = !!o?.paymentDetails?.stripeSessionId;
                 return (
                   <tr key={orderId} className="border-b border-sand/5 last:border-0">
                     <td className="p-4 text-sand/70 font-mono text-xs">{orderId.slice(-6)}</td>
@@ -83,6 +113,16 @@ export default function AdminOrdersPage() {
                       <div className="text-sand/40 text-xs">{o.customerEmail}</div>
                     </td>
                     <td className="p-4 text-sand/70">{o.item}</td>
+                    <td className="p-4">
+                      <span
+                        className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full ${type === "product"
+                          ? "text-sky-400 bg-sky-400/10"
+                          : "text-violet-400 bg-violet-400/10"
+                          }`}
+                      >
+                        {type === "product" ? "Product" : "Plan"}
+                      </span>
+                    </td>
                     <td className="p-4 text-sand/70">${(o.total ?? 0).toFixed(2)}</td>
                     <td className="p-4">
                       {o.isPaid ? (
@@ -99,27 +139,33 @@ export default function AdminOrdersPage() {
                       {new Date(o.createdAt).toLocaleDateString()}
                     </td>
                     <td className="p-4">
-                      <select
-                        value={o.status}
-                        onChange={(e) => changeOrderStatus(orderId, e.target.value as OrderStatus)}
-                        className="bg-transparent text-xs font-body border border-sand/15 rounded-full px-2.5 py-1 outline-none cursor-pointer"
-                      >
-                        {statuses.map((s) => (
-                          <option key={s} value={s} className="bg-ink">
-                            {s}
-                          </option>
-                        ))}
-                      </select>
+                      {locked ? (
+                        <span className="text-xs capitalize px-2.5 py-1 rounded-full border border-sand/15 text-sand/80">
+                          {o.status}
+                        </span>
+                      ) : (
+                        <select
+                          value={o.status}
+                          onChange={(e) => changeOrderStatus(orderId, e.target.value as OrderStatus)}
+                          className="bg-transparent text-xs font-body border border-sand/15 rounded-full px-2.5 py-1 outline-none cursor-pointer"
+                        >
+                          {ORDER_STATUSES.map((s) => (
+                            <option key={s} value={s} className="bg-ink">{s}</option>
+                          ))}
+                        </select>
+                      )}
                     </td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
+
+          {filteredOrders.length === 0 && (
+            <p className="p-6 text-center text-sand/40 text-sm font-body">No orders found.</p>
+          )}
         </div>
       )}
-
-
     </div>
   );
 }

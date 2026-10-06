@@ -1,6 +1,8 @@
 
-export type OrderStatus = "pending" | "paid" | "active" | "returned" | "cancelled";
-
+import type { OrderStatus } from "@/lib/admin/constants/orderStatus";
+import type { InvoiceStatus } from "@/lib/admin/constants/invoiceStatus";
+export type { OrderStatus };
+export type { InvoiceStatus };
 export interface PaymentDetails {
   stripeSessionId?: string;
   stripePaymentIntentId?: string;
@@ -63,7 +65,6 @@ export interface Purchase {
   received: boolean;
 }
 
-export type InvoiceStatus = "draft" | "sent" | "paid" | "overdue";
 
 export interface Invoice {
   id: string;
