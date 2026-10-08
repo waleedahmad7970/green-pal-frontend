@@ -16,6 +16,7 @@ const navItems = [
   { label: "Invoices", href: "/admin/invoices" },
   { label: "Reports", href: "/admin/reports" },
   { label: "Users", href: "/admin/admins" },
+  { label: "Failed Emails", href: "/admin/failed-emails" },
   // { label: "Settings", href: "/admin/settings" },
 ];
 
