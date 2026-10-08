@@ -165,7 +165,7 @@ export default function WhyGreenpal() {
     return () => {
       try {
         ctx.revert();
-      } catch {}
+      } catch { }
     };
   }, []);
 
@@ -177,14 +177,16 @@ export default function WhyGreenpal() {
       <div className="container-edit">
         <div
           ref={headingRef}
-          className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-end justify-between gap-6"
+          className="mb-16 md:mb-24 flex flex-col md:flex-row md:items-start justify-between gap-6"
         >
           <h2 className="font-display font-bold text-5xl md:text-7xl tracking-tight max-w-xl transition-colors duration-300">
             Why Greenpal
           </h2>
-          <p className="font-body text-xl md:text-2xl text-muted leading-relaxed max-w-md md:pb-2 transition-colors duration-300">
-            Portable charging built around everyday life.
-          </p>
+          <div className="flex flex-col gap-2 font-body text-xl md:text-2xl text-muted leading-relaxed max-w-md md:pb-2 transition-colors duration-300">
+            <p>Portable charging built around everyday life.</p>
+            <p>Stay charged. Keep moving.</p>
+            <p>We're building a 5,000-station charging network by 2031.</p>
+          </div>
         </div>
 
         {/* CHANGED: Simplified grid-cols to standard 1, 2, or 3 column layouts without complex spanning logic */}

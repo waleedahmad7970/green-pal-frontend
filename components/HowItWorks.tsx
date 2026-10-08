@@ -8,26 +8,28 @@ const steps = [
     id: 1,
     subtitle: "STEP 1",
     title: "Scan",
-    description: "Scan the QR code on a Greenpal station.",
-    // Greenpal Image (GP Mini)
+    description: "Scan the QR code on any Greenpal Pulse station.",
     image: "https://i.postimg.cc/gcB9LVMs/image-removebg-preview-(6).png",
   },
   {
     id: 2,
     subtitle: "STEP 2",
     title: "Rent",
-    description:
-      "Unlock a portable power bank and keep using your phone while you move.",
-    // Greenpal Image (GP 10)
+    description: "Pick up a portable power bank. Pay by the hour.",
     image: "https://i.postimg.cc/L6rrNHKb/image-removebg-preview-(5).png",
   },
   {
     id: 3,
     subtitle: "STEP 3",
+    title: "Charge",
+    description: "Charge your phone anywhere. Keep moving.",
+    image: "https://i.postimg.cc/L6rrNHKb/image-removebg-preview-(5).png",
+  },
+  {
+    id: 4,
+    subtitle: "STEP 4",
     title: "Return",
-    description:
-      "Return the power bank to a compatible Greenpal station when you're done.",
-    // Greenpal Image (GP Tower)
+    description: "Drop it at any Greenpal station when you're done.",
     image: "https://i.postimg.cc/qBFYvkRj/image-removebg-preview-(1).png",
   },
 ];

@@ -68,10 +68,13 @@ export default function OurApproach() {
           Built on Trust. Designed for Everyday Utility.
         </h3>
         {/* FIXED: Stripped dark:text-gray-400 so text-muted works naturally */}
-        <p className="font-body text-lg md:text-xl text-muted leading-relaxed transition-colors duration-300">
+        <p className="font-body text-lg md:text-xl text-muted leading-relaxed transition-colors duration-300 mt-6">
           Greenpal combines practical charging technology with a service-first
           approach built around trust, fairness, accountability, respect and
           reliable service.
+        </p>
+        <p className="font-body text-lg md:text-xl text-muted leading-relaxed transition-colors duration-300 mt-4">
+          Stay charged. Keep moving.
         </p>
       </div>
 

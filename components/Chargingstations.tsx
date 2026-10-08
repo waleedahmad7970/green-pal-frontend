@@ -51,10 +51,10 @@ export default function ChargingStationsSpotlight() {
 
   // Highest valid starting index — stops the track from sliding past the
   // point where the last card is fully visible (no half-empty trailing gap).
-  const maxIndex = Math.max(products.length - itemsPerView, 0);
 
   // If itemsPerView changes (window resized) or product count changes,
   // make sure activeIndex is still in range.
+  const maxIndex = Math.max(products.length - itemsPerView, 0);
   useEffect(() => {
     setActiveIndex((prev) => Math.min(prev, maxIndex));
   }, [maxIndex]);

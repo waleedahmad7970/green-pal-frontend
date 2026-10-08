@@ -161,9 +161,9 @@ export default function Hero() {
             ref={subRef}
             className="font-body text-lg md:text-xl text-muted max-w-lg invisible"
           >
-            Rent a Greenpal power bank in seconds and take your charge with you.
-            Simple portable charging for the places where people shop, eat,
-            work, wait and play.
+            Rent a Greenpal power bank in seconds.<br/>
+            <span className="text-[#02D683]">Stay charged. Keep moving.</span><br/>
+            Pay by the hour - a portable power bank when you need it.
           </p>
 
           {/* Replaced old button with the two side-by-side buttons */}

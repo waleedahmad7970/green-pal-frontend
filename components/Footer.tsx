@@ -56,9 +56,6 @@ export default function Footer() {
                   For Venues
                 </a>
                 <a href="#" className="hover:text-sand transition-colors">
-                  Power Portfolio Blueprints
-                </a>
-                <a href="#" className="hover:text-sand transition-colors">
                   FAQ
                 </a>
               </nav>

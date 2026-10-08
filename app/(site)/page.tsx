@@ -4,10 +4,7 @@ import PortalTransition from "@/components/PortalTransition";
 import Elegance from "@/components/Elegance";
 import Services from "@/components/Services";
 import MarqueeTicker from "@/components/MarqueeTicker";
-import Expertise from "@/components/Expertise";
 import Team from "@/components/Team";
-import Work from "@/components/Work";
-import Testimonials from "@/components/Testimonials";
 import ClosingCTA from "@/components/ClosingCTA";
 import ChargingStations from "@/components/Chargingstations";
 import HowItWorks from "@/components/HowItWorks";
@@ -15,9 +12,10 @@ import CTA from "@/components/CTA";
 import WhyGreenpal from "@/components/WhyGreenpal";
 import FAQAndCTA from "@/components/FAQAndCTA";
 import ForVenues from "@/components/ForVenues";
+import GreenpalNetwork from "@/components/GreenpalNetwork";
 
 export const metadata: Metadata = {
-  title: "Greenpal Canada | Portable Power Bank Rental & Shared Charging",
+  title: "Greenpal | Portable Power Bank Rental & Shared Charging",
   description:
     "Stay charged on the go with Greenpal portable power bank rentals. Discover shared charging for customers, venue partnerships and Greenpal business blueprints.",
   keywords: [
@@ -31,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Greenpal - Shared Power. Anytime. Anywhere.",
     description:
-      "Portable charging made simple. Rent power on the go, host a Greenpal station, or explore Greenpal Power Portfolio Blueprints.",
+      "Portable charging made simple. Rent power on the go, or host a Greenpal station.",
     type: "website",
     url: "https://thegreenpal.ca",
     siteName: "Greenpal Canada",
@@ -42,20 +40,18 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Work />
       <MarqueeTicker />
       {/* <PortalTransition /> */}
       <ChargingStations />
       <HowItWorks />
       <WhyGreenpal />
+      <GreenpalNetwork />
       <CTA />
       {/* <Elegance /> */}
       {/* <Services /> */}
       <ForVenues />
-      <Expertise />
       {/* <Team /> */}
       <FAQAndCTA />
-      <Testimonials />
       <ClosingCTA />
     </>
   );

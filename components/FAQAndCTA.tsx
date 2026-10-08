@@ -4,29 +4,20 @@ import { useState } from "react";
 
 const faqs = [
   {
-    question: "What is Greenpal?",
-    answer:
-      "Greenpal is a shared portable power-bank rental service designed for high-traffic, high-dwell locations.",
+    question: "What does it cost?",
+    answer: "Pay by the hour. You only pay for the time you rent a portable power bank.",
   },
   {
-    question: "How does Greenpal work?",
-    answer:
-      "Scan the station QR code, rent a portable power bank, charge while you move, and return it to a compatible Greenpal station.",
+    question: "What station sizes are there?",
+    answer: "Four: the Pulse 8 and Pulse 12 countertop stations, and the Pulse 24 and Pulse 48 floor totems.",
   },
   {
-    question: "Can my business host a Greenpal station?",
-    answer:
-      "Yes. Submit your location details so Greenpal can review the fit, placement and station format.",
+    question: "How do venues earn?",
+    answer: "Venues share revenue on every rental - plus their own branding and promos on the station screen.",
   },
   {
-    question: "What are Greenpal Power Portfolio Blueprints?",
-    answer:
-      "Downloadable business-planning products covering station configurations, modeled economics, break-even, sensitivity, launch planning, reporting and risk.",
-  },
-  {
-    question: "Does buying a blueprint make me a Greenpal investor?",
-    answer:
-      "No. A blueprint is an informational planning product only. Any actual investment requires separate documentation and review.",
+    question: "Can the screen show our brand?",
+    answer: "Yes. Every station screen carries the venue's own branding and promos alongside the Greenpal rental experience.",
   },
 ];
 

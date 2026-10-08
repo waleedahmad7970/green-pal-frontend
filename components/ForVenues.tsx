@@ -118,12 +118,16 @@ export default function ForVenues() {
         </h3>
 
         {/* Description */}
-        <p className="font-body text-lg md:text-xl text-muted dark:text-gray-400 leading-relaxed mb-12 md:mb-16 transition-colors duration-300">
-          Greenpal helps venues add portable charging as a convenient customer
-          amenity. The station is designed for self-service use, making it
-          suitable for places where customers spend time and depend on their
-          phones.
-        </p>
+        <div className="flex flex-col gap-2 font-body text-lg md:text-xl text-muted dark:text-gray-400 leading-relaxed mb-12 md:mb-16 transition-colors duration-300">
+          <p>
+            Greenpal helps venues add portable charging as a convenient customer
+            amenity. The station is designed for self-service use, making it
+            suitable for places where customers spend time and depend on their
+            phones.
+          </p>
+          <p>Your branding and promos on the station screen.</p>
+          <p>Right-sized for your traffic: Pulse 48 for 1,000+ visitors a day, Pulse 24 for 200-1,000, Pulse 12 for 50-200, Pulse 8 for under 50.</p>
+        </div>
       </div>
 
       {/* Venues Framer Motion Marquee Slider */}

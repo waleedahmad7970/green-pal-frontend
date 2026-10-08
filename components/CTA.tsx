@@ -60,8 +60,8 @@ interface CTAProps {
 }
 
 export default function CTA({
-    title = "Let's build the future of power.",
-    description = "Join the Greenpal network today. Deploy stations, earn passive income, and keep your city charged up.",
+    title = "Partner with Greenpal.",
+    description = "Share revenue on every rental. Put your brand on every screen.",
     buttonText = "Connect Now",
     href = "/contact",
 }: CTAProps) {
@@ -84,15 +84,34 @@ export default function CTA({
                         {title}
                     </motion.h2>
 
-                    <motion.p
+                    <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-100px" }}
-                        transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-xl md:text-3xl text-muted font-body max-w-2xl"
+                        transition={{
+                            duration: 0.8,
+                            delay: 0.1,
+                            ease: [0.16, 1, 0.3, 1],
+                        }}
+                        className="text-xl md:text-3xl text-muted font-body max-w-3xl flex flex-col gap-4"
                     >
-                        {description}
-                    </motion.p>
+                        <p>{description}</p>
+
+                        <ul className="text-lg md:text-xl text-left mt-4 space-y-3 list-disc pl-5">
+                            <li>
+                                Greenpal-operated - we install and run the station, you share the
+                                revenue.
+                            </li>
+
+                            <li>
+                                Co-funded - we build it together and split revenue 50/50.
+                            </li>
+
+                            <li>
+                                Franchise - your station on the Greenpal network.
+                            </li>
+                        </ul>
+                    </motion.div>
                 </div>
 
                 <motion.div
