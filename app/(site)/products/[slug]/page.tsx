@@ -79,18 +79,18 @@ export default function ProductDetailPage() {
     },
     {
       label: "Screen size",
-      value: (product as any).adsSizeAndResolution?.split(",")[0] || "10.1 inch",
+      value: (product as any).adsSizeAndResolution?.split(",")[0] || "--",
     },
     {
       label: "Screen resolution",
-      value: (product as any).adsSizeAndResolution?.split(",")[1]?.trim() || "800 x 1080",
+      value: (product as any).adsSizeAndResolution?.split(",")[1]?.trim() || "--",
     },
-    { label: "Screen network", value: (product as any).networkSupport || "WiFi" },
-    { label: "Net Weight", value: product.weight || "~5.6 kg" },
-    { label: "Dimension", value: product.packageSize || "24.5cm x 20cm x 42cm" },
-    { label: "Material", value: (product as any).material || (product as any).shellMaterial || "Fireproof ABS" },
-    { label: "Input", value: (product as any).powerInput || (product as any).inputInterface || "100-240V 50-60Hz 4A Max" },
-    { label: "Certification", value: product.certification || "Standard" },
+    { label: "Screen network", value: (product as any).networkSupport || "--" },
+    { label: "Net Weight", value: product.weight || "--" },
+    { label: "Dimension", value: product.packageSize || "--" },
+    { label: "Material", value: (product as any).material || (product as any).shellMaterial || "--" },
+    { label: "Input", value: (product as any).powerInput || (product as any).inputInterface || "--" },
+    { label: "Certification", value: product.certification || "--" },
   ];
 
   return (
