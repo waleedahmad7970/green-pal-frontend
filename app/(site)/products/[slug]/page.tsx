@@ -71,6 +71,12 @@ export default function ProductDetailPage() {
   const features: { label: string; value: string | number }[] = [
     { label: "Slots", value: (product as any).slots || "8" },
     { label: "Capacity", value: (product as any).capacity || "N/A" },
+    { label: "Color", value: (product as any).colors || "--" },
+    {
+      label: "Function",
+      value:
+        "Touchscreen with tap-to-rent; tap-to-pay; built-in iPhone, USB-C and Micro-USB cables; return to any Greenpal station; self-service",
+    },
     {
       label: "Battery",
       value: (product as any).batteryMaterial
