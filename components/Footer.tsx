@@ -1,6 +1,6 @@
 import Image from "next/image";
 import GPMark from "./GPMark";
-import { lightLogo } from "@/public/icons";
+import { logo, whiteLogo } from "@/public/icons";
 
 export default function Footer() {
   return (
@@ -13,7 +13,7 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               <Image
                 alt="Greenpal Logo"
-                src={lightLogo}
+                src={whiteLogo}
                 width={200}
                 height={200}
               />

@@ -11,7 +11,7 @@ import { scrollToTarget } from "@/lib/lenisStore";
 import darkLogo from "@/public/icons/darkLogo.svg";
 import lightGreen from "@/public/icons/lightGreen.svg";
 import Image from "next/image";
-import { lightLogo } from "@/public/icons";
+import { lightLogo, logo, whiteLogo } from "@/public/icons";
 import { useAdminAuth } from "@/lib/admin/auth";
 
 const sectionLinks = [
@@ -130,9 +130,9 @@ export default function Header() {
         >
           <Image
             // This checks your theme state and loads the correct image!
-            src={theme === "dark" ? lightLogo : lightGreen}
+            src={theme === "dark" ? whiteLogo : logo}
             alt="Greenpal Logo"
-            className="h-6 md:h-10 w-auto object-contain" // Adjust the height (h-8) as needed to fit your image beautifully
+            className="h-6 md:h-[100px] w-auto object-contain" // Adjust the height (h-8) as needed to fit your image beautifully
           />
         </Link>
         {/* ------------------------- */}
