@@ -33,6 +33,7 @@ const emptyProduct = {
   packageSize: "",
   grossWeight: "",
   price: "",
+  slots: "",
 };
 
 const ProductSchema = Yup.object().shape({
@@ -43,6 +44,7 @@ const ProductSchema = Yup.object().shape({
   colors: Yup.string().required("Colors are required"),
   capacity: Yup.string().required("Capacity is required"),
   price: Yup.number().typeError("Must be a number").required("Required"),
+  slots: Yup.number().typeError("Must be a number").min(0, "Slots cannot be negative").required("Slots is required"),
   // pricing: Yup.array()
   //   .of(
   //     Yup.object().shape({
@@ -352,11 +354,11 @@ export default function AdminProductsPage() {
                   </div> */}
                   <div>
                     <h4 className="text-sand font-display font-medium mb-3 border-l-2 border-signal pl-2">
-                      Product Price
+                      Product Price &amp; Slots
                     </h4>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                       {renderField("price", "Total Price *", "number")}
-
+                      {renderField("slots", "Slots *", "number", "e.g. 8")}
                     </div>
                   </div>
 
@@ -385,6 +387,7 @@ export default function AdminProductsPage() {
                   <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Model</th>
                   <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Product</th>
                   <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Capacity</th>
+                  <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Slots</th>
                   <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider">Base Price</th>
                   <th className="p-4 text-xs font-body text-sand/50 uppercase tracking-wider text-right">Actions</th>
                 </tr>
@@ -406,6 +409,7 @@ export default function AdminProductsPage() {
                         </div>
                       </td>
                       <td className="p-4 text-sand/80">{product.capacity}</td>
+                      <td className="p-4 text-sand/80">{(product as any).slots ?? "—"}</td>
                       <td className="p-4 text-sand/80">
                         {/* {product.pricing?.length > 0 ? `$${product.pricing[0].price}` : "N/A"} */}
                         {product?.price || "N/A"}
@@ -427,7 +431,7 @@ export default function AdminProductsPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-sand/50">
+                    <td colSpan={6} className="p-8 text-center text-sand/50">
                       No products found matching "{searchQuery}"
                     </td>
                   </tr>

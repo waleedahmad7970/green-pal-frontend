@@ -161,8 +161,8 @@ export default function Hero() {
             ref={subRef}
             className="font-body text-lg md:text-xl text-muted max-w-lg invisible"
           >
-            Rent a Greenpal power bank in seconds.<br/>
-            <span className="text-[#02D683]">Stay charged. Keep moving.</span><br/>
+            Rent a Greenpal power bank in seconds.<br />
+            <span className="text-[#02D683]">Stay charged. Keep moving.</span><br />
             Pay by the hour - a portable power bank when you need it.
           </p>
 
@@ -174,12 +174,12 @@ export default function Hero() {
             >
               Host a Greenpal Station
             </a>
-            <a
+            {/* <a
               href="/contact"
               className="max-w-max mx-auto md:max-w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-signal text-ink font-body font-bold text-base transition-transform duration-300 hover:scale-105 shadow-[0_10px_20px_rgba(2,214,131,0.15)]"
             >
               Explore Investment Plans
-            </a>
+            </a> */}
             <a
               href="/investment"
               className="max-w-max mx-auto md:max-w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-signal text-ink font-body font-bold text-base transition-transform duration-300 hover:scale-105 shadow-[0_10px_20px_rgba(2,214,131,0.15)]"

@@ -28,6 +28,7 @@ export interface Product {
     packageSize: string;
     grossWeight: string;
     price: number;
+    slots: number;
     // pricing: { qty: string; price: number }[];
 }
 

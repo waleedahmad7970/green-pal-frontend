@@ -73,9 +73,9 @@ export default function Footer() {
                 <a href="#" className="hover:text-sand transition-colors">
                   Terms of Use
                 </a>
-                <a href="#" className="hover:text-sand transition-colors">
+                {/* <a href="#" className="hover:text-sand transition-colors">
                   Blueprint Purchase Terms
-                </a>
+                </a> */}
                 <a href="#" className="hover:text-sand transition-colors">
                   Digital Product Policy
                 </a>

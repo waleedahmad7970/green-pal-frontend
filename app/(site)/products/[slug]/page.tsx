@@ -69,34 +69,36 @@ export default function ProductDetailPage() {
   // the power-bank fields (inputOutput/shellMaterial/inputInterface) that
   // were being reused here before.
   const features: { label: string; value: string | number }[] = [
-    { label: "Slots", value: (product as any).slots || "8" },
-    { label: "Capacity", value: (product as any).capacity || "N/A" },
+    { label: "Slots", value: (product as any).slots ?? "—" },
     { label: "Color", value: (product as any).colors || "--" },
+    { label: "Capacity", value: (product as any).capacity || "N/A" },
+    { label: "Certification", value: product.certification || "--" },
+    { label: "Material", value: (product as any).material || (product as any).shellMaterial || "--" },
+    { label: "Screen network", value: (product as any).networkSupport || "--" },
+    { label: "Max Charge/Discharge Current", value: (product as any).maxChargeDischargeCurrent || "--" },
+    { label: "Net Weight", value: product.weight || "--" },
+    {
+      label: "Screen size",
+      value: (product as any).size?.split(",")[0] || "--",
+    },
+    {
+      label: "Payments",
+      value: (product as any).payment || "Contactless card · Apple Pay · Google Pay · Visa · Mastercard"
+    },
     {
       label: "Function",
       value:
         "Touchscreen with tap-to-rent; tap-to-pay; built-in iPhone, USB-C and Micro-USB cables; return to any Greenpal station; self-service",
     },
-    {
-      label: "Battery",
-      value: (product as any).batteryMaterial
-        ? `${(product as any).batteryMaterial} (${(product as any).batteryCycleTimes})`
-        : "N/A",
-    },
-    {
-      label: "Screen size",
-      value: (product as any).adsSizeAndResolution?.split(",")[0] || "--",
-    },
-    {
-      label: "Screen resolution",
-      value: (product as any).adsSizeAndResolution?.split(",")[1]?.trim() || "--",
-    },
-    { label: "Screen network", value: (product as any).networkSupport || "--" },
-    { label: "Net Weight", value: product.weight || "--" },
-    { label: "Dimension", value: product.packageSize || "--" },
-    { label: "Material", value: (product as any).material || (product as any).shellMaterial || "--" },
-    { label: "Input", value: (product as any).powerInput || (product as any).inputInterface || "--" },
-    { label: "Certification", value: product.certification || "--" },
+    // {
+    //   label: "Battery",
+    //   value: (product as any).batteryMaterial
+    //     ? `${(product as any).batteryMaterial} (${(product as any).batteryCycleTimes})`
+    //     : "N/A",
+    // },
+
+    // { label: "Dimension", value: product.packageSize || "--" },
+    // { label: "Input", value: (product as any).powerInput || (product as any).inputInterface || "--" },
   ];
 
   return (
@@ -148,10 +150,13 @@ export default function ProductDetailPage() {
                 {product.category}
               </p>
               <h1 className="font-display font-extrabold text-3xl md:text-5xl mb-4 tracking-tight text-[rgb(var(--fg))]">
-                Model {product.model}
+                {product.model}
               </h1>
               <p className="font-body text-lg text-muted leading-relaxed">
-                {product.productName}. {product.functionalCharacteristics}
+                {product?.productName}
+              </p>
+              <p className="font-body text-lg text-muted leading-relaxed">
+                {product?.functionalCharacteristics}
               </p>
             </div>
 

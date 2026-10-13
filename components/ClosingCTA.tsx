@@ -54,7 +54,7 @@ export default function ClosingCTA() {
               Host a Greenpal Station{" "}
             </Link>
           </motion.div>
-          <motion.div
+          {/* <motion.div
             ref={btnRef}
             onMouseMove={handleMove}
             onMouseLeave={() => setPos({ x: 0, y: 0 })}
@@ -73,7 +73,7 @@ export default function ClosingCTA() {
             >
               Explore Business Blueprints
             </Link>
-          </motion.div>
+          </motion.div> */}
         </div>
       </div>
     </section>

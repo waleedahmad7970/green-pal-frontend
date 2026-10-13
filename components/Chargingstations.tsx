@@ -174,13 +174,13 @@ export default function ChargingStationsSpotlight() {
 
                   {(product as any).slots ? (
                     <p className="text-sm md:text-base text-muted font-body mb-4">
-                      Holds {(product as any).slots} power banks
+                      {(product as any).slots} Slots
                     </p>
                   ) : null}
 
-                  <p className="text-sm md:text-base text-muted font-body mb-4">
+                  {/* <p className="text-sm md:text-base text-muted font-body mb-4">
                     {product.productName}
-                  </p>
+                  </p> */}
 
                   <button
                     onClick={(e) => {

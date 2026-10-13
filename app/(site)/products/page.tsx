@@ -454,7 +454,7 @@ export default function ProductsPage() {
                   key={item._id || item.model}
                   className="hardware-card invisible flex flex-col border line-rule bg-card rounded-3xl overflow-hidden transition-all duration-300 group hover:border-[#02d683] hover:-translate-y-1 hover:shadow-xl shadow-black/5"
                 >
-                  <div className="relative aspect-square w-full bg-surface border-b line-rule p-8 flex items-center justify-center overflow-hidden">
+                  <div className="relative aspect-square w-full bg-surface border-b line-rule  flex items-center justify-center overflow-hidden">
                     <img
                       src={item.image}
                       alt={item.productName}

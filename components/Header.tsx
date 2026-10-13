@@ -25,7 +25,7 @@ const sectionLinks = [
 const pageLinks = [
   { label: "Home", href: "/" },
   { label: "Products", href: "/products" },
-  { label: "Investment Plans", href: "/investment" },
+  // { label: "Investment Plans", href: "/investment" },
   { label: "Events", href: "/event" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
@@ -132,7 +132,7 @@ export default function Header() {
             // This checks your theme state and loads the correct image!
             src={theme === "dark" ? whiteLogo : logo}
             alt="Greenpal Logo"
-            className="h-6 md:h-[100px] w-auto object-contain" // Adjust the height (h-8) as needed to fit your image beautifully
+            className="h-6 md:h-[60px] w-auto object-contain" // Adjust the height (h-8) as needed to fit your image beautifully
           />
         </Link>
         {/* ------------------------- */}
