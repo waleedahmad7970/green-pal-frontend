@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
+import { rentPowerBank, returnPowerBank, scanPowerBank } from "@/public/howitworks";
+import Image from "next/image";
 
 const steps = [
   {
@@ -9,28 +11,28 @@ const steps = [
     subtitle: "STEP 1",
     title: "Scan",
     description: "Scan the QR code on any Greenpal Pulse station.",
-    image: "https://i.postimg.cc/gcB9LVMs/image-removebg-preview-(6).png",
+    image: scanPowerBank,
   },
   {
     id: 2,
     subtitle: "STEP 2",
     title: "Rent",
     description: "Pick up a portable power bank. Pay by the hour.",
-    image: "https://i.postimg.cc/L6rrNHKb/image-removebg-preview-(5).png",
+    image: rentPowerBank,
   },
   {
     id: 3,
     subtitle: "STEP 3",
     title: "Charge",
     description: "Charge your phone anywhere. Keep moving.",
-    image: "https://i.postimg.cc/L6rrNHKb/image-removebg-preview-(5).png",
+    image: returnPowerBank,
   },
   {
     id: 4,
     subtitle: "STEP 4",
     title: "Return",
     description: "Drop it at any Greenpal station when you're done.",
-    image: "https://i.postimg.cc/qBFYvkRj/image-removebg-preview-(1).png",
+    image: returnPowerBank,
   },
 ];
 
@@ -117,11 +119,10 @@ export default function HowItWorksAccordion() {
                 key={step.id}
                 onClick={() => handleTabClick(i)}
                 className={`group relative overflow-hidden rounded-[2rem] border line-rule transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer
-                                    ${
-                                      isActive
-                                        ? "flex-[4] md:flex-[5] bg-surface shadow-2xl"
-                                        : "flex-[0.8] md:flex-[0.7] bg-ink/5 hover:bg-ink/10 shadow-sm"
-                                    }`}
+                                    ${isActive
+                    ? "flex-[4] md:flex-[5] bg-surface shadow-2xl"
+                    : "flex-[0.8] md:flex-[0.7] bg-ink/5 hover:bg-ink/10 shadow-sm"
+                  }`}
               >
                 {/* 
                                   --- 1. THE TAB (Always Visible) ---
@@ -153,14 +154,13 @@ export default function HowItWorksAccordion() {
                 {/* 
                                   --- 2. THE EXPANDED CONTENT ---
                                 */}
+                {/* EXPANDED CONTENT */}
                 <div
-                  className={`absolute inset-0 pt-[72px] md:pt-0 md:pl-20 flex flex-col md:flex-row w-full md:w-[1000px] transition-opacity duration-500 z-10
-                                    ${isActive ? "opacity-100 delay-200" : "opacity-0 pointer-events-none"}
-                                `}
+                  className={`absolute inset-0 pt-[72px] md:pt-0 md:pl-20 flex flex-col md:flex-row transition-opacity duration-500 z-10
+    ${isActive ? "opacity-100 delay-200" : "opacity-0 pointer-events-none"}`}
                 >
-                  {/* Left Side: Solid Text Card */}
+                  {/* Left: text card (fixed width, so text doesn't reflow during the animation) */}
                   <div className="w-full md:w-[320px] shrink-0 p-6 md:p-12 flex flex-col justify-center bg-surface h-[45%] md:h-full border-b md:border-b-0 md:border-r line-rule">
-                    {/* Hide subtitle and title on mobile since it's already in the tab header now */}
                     <div className="hidden md:block">
                       <span className="text-signal font-bold tracking-widest text-xs md:text-sm uppercase mb-4 block">
                         {step.subtitle}
@@ -169,19 +169,19 @@ export default function HowItWorksAccordion() {
                         {step.title}
                       </h3>
                     </div>
-
                     <p className="text-muted font-body text-base md:text-lg leading-relaxed">
                       {step.description}
                     </p>
                   </div>
 
-                  {/* Right Side: Product Image */}
-                  <div className="flex-1 w-full h-[55%] md:h-full relative flex items-center justify-center bg-[#f9f9f6] dark:bg-ink">
-                    <img
+                  {/* Right: image fills whatever space is left */}
+                  <div className="relative flex-1 min-w-0 min-h-0 overflow-hidden bg-[#022b20]">
+                    <Image
                       src={step.image}
                       alt={step.title}
-                      // Changed to object-contain and added padding so your transparent PNGs look like product showcases
-                      className={`absolute inset-0 w-full h-full object-contain p-8 md:p-12 drop-shadow-2xl transition-transform duration-[1200ms] ease-out ${isActive ? "scale-100" : "scale-110"}`}
+                      fill
+                      sizes="(min-width: 768px) 600px, 100vw"
+                      className="object-contain"
                     />
                   </div>
                 </div>
