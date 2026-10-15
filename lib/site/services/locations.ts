@@ -8,6 +8,8 @@ export interface LocationItem {
   stationName: string;
   venue: string;
   image: string;
+  imageAlt?: string;
+  websiteCopy?: string;
   city: string;
   address: string;
   bays: number;

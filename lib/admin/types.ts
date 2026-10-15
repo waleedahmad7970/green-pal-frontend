@@ -49,6 +49,8 @@ export interface Location {
   name: string;
   stationName: string;
   image: string;
+  imageAlt?: string;
+  websiteCopy?: string;
   venue: string;
   city: string;
   bays: number;

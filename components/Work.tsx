@@ -240,7 +240,7 @@ export default function Work() {
                 {/* Image Frame */}
                 <div className="relative border border-b-0 line-rule p-1 bg-surface-dim overflow-hidden rounded-t-2xl">
                   <Image
-                    alt={loc.name || "Location Image"}
+                    alt={loc.imageAlt || loc.name || "Location Image"}
                     width={800}
                     height={450}
                     src={loc?.image}
@@ -277,9 +277,19 @@ export default function Work() {
                       </span>
                     </div>
 
-                    <h3 className="font-display text-2xl font-bold mb-3 tracking-tight">
+                    <h3 className="font-display text-2xl font-bold mb-1 tracking-tight">
                       {loc.name}
                     </h3>
+                    {loc.stationName ? (
+                      <p className="font-mono text-xs text-signal mb-3 tracking-wide">
+                        {loc.stationName}
+                      </p>
+                    ) : null}
+                    {loc.websiteCopy ? (
+                      <p className={`font-body text-sm leading-relaxed ${t.sub} mb-4 line-clamp-3`}>
+                        {loc.websiteCopy}
+                      </p>
+                    ) : null}
                     <p className={`font-body text-sm leading-relaxed ${t.sub} mb-6`}>
                       {loc.address} {loc.bays ? `• ${loc.bays} Active Bays` : ""}
                     </p>

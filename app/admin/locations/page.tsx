@@ -23,6 +23,8 @@ const emptyLocation = {
   stationName: "",
   venue: "",
   image: "",
+  imageAlt: "",
+  websiteCopy: "",
   city: "",
   address: "",
   bays: 6,
@@ -36,9 +38,11 @@ const LocationSchema = Yup.object().shape({
   name: Yup.string().required("Required"),
   stationName: Yup.string(),
   venue: Yup.string().required("Required"),
+  imageAlt: Yup.string(),
+  websiteCopy: Yup.string(),
   city: Yup.string().required("Required"),
   address: Yup.string().required("Required"),
-  bays: Yup.number().positive("Must be positive").required("Required"),
+  bays: Yup.number().min(0).required("Required"),
   status: Yup.string().oneOf(["live", "installing", "offline"]).required("Required"),
   installedAt: Yup.string().required("Required"),
   lat: Yup.number().typeError("Must be a number").optional(),
@@ -68,6 +72,8 @@ export default function AdminLocationsPage() {
   const handleOpenEdit = (loc: any) => {
     setEditingLocation({
       ...loc,
+      imageAlt: loc.imageAlt ?? "",
+      websiteCopy: loc.websiteCopy ?? "",
       lat: loc.coordinates?.lat ?? "",
       lng: loc.coordinates?.lng ?? "",
     });
@@ -112,6 +118,8 @@ export default function AdminLocationsPage() {
       stationName: values.stationName || "",
       venue: values.venue,
       image: values.image || "",
+      imageAlt: values.imageAlt || "",
+      websiteCopy: values.websiteCopy || "",
       city: values.city,
       address: values.address,
       bays: parseInt(values.bays, 10) || 0,
@@ -157,7 +165,7 @@ export default function AdminLocationsPage() {
               <div key={locId} className="bg-sand/[0.04] border border-sand/10 rounded-xl p-6 flex flex-col justify-between">
                 <div>
                   {l.image && (
-                    <img src={l.image} alt={l.name} className="w-full h-36 object-cover rounded-lg mb-4 border border-sand/10 bg-black/20" />
+                    <img src={l.image} alt={l.imageAlt || l.name} className="w-full h-36 object-cover rounded-lg mb-4 border border-sand/10 bg-black/20" />
                   )}
                   <div className="flex items-start justify-between mb-4">
                     <div>
@@ -167,6 +175,11 @@ export default function AdminLocationsPage() {
                     </div>
                     <StatusBadge status={l.status} />
                   </div>
+                  {l.websiteCopy && (
+                    <p className="text-sand/75 text-xs font-body mb-3 bg-black/20 p-2.5 rounded-lg border border-sand/10 line-clamp-3">
+                      {l.websiteCopy}
+                    </p>
+                  )}
                   <p className="text-sand/70 text-xs font-body mb-2">{l.address}, {l.city}</p>
                   <div className="flex items-center justify-between text-sm font-body text-sand/60 mb-4">
                     <span>Installed: {l.installedAt || "N/A"}</span>
@@ -307,6 +320,26 @@ export default function AdminLocationsPage() {
                 <Field type="hidden" name="image" />
                 <ErrorMessage name="image" component="div" className="text-red-400 text-xs mt-1" />
               </div>
+
+              <FormField label="Photo Alt Text (imageAlt)">
+                <Field
+                  name="imageAlt"
+                  className={inputClass}
+                  placeholder="e.g. Greenpal Pulse 12 charging hub in VRtual Arena lobby"
+                />
+                <ErrorMessage name="imageAlt" component="div" className="text-red-400 text-xs mt-1" />
+              </FormField>
+
+              <FormField label="Website Copy (websiteCopy)">
+                <Field
+                  as="textarea"
+                  rows={3}
+                  name="websiteCopy"
+                  className={inputClass}
+                  placeholder="Exact description/copy displayed on the location card or details page..."
+                />
+                <ErrorMessage name="websiteCopy" component="div" className="text-red-400 text-xs mt-1" />
+              </FormField>
 
               <div className="pt-4 border-t border-sand/10 flex justify-end gap-3">
                 <button
