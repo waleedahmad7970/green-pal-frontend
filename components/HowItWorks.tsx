@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
-import { rentPowerBank, returnPowerBank, scanPowerBank } from "@/public/howitworks";
+import { chargedPowerBank, rentPowerBank, returnPowerBank, scanPowerBank } from "@/public/howitworks";
 import Image from "next/image";
 
 const steps = [
@@ -25,7 +25,7 @@ const steps = [
     subtitle: "STEP 3",
     title: "Charge",
     description: "Charge your phone anywhere. Keep moving.",
-    image: returnPowerBank,
+    image: chargedPowerBank,
   },
   {
     id: 4,
