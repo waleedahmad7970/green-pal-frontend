@@ -110,7 +110,7 @@ export default function HowItWorksAccordion() {
         </div>
 
         {/* Expanding Accordion Container */}
-        <div className="flex flex-col md:flex-row w-full h-[700px] md:h-[600px] gap-4 md:gap-6">
+        <div className="flex flex-col md:flex-row w-full h-[800px] md:h-[650px] gap-4 md:gap-6">
           {steps.map((step, i) => {
             const isActive = i === activeIndex;
 
@@ -160,7 +160,7 @@ export default function HowItWorksAccordion() {
     ${isActive ? "opacity-100 delay-200" : "opacity-0 pointer-events-none"}`}
                 >
                   {/* Left: text card (fixed width, so text doesn't reflow during the animation) */}
-                  <div className="w-full md:w-[320px] shrink-0 p-6 md:p-12 flex flex-col justify-center bg-surface h-[45%] md:h-full border-b md:border-b-0 md:border-r line-rule">
+                  <div className="w-full md:w-[320px] shrink-0 p-6 md:p-12 flex flex-col justify-center bg-surface h-[35%] md:h-full border-b md:border-b-0 md:border-r line-rule">
                     <div className="hidden md:block">
                       <span className="text-signal font-bold tracking-widest text-xs md:text-sm uppercase mb-4 block">
                         {step.subtitle}

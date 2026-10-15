@@ -8,7 +8,7 @@ import type { Product } from "@/lib/admin/types";
 // How many cards are visible at once, based on viewport width.
 const getItemsPerView = () => {
   if (typeof window === "undefined") return 1;
-  if (window.innerWidth >= 1280) return 5; // xl+
+  if (window.innerWidth >= 1280) return 4; // xl+ (4 cards fits perfectly on desktop)
   if (window.innerWidth >= 1024) return 3; // lg
   if (window.innerWidth >= 768) return 2; // md
   return 1; // mobile
@@ -49,11 +49,11 @@ export default function ChargingStationsSpotlight() {
     return () => window.removeEventListener("resize", update);
   }, []);
 
+  // Determine if carousel needs scroll/slider navigation
+  const isScrollable = products.length > itemsPerView;
+
   // Highest valid starting index — stops the track from sliding past the
   // point where the last card is fully visible (no half-empty trailing gap).
-
-  // If itemsPerView changes (window resized) or product count changes,
-  // make sure activeIndex is still in range.
   const maxIndex = Math.max(products.length - itemsPerView, 0);
   useEffect(() => {
     setActiveIndex((prev) => Math.min(prev, maxIndex));
@@ -88,10 +88,12 @@ export default function ChargingStationsSpotlight() {
     if (dragStartX.current === null) return;
     const diff = dragStartX.current - e.clientX;
 
-    if (diff > 50) {
-      handleNext();
-    } else if (diff < -50) {
-      handlePrev();
+    if (isScrollable) {
+      if (diff > 50) {
+        handleNext();
+      } else if (diff < -50) {
+        handlePrev();
+      }
     }
 
     dragStartX.current = null;
@@ -127,14 +129,13 @@ export default function ChargingStationsSpotlight() {
       </div>
 
       {/*
-        Responsive track: shows 1 card on mobile, 2 on tablet, 3 on desktop
-        (instead of a fixed 320px single-card column that left huge empty
-        space on wider screens). Each card's outer wrapper takes exactly
-        (100 / itemsPerView)% of the track width, with padding for the gap
-        between cards, so the percentage-based translateX math stays exact.
+        Responsive track: shows 1 card on mobile, 2 on tablet, 3 on lg, 4 on xl.
+        When products fit within view (e.g. 4 products on xl), cards are centered.
+        When products exceed view (more products or smaller screens), the track
+        starts from the left and allows sliding / swiping.
       */}
       <div
-        className="relative w-full max-w-[320px] md:max-w-3xl lg:max-w-5xl xl:max-w-full mx-auto h-[510px] md:h-[580px] xl:h-[540px] overflow-hidden touch-pan-y"
+        className="relative w-full max-w-[320px] md:max-w-3xl lg:max-w-5xl xl:max-w-7xl mx-auto h-[510px] md:h-[580px] xl:h-[540px] overflow-hidden touch-pan-y"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
@@ -142,9 +143,12 @@ export default function ChargingStationsSpotlight() {
         onPointerLeave={handlePointerUp}
       >
         <div
-          className="flex h-full transition-transform duration-500 ease-out"
+          className={`flex h-full transition-transform duration-500 ease-out ${!isScrollable ? "justify-center" : ""
+            }`}
           style={{
-            transform: `translateX(-${activeIndex * itemWidthPercent}%)`,
+            transform: isScrollable
+              ? `translateX(-${activeIndex * itemWidthPercent}%)`
+              : "none",
           }}
         >
           {products.map((product, i) => (
@@ -198,47 +202,49 @@ export default function ChargingStationsSpotlight() {
         </div>
       </div>
 
-      {/* Controller Buttons */}
-      <div className="mt-16 flex items-center gap-4 relative z-50">
-        <button
-          onClick={handlePrev}
-          disabled={atStart}
-          className="w-12 h-12 rounded-full border line-rule flex items-center justify-center text-muted hover:bg-signal hover:text-ink hover:border-signal transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none"
-          aria-label="Previous station"
-        >
-          <svg
-            className="stroke-current"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+      {/* Controller Buttons - only shown when carousel has items to slide through */}
+      {isScrollable && (
+        <div className="mt-16 flex items-center gap-4 relative z-50">
+          <button
+            onClick={handlePrev}
+            disabled={atStart}
+            className="w-12 h-12 rounded-full border line-rule flex items-center justify-center text-muted hover:bg-signal hover:text-ink hover:border-signal transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none"
+            aria-label="Previous station"
           >
-            <path d="m15 18-6-6 6-6" />
-          </svg>
-        </button>
-        <button
-          onClick={handleNext}
-          disabled={atEnd}
-          className="w-12 h-12 rounded-full border line-rule flex items-center justify-center text-muted hover:bg-signal hover:text-ink hover:border-signal transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none"
-          aria-label="Next station"
-        >
-          <svg
-            className="stroke-current"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            <svg
+              className="stroke-current"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={atEnd}
+            className="w-12 h-12 rounded-full border line-rule flex items-center justify-center text-muted hover:bg-signal hover:text-ink hover:border-signal transition-all duration-300 disabled:opacity-30 disabled:pointer-events-none"
+            aria-label="Next station"
           >
-            <path d="m9 18 6-6-6-6" />
-          </svg>
-        </button>
-      </div>
+            <svg
+              className="stroke-current"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+      )}
     </section>
   );
 }
