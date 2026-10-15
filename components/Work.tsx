@@ -243,7 +243,7 @@ export default function Work() {
                     alt={loc.name || "Location Image"}
                     width={800}
                     height={450}
-                    src={loc.image || "https://i.postimg.cc/RFV24K7Q/image.png"}
+                    src={loc?.image}
                     draggable={false}
                     className="w-full h-auto aspect-video object-cover rounded-xl opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none"
                   />

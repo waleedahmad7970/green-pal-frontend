@@ -13,6 +13,7 @@ import WhyGreenpal from "@/components/WhyGreenpal";
 import FAQAndCTA from "@/components/FAQAndCTA";
 import ForVenues from "@/components/ForVenues";
 import GreenpalNetwork from "@/components/GreenpalNetwork";
+import Work from "@/components/Work";
 
 export const metadata: Metadata = {
   title: "Greenpal | Portable Power Bank Rental & Shared Charging",
@@ -40,11 +41,13 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <Work />
       <MarqueeTicker />
       {/* <PortalTransition /> */}
       <ChargingStations />
       <HowItWorks />
       <WhyGreenpal />
+
       <GreenpalNetwork />
       <CTA />
       {/* <Elegance /> */}

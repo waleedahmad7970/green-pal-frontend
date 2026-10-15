@@ -5,6 +5,7 @@ export interface LocationItem {
   _id?: string;
   id?: string;
   name: string;
+  stationName: string;
   venue: string;
   image: string;
   city: string;

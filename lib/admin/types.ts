@@ -47,6 +47,7 @@ export type LocationStatus = "live" | "installing" | "offline";
 export interface Location {
   id: string;
   name: string;
+  stationName: string;
   image: string;
   venue: string;
   city: string;

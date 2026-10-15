@@ -20,6 +20,7 @@ const statuses: LocationStatus[] = ["live", "installing", "offline"];
 
 const emptyLocation = {
   name: "",
+  stationName: "",
   venue: "",
   image: "",
   city: "",
@@ -33,6 +34,7 @@ const emptyLocation = {
 
 const LocationSchema = Yup.object().shape({
   name: Yup.string().required("Required"),
+  stationName: Yup.string(),
   venue: Yup.string().required("Required"),
   city: Yup.string().required("Required"),
   address: Yup.string().required("Required"),
@@ -107,6 +109,7 @@ export default function AdminLocationsPage() {
   const handleSubmit = async (values: any, { resetForm }: any) => {
     const formattedData = {
       name: values.name,
+      stationName: values.stationName || "",
       venue: values.venue,
       image: values.image || "",
       city: values.city,
@@ -159,6 +162,7 @@ export default function AdminLocationsPage() {
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h3 className="font-display text-lg font-semibold text-sand">{l.name}</h3>
+                      {l.stationName && <p className="text-signal/80 text-xs font-body">{l.stationName}</p>}
                       <p className="text-sand/50 text-sm font-body">{l.venue}</p>
                     </div>
                     <StatusBadge status={l.status} />
@@ -207,13 +211,18 @@ export default function AdminLocationsPage() {
         >
           {({ isSubmitting, values, setFieldValue }) => (
             <Form className="space-y-4 max-h-[75vh] overflow-y-auto pr-2">
-              <FormField label="Station name">
-                <Field name="name" className={inputClass} />
+              <FormField label="Location Name">
+                <Field name="name" className={inputClass} placeholder="e.g. VRtual Arena" />
                 <ErrorMessage name="name" component="div" className="text-red-400 text-xs mt-1" />
               </FormField>
 
+              <FormField label="Station Name">
+                <Field name="stationName" className={inputClass} placeholder="e.g. Greenpal Pulse 12" />
+                <ErrorMessage name="stationName" component="div" className="text-red-400 text-xs mt-1" />
+              </FormField>
+
               <FormField label="Venue">
-                <Field name="venue" className={inputClass} />
+                <Field name="venue" className={inputClass} placeholder="e.g. VRtual Arena" />
                 <ErrorMessage name="venue" component="div" className="text-red-400 text-xs mt-1" />
               </FormField>
 
