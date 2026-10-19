@@ -1,24 +1,24 @@
 import type { Metadata } from "next";
 import AboutHero from "@/components/AboutHero";
-import AboutStory from "@/components/AboutStory";
+import AboutMission from "@/components/AboutMission";
 import AboutValues from "@/components/AboutValues";
-import ClosingCTA from "@/components/ClosingCTA";
-import Team from "@/components/Team";
+import AboutProducts from "@/components/AboutProducts";
+import AboutCTA from "@/components/AboutCTA";
 
 export const metadata: Metadata = {
-  title: "About — Greenpal",
+  title: "About Us — Greenpal | Shared Portable Charging",
   description:
-    "The story, timeline, and charter behind Greenpal's charging infrastructure.",
+    "Greenpal is an Edmonton-based Canadian company bringing shared portable charging to the places people shop, eat, work and spend time.",
 };
 
 export default function AboutPage() {
   return (
-    <>
+    <main>
       <AboutHero />
-      <AboutStory />
+      <AboutMission />
       <AboutValues />
-      {/* <Team /> */}
-      <ClosingCTA />
-    </>
+      <AboutProducts />
+      <AboutCTA />
+    </main>
   );
 }

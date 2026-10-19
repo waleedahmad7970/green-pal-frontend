@@ -1,86 +1,91 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { IconEthics, IconHardware, IconFleet, IconPayments } from "./Icons";
+import GPMark from "./GPMark";
 
-const values = [
+const drivers = [
   {
-    icon: IconEthics,
-    term: "Amanah",
-    meaning: "Trust",
-    copy: "Every claim on a kiosk screen matches what the hardware actually does.",
+    title: "Convenience",
+    tagline: "Power where people already spend time.",
+    description:
+      "Available across everyday spots—restaurants, shops, transit points, and venues—so charging is right there when you need it.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
+      </svg>
+    ),
   },
   {
-    icon: IconHardware,
-    term: "Ihsan",
-    meaning: "Excellence",
-    copy: "Three chassis revisions, each one tested past what any warranty requires.",
+    title: "Freedom",
+    tagline: "Portable charging that moves with you.",
+    description:
+      "No waiting around tied to an electrical wall outlet. Take power with you, keep moving, and charge as you live your life.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+    ),
   },
   {
-    icon: IconFleet,
-    term: "Adl",
-    meaning: "Justice",
-    copy: "The same uptime standard applies to a flagship mall unit and a single airport kiosk.",
+    title: "Shared use",
+    tagline: "Power banks designed to be borrowed, returned and used again.",
+    description:
+      "A sustainable, shared-infrastructure approach. Borrow a high-grade power bank when you need power and return it for the next visitor.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg>
+    ),
   },
   {
-    icon: IconPayments,
-    term: "Sidq",
-    meaning: "Honesty",
-    copy: "Pricing shown at the kiosk is the pricing charged — no fees revealed after payment.",
+    title: "Partnership",
+    tagline: "Working with local businesses to make charging easier to access.",
+    description:
+      "Collaborating with Canadian venues, retail partners, and hospitality locations to provide an effortless guest amenity.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+    ),
   },
 ];
 
 export default function AboutValues() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>(".value-card").forEach((card, i) => {
-        gsap.fromTo(
-          card,
-          { autoAlpha: 0, scale: 0.9, y: 20 },
-          {
-            autoAlpha: 1,
-            scale: 1,
-            y: 0,
-            duration: 0.6,
-            delay: (i % 4) * 0.08,
-            ease: "back.out(1.6)",
-            scrollTrigger: { trigger: card, start: "top 88%" },
-          }
-        );
-      });
-    }, sectionRef);
-    return () => {
-      // Route changes can unmount this component mid-pin, after
-      // ScrollTrigger has already restructured the DOM with a pin-spacer.
-      // Revert defensively so a stale reference never throws during
-      // React's own cleanup.
-      try {
-        ctx.revert();
-      } catch {
-        // DOM already torn down by navigation; nothing left to revert.
-      }
-    };
-  }, []);
-
   return (
-    <section ref={sectionRef} className="relative py-28 md:py-40 bg-surface-dim">
+    <section className="py-20 md:py-28 bg-surface-dim border-b line-rule transition-colors duration-300">
       <div className="container-edit">
-        <h2 className="font-display font-bold text-display-lg mb-16 max-w-2xl">
-          What the charter asks of us.
-        </h2>
+        <div className="max-w-2xl mb-14 md:mb-16">
+          <span className="inline-block text-xs uppercase tracking-widest font-bold text-signal-dim dark:text-signal mb-3">
+            Core Principles
+          </span>
+          <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight leading-tight mb-4 transition-colors duration-300">
+            What Drives Greenpal
+          </h2>
+          <p className="font-body text-base md:text-lg text-muted transition-colors duration-300">
+            Four guiding commitments behind every Greenpal Pulse station and power bank deployment.
+          </p>
+        </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {values.map((v) => (
-            <div key={v.term} className="value-card bg-card border line-rule p-8">
-              <v.icon className="w-12 h-12 text-signal mb-8" />
-              <h3 className="font-display text-xl font-semibold mb-1">{v.term}</h3>
-              <p className="text-sm text-signal font-body mb-4">{v.meaning}</p>
-              <p className="text-muted font-body text-sm leading-relaxed">{v.copy}</p>
+          {drivers.map((driver) => (
+            <div
+              key={driver.title}
+              className="bg-card border line-rule p-8 rounded-2xl flex flex-col justify-between hover:shadow-md hover:border-signal/40 transition-all duration-300"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-signal/15 text-signal-dim dark:text-signal flex items-center justify-center mb-6">
+                  {driver.icon}
+                </div>
+                <h3 className="font-display font-bold text-2xl mb-2 transition-colors duration-300">
+                  {driver.title}
+                </h3>
+                <p className="font-body text-sm font-semibold text-signal-dim dark:text-signal mb-3">
+                  {driver.tagline}
+                </p>
+                <p className="font-body text-sm text-muted leading-relaxed transition-colors duration-300">
+                  {driver.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>
