@@ -245,7 +245,7 @@ export default function Work() {
                     height={450}
                     src={loc?.image}
                     draggable={false}
-                    className="w-full h-auto aspect-video object-cover rounded-xl opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none"
+                    className="w-full h-auto aspect-video object-cover rounded-xl opacity-100 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none"
                   />
 
                   {/* Status Badge */}
