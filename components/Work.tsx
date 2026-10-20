@@ -291,7 +291,8 @@ export default function Work() {
                       </p>
                     ) : null}
                     <p className={`font-body text-sm leading-relaxed ${t.sub} mb-6`}>
-                      {loc.address} {loc.bays ? `• ${loc.bays} Active Bays` : ""}
+                      {loc.address}
+                      {/* {loc.bays ? `• ${loc.bays} Active Bays` : ""} */}
                     </p>
                   </div>
 
@@ -300,9 +301,9 @@ export default function Work() {
                     <span className="text-xs font-mono uppercase tracking-wider opacity-70">
                       View System Specs
                     </span>
-                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5 font-bold text-lg">
+                    {/* <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5 font-bold text-lg">
                       →
-                    </span>
+                    </span> */}
                   </div>
                 </div>
               </div>
