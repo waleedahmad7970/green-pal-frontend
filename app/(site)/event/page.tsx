@@ -135,8 +135,8 @@ export default function EventsPage() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(idx)}
                                 className={`px-6 py-3 rounded-2xl font-display font-semibold text-sm md:text-base transition-all duration-300 border ${activeTab === idx
-                                        ? "bg-[#02d683] text-black border-[#02d683] shadow-md scale-105"
-                                        : "bg-card border line-rule text-muted hover:border-[#02d683]/50"
+                                    ? "bg-[#02d683] text-black border-[#02d683] shadow-md scale-105"
+                                    : "bg-card border line-rule text-muted hover:border-[#02d683]/50"
                                     }`}
                             >
                                 {tab.label}
@@ -296,7 +296,7 @@ export default function EventsPage() {
                     <div className="border line-rule rounded-3xl bg-card overflow-hidden transition-colors duration-300 p-4 md:p-8 flex justify-center items-center shadow-2xl mb-8">
                         <div
                             className="calendly-inline-widget w-full"
-                            data-url="https://calendly.com/YOUR_ACTUAL_CALENDLY_USERNAME/event-consultation"
+                            data-url="https://calendly.com/thegreenpal-info/30min"
                             style={{ minWidth: "320px", height: "700px" }}
                         />
                     </div>
