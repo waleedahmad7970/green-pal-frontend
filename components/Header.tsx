@@ -24,12 +24,16 @@ const sectionLinks = [
 
 const pageLinks = [
   { label: "Home", href: "/" },
+  { label: "Plans", href: "/plans" },
   { label: "Products", href: "/products" },
   // { label: "Investment Plans", href: "/investment" },
   { label: "Events", href: "/event" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
+
+// Only these emails see the "Plans" link
+const PLANS_EMAILS = ["admin@greenpal.com", "test@greenpal.com", "sameerkhan.prof@gmail.com"];
 
 // Links shown inside the user popup
 const accountLinks = [
@@ -99,6 +103,10 @@ export default function Header() {
     };
   }, [userMenuOpen]);
 
+  const showPlans =
+    mounted && isAuthed && PLANS_EMAILS.includes(user?.email?.toLowerCase() ?? "");
+  const visibleLinks = pageLinks.filter((l) => l.href !== "/plans" || showPlans);
+
   const handleAnchorClick = (e: React.MouseEvent, href: string) => {
     setMenuOpen(false);
     if (pathname === "/") {
@@ -139,7 +147,7 @@ export default function Header() {
         {/* ------------------------- */}
 
         <nav className="hidden lg:flex items-center gap-8">
-          {pageLinks.map((l) => (
+          {visibleLinks.map((l) => (
             <Link
               key={l.href}
               href={l.href}
@@ -271,7 +279,7 @@ export default function Header() {
             className="lg:hidden overflow-hidden bg-surface border-t line-rule"
           >
             <nav className="container-edit flex flex-col py-6 gap-5">
-              {pageLinks.map((l) => (
+              {visibleLinks.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}

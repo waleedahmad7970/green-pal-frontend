@@ -49,13 +49,16 @@ export default function Footer() {
                 Explore
               </h4>
               <nav className="flex flex-col gap-3 text-sm font-body text-sand/55">
-                <a href="#" className="hover:text-sand transition-colors">
+                <a href="/plans" className="hover:text-sand transition-colors">
+                  Plans
+                </a>
+                <a href="/#how-it-works" className="hover:text-sand transition-colors">
                   How It Works
                 </a>
-                <a href="#" className="hover:text-sand transition-colors">
+                <a href="/#for-venues" className="hover:text-sand transition-colors">
                   For Venues
                 </a>
-                <a href="#" className="hover:text-sand transition-colors">
+                <a href="/contact" className="hover:text-sand transition-colors">
                   FAQ
                 </a>
               </nav>
