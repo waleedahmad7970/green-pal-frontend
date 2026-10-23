@@ -132,6 +132,7 @@ export default function Header() {
             // This checks your theme state and loads the correct image!
             src={theme === "dark" ? whiteLogo : logo}
             alt="Greenpal Logo"
+            priority
             className="h-6 md:h-[60px] w-auto object-contain" // Adjust the height (h-8) as needed to fit your image beautifully
           />
         </Link>

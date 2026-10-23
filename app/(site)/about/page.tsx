@@ -6,9 +6,12 @@ import AboutProducts from "@/components/AboutProducts";
 import AboutCTA from "@/components/AboutCTA";
 
 export const metadata: Metadata = {
-  title: "About Us — Greenpal | Shared Portable Charging",
+  title: "About Us — Shared Portable Charging",
   description:
     "Greenpal is an Edmonton-based Canadian company bringing shared portable charging to the places people shop, eat, work and spend time.",
+  alternates: {
+    canonical: "https://thegreenpal.ca/about",
+  },
 };
 
 export default function AboutPage() {

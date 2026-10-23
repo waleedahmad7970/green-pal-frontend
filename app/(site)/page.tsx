@@ -16,24 +16,37 @@ import GreenpalNetwork from "@/components/GreenpalNetwork";
 import Work from "@/components/Work";
 
 export const metadata: Metadata = {
-  title: "Greenpal | Portable Power Bank Rental & Shared Charging",
+  // 'absolute' bypasses the root template so title doesn't become "... | Greenpal | Greenpal"
+  title: {
+    absolute: "Greenpal | Portable Power Bank Rental & Shared Charging",
+  },
   description:
     "Stay charged on the go with Greenpal portable power bank rentals. Discover shared charging for customers, venue partnerships and Greenpal business blueprints.",
-  keywords: [
-    "portable power bank rental",
-    "shared charging station",
-    "power bank rental Canada",
-    "phone charging station",
-    "venue charging station",
-    "portable charger rental",
-  ],
+  alternates: {
+    canonical: "https://thegreenpal.ca",
+  },
   openGraph: {
-    title: "Greenpal - Shared Power. Anytime. Anywhere.",
+    title: "Greenpal – Shared Power. Anytime. Anywhere.",
     description:
       "Portable charging made simple. Rent power on the go, or host a Greenpal station.",
     type: "website",
     url: "https://thegreenpal.ca",
     siteName: "Greenpal Canada",
+    images: [
+      {
+        url: "https://thegreenpal.ca/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Greenpal – Portable Power Bank Rental & Shared Charging",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Greenpal | Portable Power Bank Rental & Shared Charging",
+    description:
+      "Stay charged on the go with Greenpal portable power bank rentals.",
+    images: ["https://thegreenpal.ca/og-image.png"],
   },
 };
 

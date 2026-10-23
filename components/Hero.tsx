@@ -11,7 +11,7 @@ export default function Hero() {
   const motifRef = useRef<HTMLDivElement>(null);
   const markWrapRef = useRef<HTMLDivElement>(null);
   const markInnerRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLDivElement>(null);
+  const headlineRef = useRef<HTMLHeadingElement>(null);
   const subRef = useRef<HTMLParagraphElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
 
@@ -143,18 +143,18 @@ export default function Hero() {
       </div>
 
       <div className="container-edit relative pb-12 md:pb-16 pt-10 md:pt-32">
-        <div ref={headlineRef} className="overflow-hidden">
+        <h1 ref={headlineRef} className="overflow-hidden">
           <div className="overflow-hidden">
-            <h1 className="reveal-line font-display font-extrabold text-display-xl">
+            <span className="reveal-line font-display font-extrabold text-display-xl block">
               Stay Charged.
-            </h1>
+            </span>
           </div>
           <div className="overflow-hidden">
-            <h1 className="reveal-line font-display font-extrabold text-display-xl">
+            <span className="reveal-line font-display font-extrabold text-display-xl block">
               Keep<span className="accent">Moving.</span>
-            </h1>
+            </span>
           </div>
-        </div>
+        </h1>
 
         <div className="mt-8 md:mt-10 flex flex-col xl:flex-row xl:items-end justify-between gap-8">
           <p

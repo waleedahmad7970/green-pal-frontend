@@ -21,18 +21,18 @@ export default function ClosingCTA() {
     <section className="relative py-28 md:py-44 bg-ink text-sand overflow-hidden">
       <div className="absolute inset-0 gp-motif" aria-hidden="true" />
       <div className="container-edit relative flex flex-col items-start">
-        <h2 className="font-display font-bold text-2xl text-sand max-w-3xl mb-4">
+        <p className="font-display font-bold text-2xl text-sand max-w-3xl mb-4">
           Ready when you are
-        </h2>
+        </p>
 
         <h2 className="font-display font-extrabold text-display-lg text-sand max-w-3xl mb-6">
           Stay Powered. Bring Greenpal to Your Location.{" "}
         </h2>
 
-        <h2 className="font-display font-medium text-xl md:text-2xl text-sand/80 max-w-3xl mb-12">
+        <p className="font-display font-medium text-xl md:text-2xl text-sand/80 max-w-3xl mb-12">
           Host portable charging for your customers or explore a Greenpal
           business blueprint.{" "}
-        </h2>
+        </p>
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-start w-full">
           <motion.div
             ref={btnRef}
