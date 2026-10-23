@@ -9,7 +9,7 @@ const steps = [
   {
     id: 1,
     subtitle: "STEP 1",
-    title: "Scan",
+    title: "Tap/Scan",
     description: "Scan the QR code on any Greenpal Pulse station.",
     image: scanPowerBank,
   },
