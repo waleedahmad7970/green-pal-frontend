@@ -20,7 +20,7 @@ export default function Footer() {
             </div>
 
             <p className="font-body text-sand/55 text-sm leading-relaxed">
-              Shared Power. Anytime. Anywhere.
+              Stay charged. Keep moving.
             </p>
 
             <div className="flex flex-col gap-1.5 font-body text-sm text-sand/55 mt-2">

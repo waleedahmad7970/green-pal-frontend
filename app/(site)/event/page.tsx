@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
+import LiveVenues from "@/components/LiveVenues";
 
 const stationTabs = [
     {
@@ -236,27 +237,9 @@ export default function EventsPage() {
             </section>
 
             {/* 5. IMPACT STATS BANNER */}
+            {/* 5. PROOF STRIP — real venues only */}
             <section className="py-16 border-b line-rule transition-colors duration-300 bg-card/60">
-                <div className="container-edit max-w-6xl mx-auto px-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                        <div className="border line-rule rounded-2xl bg-card p-6 shadow-sm">
-                            <div className="font-display font-bold text-3xl md:text-4xl text-[#02d683] mb-2">500+</div>
-                            <div className="font-body text-sm text-muted">Festivals Powered</div>
-                        </div>
-                        <div className="border line-rule rounded-2xl bg-card p-6 shadow-sm">
-                            <div className="font-display font-bold text-3xl md:text-4xl text-[#02d683] mb-2">99.9%</div>
-                            <div className="font-body text-sm text-muted">Network Uptime</div>
-                        </div>
-                        <div className="border line-rule rounded-2xl bg-card p-6 shadow-sm">
-                            <div className="font-display font-bold text-3xl md:text-4xl text-[#02d683] mb-2">10M+</div>
-                            <div className="font-body text-sm text-muted">Successful Charges</div>
-                        </div>
-                        <div className="border line-rule rounded-2xl bg-card p-6 shadow-sm">
-                            <div className="font-display font-bold text-3xl md:text-4xl text-[#02d683] mb-2">24/7</div>
-                            <div className="font-body text-sm text-muted">On-Site Support</div>
-                        </div>
-                    </div>
-                </div>
+                <LiveVenues />
             </section>
 
             {/* 6. MID-PAGE CTA BANNER TO CONTACT */}

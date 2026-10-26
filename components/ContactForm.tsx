@@ -129,36 +129,28 @@ export default function ContactForm() {
           </div>
 
           <div className="space-y-5 font-body text-sm">
-            {/* <div>
-              <span className="block text-ink/50 mb-1">Address</span>
-              <span className="text-ink font-medium">
-                123 Greenpal Ave, Suite 400
-                <br />
-                Toronto, ON M5V 2T6, Canada
-              </span>
-            </div> */}
             <div>
               <span className="block text-ink/50 mb-1">Phone</span>
               <a
-                href="tel:+14165551234"
-                className="text-ink font-medium hover:text-[#02d683] transition-colors"
+                href="tel:+17807770519"
+                className="text-ink font-medium hover:text-signal transition-colors"
               >
-                +1 (780) 777‑0519
+                +1 (780) 777-0519
               </a>
             </div>
             <div>
               <span className="block text-ink/50 mb-1">Email</span>
               <a
-                href="mailto:hello@greenpal.com"
-                className="text-ink font-medium hover:text-[#02d683] transition-colors"
+                href="mailto:info@thegreenpal.ca"
+                className="text-ink font-medium hover:text-signal transition-colors"
               >
-                hello@greenpal.com
+                info@thegreenpal.ca
               </a>
             </div>
             <div>
               <span className="block text-ink/50 mb-1">Hours</span>
               <span className="text-ink font-medium">
-                Mon–Fri, 9:00 AM – 6:00 PM EST
+                Mon–Fri, 9:00 AM – 6:00 PM MT (Edmonton)
               </span>
             </div>
           </div>

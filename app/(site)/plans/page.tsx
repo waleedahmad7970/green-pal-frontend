@@ -3,7 +3,7 @@
 import { useState, useId } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import HowItWorks from "@/components/HowItWorks";
+import { useRouter } from "next/navigation";
 
 // All colors come from your design classes (signal / signal-dim / ink / accent / card / muted).
 // No hard-coded color values live in this file except the original dark cabinet gradient
@@ -19,6 +19,16 @@ const CHIP = "bg-signal text-ink";
 const CHECK_BUBBLE =
   "bg-signal text-ink flex items-center justify-center shrink-0 rounded-full";
 
+// --- PAYMENT LINKS ---
+// TODO: replace each "#" with the real payment link for that tier
+// (or set the NEXT_PUBLIC_PAY_* env vars). Each tier has its own link.
+const PAY_LINKS = {
+  pulse8: process.env.NEXT_PUBLIC_PAY_PULSE_8 ?? "#",
+  pulse12: process.env.NEXT_PUBLIC_PAY_PULSE_12 ?? "#",
+  pulse24: process.env.NEXT_PUBLIC_PAY_PULSE_24 ?? "#",
+  pulse48: process.env.NEXT_PUBLIC_PAY_PULSE_48 ?? "#",
+};
+
 // --- TYPES ---
 interface PlanData {
   id: string;
@@ -27,127 +37,131 @@ interface PlanData {
   price: string;
   priceNumeric: number;
   priceLabel: string;
-  slots: 8 | 16 | 24 | 48;
+  slots: 8 | 12 | 24 | 48;
   popular?: boolean;
+  image: string; // real station picture, put files in /public/stations/
+  payUrl: string;
+  blurb: string;
   features: string[];
-  payoutMid: number;
   specs: {
     dimensions: string;
     weight: string;
-    cables: string;
     screen: string;
     formFactor: string;
     bestFor: string;
-    estimatedMonthlyGross: string;
-    estimatedMonthlyProfitSplit: string;
   };
 }
 
 const PLANS: PlanData[] = [
   {
-    id: "basic",
-    name: "Basic",
+    id: "pulse-8",
+    name: "Pulse 8",
     subtitle: "A compact beginning",
     price: "$500",
     priceNumeric: 500,
-    priceLabel: "Investment per station",
+    priceLabel: "one time",
     slots: 8,
-    payoutMid: 250,
+    image: "/stations/pulse-8.png",
+    payUrl: PAY_LINKS.pulse8,
+    blurb: "8 power banks. Good for small busy places.",
     features: [
-      "One 8-slot station deployed",
-      "Venue placement by GreenPal",
-      "50% of profit to you",
-      "50% of profit to GreenPal",
+      "You pay one time: $500",
+      "We buy your station and place it",
+      "It gets its own number — yours",
+      "50% of the net rental revenue, paid monthly",
     ],
     specs: {
       dimensions: "280 x 215 x 180 mm",
       weight: "5.2 kg",
-      cables: "Lightning, USB-C, Micro-USB (Built-in)",
       screen: "LED Status Matrix",
       formFactor: "Countertop Compact",
       bestFor: "Boutique cafes, salons, specialty bakeries & intimate lounges",
-      estimatedMonthlyGross: "$380 - $620",
-      estimatedMonthlyProfitSplit: "$190 - $310 / mo",
     },
   },
   {
-    id: "standard",
-    name: "Standard",
+    id: "pulse-12",
+    name: "Pulse 12",
     subtitle: "More room to connect",
     price: "$750",
     priceNumeric: 750,
-    priceLabel: "Investment per station",
-    slots: 16,
-    payoutMid: 468,
+    priceLabel: "one time",
+    slots: 12,
+    image: "/stations/pulse-12.png",
+    payUrl: PAY_LINKS.pulse12,
+    blurb: "12 power banks. Good for busy places.",
     features: [
-      "One 16-slot station deployed",
-      "Venue placement by GreenPal",
-      "50% of profit to you",
-      "50% of profit to GreenPal",
+      "You pay one time: $750",
+      "We buy your station and place it",
+      "It gets its own number — yours",
+      "50% of the net rental revenue, paid monthly",
     ],
     specs: {
       dimensions: "360 x 280 x 210 mm",
       weight: "8.8 kg",
-      cables: "Lightning, USB-C, Micro-USB (Built-in)",
       screen: "High-contrast LCD Status Display",
       formFactor: "Countertop Standard",
       bestFor: "Gastropubs, fitness studios, casual dining & busy lobbies",
-      estimatedMonthlyGross: "$720 - $1,150",
-      estimatedMonthlyProfitSplit: "$360 - $575 / mo",
     },
   },
   {
-    id: "advanced",
-    name: "Advanced",
+    id: "pulse-24",
+    name: "Pulse 24",
     subtitle: "A step up in capacity",
     price: "$1,500",
     priceNumeric: 1500,
-    priceLabel: "Investment per station",
+    priceLabel: "one time",
     slots: 24,
     popular: true,
-    payoutMid: 912,
+    image: "/stations/pulse-24.png",
+    payUrl: PAY_LINKS.pulse24,
+    blurb: "24 power banks. Good for very busy places.",
     features: [
-      "One 24-slot station deployed",
-      "Venue placement by GreenPal",
-      "50% of profit to you",
-      "50% of profit to GreenPal",
+      "You pay one time: $1,500",
+      "We buy your station and place it",
+      "It gets its own number — yours",
+      "50% of the net rental revenue, paid monthly",
     ],
     specs: {
       dimensions: "490 x 320 x 240 mm",
       weight: "14.5 kg",
-      cables: "Lightning, USB-C, Micro-USB (Built-in)",
       screen: 'Full Color 10.1" Interactive Info Display',
       formFactor: "Bar / Wall Mount",
       bestFor: "Nightclubs, hotel lobbies, busy restaurants & event halls",
-      estimatedMonthlyGross: "$1,450 - $2,200",
-      estimatedMonthlyProfitSplit: "$725 - $1,100 / mo",
     },
   },
   {
-    id: "premium",
-    name: "Premium",
+    id: "pulse-48",
+    name: "Pulse 48",
     subtitle: "Our largest package",
     price: "$2,500",
     priceNumeric: 2500,
-    priceLabel: "Investment per station",
+    priceLabel: "one time",
     slots: 48,
-    payoutMid: 1875,
+    image: "/stations/pulse-48.png",
+    payUrl: PAY_LINKS.pulse48,
+    blurb: "48 power banks. Good for the busiest places.",
     features: [
-      "One 48-slot station deployed",
-      "Venue placement by GreenPal",
-      "50% of profit to you",
-      "50% of profit to GreenPal",
+      "You pay one time: $2,500",
+      "We buy your station and place it",
+      "It gets its own number — yours",
+      "50% of the net rental revenue, paid monthly",
     ],
     specs: {
-      dimensions: "1650 x 420 x 380 mm (Free-standing Tower)",
+      dimensions: "1650 x 420 x 380 mm",
       weight: "42.0 kg",
-      cables: "Lightning, USB-C, Micro-USB (Built-in)",
       screen: '43" 1080p Digital Advertising Screen',
       formFactor: "Free-standing Kiosk",
       bestFor: "Airports, shopping malls, stadiums & high-capacity transit hubs",
-      estimatedMonthlyGross: "$2,900 - $4,600",
-      estimatedMonthlyProfitSplit: "$1,450 - $2,300 / mo",
     },
+  },
+];
+
+const STEPS = [
+  { n: "1", text: "You pay one time." },
+  { n: "2", text: "We buy your station — it gets its own number, yours." },
+  {
+    n: "3",
+    text: "People rent power banks. Every month we send you your half, with all the numbers.",
   },
 ];
 
@@ -164,8 +178,8 @@ const stagger = {
 
 const viewport = { once: true, margin: "-80px" } as const;
 
-// --- STATION SLOT VECTOR GRAPHIC ---
-function StationSlotGraphic({ slots }: { slots: 8 | 16 | 24 | 48 }) {
+// --- STATION SLOT VECTOR GRAPHIC (fallback when no picture file exists) ---
+function StationSlotGraphic({ slots }: { slots: 8 | 12 | 24 | 48 }) {
   const baseId = useId();
   const cols = 4;
   const rows = slots / 4;
@@ -227,6 +241,27 @@ function StationSlotGraphic({ slots }: { slots: 8 | 16 | 24 | 48 }) {
   );
 }
 
+// Real station picture; falls back to the vector graphic if the file is missing.
+function StationVisual({ plan }: { plan: PlanData }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return (
+      <div className="flex items-center justify-center h-40">
+        <StationSlotGraphic slots={plan.slots} />
+      </div>
+    );
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={plan.image}
+      alt={`${plan.name} power bank station`}
+      onError={() => setFailed(true)}
+      className="h-40 w-full object-contain transition-transform duration-500 group-hover:scale-105"
+    />
+  );
+}
+
 function Check({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -243,13 +278,7 @@ function Check({ className = "" }: { className?: string }) {
 
 export default function PlansPage() {
   const [selectedPlan, setSelectedPlan] = useState<PlanData | null>(null);
-
-  const metrics = [
-    { value: "50 / 50", label: "Net Profit Split", accent: true },
-    { value: "100%", label: "Turnkey Operations" },
-    { value: "24/7", label: "Cloud Telemetry" },
-    { value: "$0", label: "Maintenance Fees" },
-  ];
+  const router = useRouter();
 
   return (
     <div className="min-h-screen bg-surface text-current transition-colors duration-500 pt-28 md:pt-36 pb-28">
@@ -278,43 +307,18 @@ export default function PlansPage() {
             variants={fadeUp}
             className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.04] mb-6"
           >
-            Invest in Shared Power.{" "}
-            <span className="accent inline-block">Earn 50% Profit.</span>
+            Put a charging station in a busy place.{" "}
+            <span className="accent inline-block">Get paid every month.</span>
           </motion.h1>
 
           <motion.p
             variants={fadeUp}
             className="font-body text-base sm:text-lg md:text-xl text-muted max-w-2xl mx-auto leading-relaxed"
           >
-            Turnkey commercial charging stations deployed in high-dwell venues.
-            GreenPal provides venue acquisition, hardware installation, and
-            ongoing operations.
+            You pay one time. We buy the station, put it in a busy place and
+            run it. Every month we send you 50% of the net rental revenue from
+            your station.
           </motion.p>
-
-          {/* Quick Metrics Bar */}
-          <motion.div
-            variants={stagger}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-5 mt-12 max-w-3xl mx-auto"
-          >
-            {metrics.map((m) => (
-              <motion.div
-                key={m.label}
-                variants={fadeUp}
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.25 }}
-                className="p-6 rounded-2xl bg-card border border-signal/60 text-center"
-              >
-                <span
-                  className={`block font-display font-bold text-2xl md:text-3xl ${m.accent ? "accent" : ""}`}
-                >
-                  {m.value}
-                </span>
-                <span className="font-body text-[11px] uppercase tracking-wider text-muted">
-                  {m.label}
-                </span>
-              </motion.div>
-            ))}
-          </motion.div>
         </motion.div>
 
         {/* --- PLANS GRID --- */}
@@ -323,7 +327,7 @@ export default function PlansPage() {
           initial="hidden"
           whileInView="show"
           viewport={viewport}
-          className="mb-28"
+          className="mb-16"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
             {PLANS.map((plan, i) => {
@@ -338,7 +342,7 @@ export default function PlansPage() {
                   className="group relative flex"
                 >
                   <div
-                    className={`relative flex flex-col justify-between w-full rounded-[20px] p-8 sm:p-10 min-h-[720px] overflow-hidden transition-shadow duration-300 group-hover:shadow-xl ${CARD} ${isPopular
+                    className={`relative flex flex-col justify-between w-full rounded-[20px] p-8 sm:p-10 min-h-[640px] overflow-hidden transition-shadow duration-300 group-hover:shadow-xl ${CARD} ${isPopular
                       ? "border-2 border-signal shadow-lg"
                       : "border border-signal/60"
                       }`}
@@ -370,26 +374,21 @@ export default function PlansPage() {
                         <span className="font-display font-extrabold text-4xl sm:text-5xl tracking-tight">
                           {plan.price}
                         </span>
-                        <p className="font-body text-xs text-muted mt-1 font-medium">
-                          {plan.priceLabel}
-                        </p>
+                        <span className="font-display font-bold text-lg text-muted ml-2">
+                          — {plan.priceLabel}
+                        </span>
                       </div>
 
-                      <div className=" flex items-center gap-4 min-h-[160px]">
-                        <StationSlotGraphic slots={plan.slots} />
-                        <div>
-                          <div className="font-display font-bold text-xl text-current leading-tight">
-                            {plan.slots} slots
-                          </div>
-                          <div className="font-body text-xs text-muted">
-                            Power bank station
-                          </div>
-                        </div>
+                      <div className="min-h-[160px] flex flex-col justify-center">
+                        <StationVisual plan={plan} />
+                        <p className="font-body text-xs text-muted text-center mt-2">
+                          {plan.blurb}
+                        </p>
                       </div>
 
                       <div className="h-px my-5 bg-signal/40" />
 
-                      <ul className="space-y-5 mb-10">
+                      <ul className="space-y-4 mb-8">
                         {plan.features.map((feature, idx) => (
                           <li
                             key={idx}
@@ -404,16 +403,17 @@ export default function PlansPage() {
                       </ul>
                     </div>
 
-                    <div className="relative pt-2">
-                      <button
-                        onClick={() => setSelectedPlan(plan)}
-                        className={`w-full py-4 px-5 rounded-full text-base flex items-center justify-center gap-2 active:scale-[0.98] ${BTN}`}
+                    <div className="relative pt-2 space-y-3">
+                      <a
+                        onClick={() => router.push('/contact')}
+                        className={`w-full py-4 px-5 cursor-pointer rounded-full text-base flex items-center justify-center gap-2 active:scale-[0.98] ${BTN}`}
                       >
-                        <span>Explore {plan.name}</span>
-                        <span className="text-base transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                          ↗
-                        </span>
-                      </button>
+                        PAY {plan.price}
+                      </a>
+
+                      <p className="font-body text-[11px] text-muted text-center">
+                        You get half the rent money, every month.
+                      </p>
                     </div>
                   </div>
                 </motion.div>
@@ -421,6 +421,45 @@ export default function PlansPage() {
             })}
           </div>
         </motion.div>
+
+        {/* --- HOW IT WORKS --- */}
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={viewport}
+          className="mb-10"
+        >
+          <motion.div
+            variants={fadeUp}
+            className="rounded-2xl border border-signal/60 bg-card p-6 sm:p-8"
+          >
+            <h2 className="font-display font-bold text-xl sm:text-2xl tracking-tight mb-5">
+              How it works
+            </h2>
+            <ol className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {STEPS.map((s) => (
+                <li key={s.n} className="flex items-start gap-3">
+                  <span
+                    className={`w-7 h-7 text-sm font-display font-bold ${CHECK_BUBBLE}`}
+                  >
+                    {s.n}
+                  </span>
+                  <span className="font-body text-sm leading-snug">
+                    {s.text}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </motion.div>
+        </motion.div>
+
+        {/* --- HONEST SMALL PRINT --- */}
+        <p className="font-body text-xs text-muted max-w-3xl mx-auto text-center mb-28 leading-relaxed">
+          Please read this. The money is not promised. Some months are busy.
+          Some months are slow. Your pay can go up and down. All the rules are
+          in the investor paper. Please read it before you pay.
+        </p>
 
         {/* --- SPECIFICATION COMPARISON MATRIX --- */}
         <motion.div
@@ -435,12 +474,8 @@ export default function PlansPage() {
             className="text-center max-w-2xl mx-auto mb-12"
           >
             <h2 className="font-display font-bold text-3xl md:text-5xl tracking-tight">
-              Compare station specifications.
+              Compare stations.
             </h2>
-            <p className="font-body text-sm sm:text-base text-muted mt-3">
-              Every package includes end-to-end site scouting, hardware
-              installation, and automated revenue disbursements.
-            </p>
           </motion.div>
 
           <motion.div
@@ -451,7 +486,7 @@ export default function PlansPage() {
               <thead>
                 <tr className="bg-signal text-ink">
                   <th className="p-4 sm:p-5 font-display text-sm font-semibold">
-                    Feature / Specification
+                    Station
                   </th>
                   {PLANS.map((p) => (
                     <th
@@ -465,7 +500,7 @@ export default function PlansPage() {
                         )}
                       </div>
                       <div className="font-mono text-xs font-normal text-ink/70">
-                        {p.price}
+                        {p.price} — one time
                       </div>
                     </th>
                   ))}
@@ -474,8 +509,8 @@ export default function PlansPage() {
               <tbody className="font-body text-sm">
                 {[
                   {
-                    label: "Slot Capacity",
-                    cells: PLANS.map((p) => `${p.slots} Battery Slots`),
+                    label: "Power Banks",
+                    cells: PLANS.map((p) => `${p.slots}`),
                     strong: true,
                   },
                   {
@@ -484,7 +519,7 @@ export default function PlansPage() {
                   },
                   {
                     label: "Dimensions",
-                    cells: PLANS.map((p) => p.specs.dimensions.split(" (")[0]),
+                    cells: PLANS.map((p) => p.specs.dimensions),
                   },
                   {
                     label: "Weight",
@@ -495,12 +530,10 @@ export default function PlansPage() {
                     cells: PLANS.map((p) => p.specs.screen),
                   },
                   {
-                    label: "Built-in Charging Cables",
-                    cells: PLANS.map(() => "USB-C, Lightning, Micro-USB"),
-                  },
-                  {
-                    label: "Net Profit Distribution",
-                    cells: PLANS.map(() => "50% / 50%"),
+                    label: "Your Share",
+                    cells: PLANS.map(
+                      () => "50% of net rental revenue, paid monthly"
+                    ),
                     accent: true,
                   },
                 ].map((row) => (
@@ -524,29 +557,10 @@ export default function PlansPage() {
                     ))}
                   </tr>
                 ))}
-                {["Venue Placement by GreenPal", "Hardware Warranty & Upkeep", "Cloud Dashboard Telemetry"].map(
-                  (label) => (
-                    <tr
-                      key={label}
-                      className="border-t border-signal/30 transition-colors hover:bg-black/[0.02] dark:hover:bg-white/[0.03]"
-                    >
-                      <td className="p-4 sm:p-5 font-medium">{label}</td>
-                      {PLANS.map((p) => (
-                        <td key={p.id} className="p-4 sm:p-5 text-center">
-                          <span className={`inline-flex w-6 h-6 ${CHECK_BUBBLE}`}>
-                            <Check className="w-3.5 h-3.5" />
-                          </span>
-                        </td>
-                      ))}
-                    </tr>
-                  )
-                )}
               </tbody>
             </table>
           </motion.div>
         </motion.div>
-
-        <HowItWorks />
 
         {/* --- BOTTOM CTA --- */}
         <motion.div
@@ -558,22 +572,19 @@ export default function PlansPage() {
         >
           <div className="absolute right-0 top-0 bottom-0 w-1/2 gp-motif opacity-20 pointer-events-none" />
           <div className="relative z-10 max-w-2xl">
-            <span className="font-mono text-xs uppercase tracking-[0.22em] text-signal font-semibold mb-3 block">
-              Portfolio allocations open
-            </span>
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl tracking-tight text-sand leading-tight mb-4">
-              Ready to deploy your power station?
+              Questions before you pay?
             </h2>
             <p className="font-body text-sand/70 text-base md:text-lg mb-8 leading-relaxed">
-              Connect with our partnership directors to reserve high-performing
-              venue territories and review formal blueprint documentation.
+              Talk to us. We will answer anything about the stations, the
+              places and the monthly numbers.
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <Link
                 href="/contact"
                 className={`inline-flex items-center justify-center px-8 py-4 rounded-full text-lg ${BTN}`}
               >
-                Schedule Investor Call
+                Contact Us
               </Link>
               <Link
                 href="/products"
@@ -615,7 +626,7 @@ export default function PlansPage() {
 
               <div className="flex items-center gap-3 mb-2">
                 <span className="font-mono text-xs uppercase tracking-wider text-signal-dim dark:text-signal font-semibold">
-                  Station Blueprint
+                  Station Details
                 </span>
                 {selectedPlan.popular && (
                   <span
@@ -627,11 +638,10 @@ export default function PlansPage() {
               </div>
 
               <h3 className="font-display font-extrabold text-3xl sm:text-4xl tracking-tight mb-1">
-                {selectedPlan.name} Package
+                {selectedPlan.name}
               </h3>
               <p className="font-body text-sm text-muted mb-6">
-                {selectedPlan.subtitle} • {selectedPlan.slots} slots
-                configuration
+                {selectedPlan.subtitle} • {selectedPlan.slots} power banks
               </p>
 
               <div className="p-5 rounded-2xl border border-signal/50 bg-card flex items-center justify-between gap-4 mb-6">
@@ -640,69 +650,43 @@ export default function PlansPage() {
                     {selectedPlan.price}
                   </div>
                   <div className="font-body text-xs text-muted">
-                    {selectedPlan.priceLabel}
+                    one time
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <StationSlotGraphic slots={selectedPlan.slots} />
-                  <div className="text-right">
-                    <div className="font-display font-bold text-lg">
-                      {selectedPlan.slots} Slots
-                    </div>
-                    <div className="font-body text-xs text-muted">
-                      Full Capacity
-                    </div>
-                  </div>
+                <div className="w-32">
+                  <StationVisual plan={selectedPlan} />
                 </div>
               </div>
 
               <div className="space-y-4 mb-8">
                 <h4 className="font-display font-semibold text-sm uppercase tracking-wider text-muted">
-                  Technical & Financial Specifications
+                  Station Specifications
                 </h4>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm font-body">
                   {[
-                    ["Ideal Venue Type", selectedPlan.specs.bestFor, false],
-                    ["Display Type", selectedPlan.specs.screen, false],
-                    [
-                      "Est. Gross Monthly Station Revenue",
-                      selectedPlan.specs.estimatedMonthlyGross,
-                      false,
-                    ],
-                    [
-                      "Your Est. Monthly Net Payout (50%)",
-                      selectedPlan.specs.estimatedMonthlyProfitSplit,
-                      true,
-                    ],
-                  ].map(([label, value, accent]) => (
+                    ["Good for", selectedPlan.specs.bestFor],
+                    ["Display", selectedPlan.specs.screen],
+                    ["Form factor", selectedPlan.specs.formFactor],
+                    ["Size & weight", `${selectedPlan.specs.dimensions} · ${selectedPlan.specs.weight}`],
+                  ].map(([label, value]) => (
                     <div
-                      key={label as string}
+                      key={label}
                       className="p-3.5 rounded-xl border border-signal/40"
                     >
-                      <span className="block text-xs text-muted">
-                        {label as string}
-                      </span>
-                      <span
-                        className={`font-medium ${accent ? "accent" : "text-current"}`}
-                      >
-                        {value as string}
-                      </span>
+                      <span className="block text-xs text-muted">{label}</span>
+                      <span className="font-medium text-current">{value}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="mb-8">
+              <div className="mb-6">
                 <h4 className="font-display font-semibold text-sm uppercase tracking-wider text-muted mb-3">
-                  What&apos;s Included In This Package
+                  How this package works
                 </h4>
                 <ul className="space-y-2.5 font-body text-sm text-current">
-                  {[
-                    ...selectedPlan.features,
-                    "Full hardware lifetime warranty & zero repair fees",
-                    "24/7 Remote IoT telemetry & investor dashboard access",
-                  ].map((f, i) => (
+                  {selectedPlan.features.map((f, i) => (
                     <li key={i} className="flex items-center gap-2.5">
                       <span className={`w-5 h-5 ${CHECK_BUBBLE}`}>
                         <Check className="w-3 h-3" />
@@ -713,13 +697,19 @@ export default function PlansPage() {
                 </ul>
               </div>
 
+              <p className="font-body text-xs text-muted mb-6 leading-relaxed">
+                The money is not promised. Some months are busy, some are slow,
+                and your pay can go up and down. All the rules are in the
+                investor paper. Please read it before you pay.
+              </p>
+
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <Link
-                  href={`/contact?subject=Inquiry about ${selectedPlan.name} ($${selectedPlan.priceNumeric})`}
+                <a
+                  href={selectedPlan.payUrl}
                   className={`flex-1 inline-flex items-center justify-center py-3.5 px-6 rounded-full text-base text-center hover:-translate-y-0.5 ${BTN}`}
                 >
-                  Proceed with {selectedPlan.name} Plan
-                </Link>
+                  PAY {selectedPlan.price}
+                </a>
                 <button
                   onClick={() => setSelectedPlan(null)}
                   className="py-3.5 px-6 rounded-full border border-signal/60 font-display font-semibold text-sm hover:bg-black/5 dark:hover:bg-white/10 transition-colors"

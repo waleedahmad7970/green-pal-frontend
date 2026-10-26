@@ -151,7 +151,7 @@ export default function Hero() {
           </div>
           <div className="overflow-hidden">
             <span className="reveal-line font-display font-extrabold text-display-xl block">
-              Keep<span className="accent">Moving.</span>
+              Keep <span className="accent">Moving.</span>
             </span>
           </div>
         </h1>
