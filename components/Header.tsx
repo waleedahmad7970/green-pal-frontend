@@ -26,7 +26,7 @@ const pageLinks = [
   { label: "Home", href: "/" },
   { label: "Plans", href: "/plans" },
   { label: "Products", href: "/products" },
-  // { label: "Investment Plans", href: "/investment" },
+  // { label: "Investment Plans", href: "/plans" },
   { label: "Events", href: "/event" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },

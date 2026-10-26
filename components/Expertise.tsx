@@ -265,7 +265,7 @@ export default function PowerBlueprints() {
 
         <div className="container-edit pb-24 md:pb-32 flex flex-col items-start md:items-center text-left md:text-center">
           <a
-            href="/investment"
+            href="/plans"
             className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-signal text-ink font-display font-bold text-lg hover:scale-105 transition-transform duration-300 mb-8 shadow-lg shadow-signal/10"
           >
             Browse Greenpal Power Portfolio Blueprints

@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description:
     "Explore Greenpal investment plans and co-invest in Canada's shared portable charging network. Earn passive revenue by funding charging stations at high-traffic venues.",
   alternates: {
-    canonical: "https://thegreenpal.ca/investment",
+    canonical: "https://thegreenpal.ca/plans",
   },
 };
 

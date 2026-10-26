@@ -177,7 +177,7 @@ function SuccessContent() {
 
         <div className="grid grid-cols-2 gap-3">
           <Link
-            href="/investment"
+            href="/plans"
             className="flex items-center justify-center bg-white border border-gray-200 text-gray-700 px-4 py-3 rounded-2xl font-body text-xs font-semibold hover:bg-gray-50 transition-colors"
           >
             More Blueprints

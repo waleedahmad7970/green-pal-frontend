@@ -16,7 +16,7 @@ export default function CheckoutCancelledPage() {
                     Your payment was cancelled and no charges were made. You can return to explore our investment blueprints whenever you are ready.
                 </p>
                 <Link
-                    href="/investment"
+                    href="/plans"
                     className="block w-full py-3.5 rounded-full bg-[#02d683] text-ink font-display font-bold text-sm tracking-wide transition-all hover:bg-[#02bc73] shadow-md"
                 >
                     Return to Blueprints
