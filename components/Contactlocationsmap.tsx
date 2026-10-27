@@ -22,6 +22,14 @@ const LOCATIONS: Location[] = [
         lng: -113.48727,
     },
     {
+        name: "ExcelHealth",
+        address: "100 - 3916 Macleod Trail SE, Calgary, AB T2G 2C5",
+        description:
+            "Greenpal Pulse station — rent a portable power bank and stay charged while you wait for your appointment.",
+        lat: 51.018671,
+        lng: -114.062055,
+    },
+    {
         name: "Evolution Wonderlounge",
         address: "11508 Jasper Ave NW, Edmonton, AB T5K 0M8",
         description:
