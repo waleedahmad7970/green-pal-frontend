@@ -1,8 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "motion/react";
 import { submitContact } from "@/lib/site/services/contact";
+import ContactLocationsMap from "./Contactlocationsmap";
+
+// Leaflet needs the browser (window), so load it on the client only
+
 
 export default function ContactForm() {
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -115,17 +120,11 @@ export default function ContactForm() {
         {/* Our Location */}
         <div className="flex flex-col">
           <h3 className="font-display text-2xl font-semibold mb-6 text-ink">
-            Our Location
+            Our Locations
           </h3>
 
           <div className="relative w-full aspect-[4/3] rounded-2xl border border-ink/10 overflow-hidden mb-8">
-            <iframe
-              title="Our location"
-              src="https://www.google.com/maps?q=123+Greenpal+Ave+Suite+400+Toronto+ON+M5V+2T6+Canada&output=embed"
-              className="absolute inset-0 w-full h-full border-0"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
+            <ContactLocationsMap />
           </div>
 
           <div className="space-y-5 font-body text-sm">
