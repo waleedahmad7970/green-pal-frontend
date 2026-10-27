@@ -4,8 +4,9 @@ import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "motion/react";
 import { submitContact } from "@/lib/site/services/contact";
-import ContactLocationsMap from "./Contactlocationsmap";
-
+const ContactLocationsMap = dynamic(() => import("./Contactlocationsmap"), {
+  ssr: false,
+});
 // Leaflet needs the browser (window), so load it on the client only
 
 
