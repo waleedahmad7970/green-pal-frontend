@@ -197,7 +197,7 @@ export default function AdminDashboardPage() {
                     <tr className="border-b border-sand/5">
                       <td className="py-3">Tiers</td>
                       <td>{month.tierSales}</td>
-                      <td>{money(month.tierRevenue)}</td>
+                      <td>{money(month.tierRevenue || any)}</td>
                     </tr>
                     <tr className="border-b border-sand/5">
                       <td className="py-3">Plans</td>

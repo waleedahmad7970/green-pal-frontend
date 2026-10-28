@@ -19,6 +19,7 @@ export interface Summary {
     pendingCount: number;
     tierSales: number;     // <-- Add these 3 lines
     processingCount: number;
+    tierRevenue: number;
 }
 
 // fromDate / toDate are 'yyyy-MM-dd' (inclusive)
