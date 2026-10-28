@@ -3,7 +3,7 @@ import type { MonthlyStat } from "../types";
 import { listOrders } from "./orders";
 import apiClient from "@/lib/apiClient";
 
-export type SaleType = "product" | "plan";
+export type SaleType = "product" | "plan" | "tier";
 
 export interface OrderRow {
   id: string;
@@ -60,6 +60,11 @@ export async function getSalesStats(fromDate: string, toDate: string): Promise<S
     byType: {
       product: { sales: s.productSales, units: s.productUnits, revenue: s.productRevenue },
       plan: { sales: s.planSales, units: s.planUnits, revenue: s.planRevenue },
+      tier: {
+        sales: s.tierSales ?? 0,
+        units: s.tierUnits ?? 0,
+        revenue: s.tierRevenue ?? 0,
+      },
     },
     statuses: {
       pending: { count: s.pendingCount, amount: s.pendingAmount },

@@ -140,11 +140,12 @@ export default function AdminDashboardPage() {
         <>
           {/* Today */}
           <p className="text-xs uppercase tracking-wide text-sand/40 font-body mb-3">Today</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
             <StatCard label="Sale amount today" value={today ? money(today.totalRevenue) : "—"} />
-            <StatCard label="Number of sales today" value={today ? String(today.totalSales) : "—"} />
-            <StatCard label="Products sold today" value={today ? String(today.productSales) : "—"} />
-            <StatCard label="Plans sold today" value={today ? String(today.planSales) : "—"} />
+            <StatCard label="Total sales today" value={today ? String(today.totalSales) : "—"} />
+            <StatCard label="Products sold" value={today ? String(today.productSales) : "—"} />
+            <StatCard label="Tiers sold" value={today ? String(today.tierSales) : "—"} />
+            <StatCard label="Plans sold" value={today ? String(today.planSales) : "—"} />
           </div>
 
           {/* This month */}
@@ -177,7 +178,7 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className={card}>
-              <h3 className="font-display text-lg font-semibold text-sand mb-3">Products vs plans (this month)</h3>
+              <h3 className="font-display text-lg font-semibold text-sand mb-3">Sales by type (this month)</h3>
               {month ? (
                 <table className="w-full text-sm font-body">
                   <thead>
@@ -189,10 +190,19 @@ export default function AdminDashboardPage() {
                   </thead>
                   <tbody className="text-sand/80">
                     <tr className="border-b border-sand/5">
-                      <td className="py-3">Products</td><td>{month.productSales}</td><td>{money(month.productRevenue)}</td>
+                      <td className="py-3">Products</td>
+                      <td>{month.productSales}</td>
+                      <td>{money(month.productRevenue)}</td>
                     </tr>
                     <tr className="border-b border-sand/5">
-                      <td className="py-3">Plans</td><td>{month.planSales}</td><td>{money(month.planRevenue)}</td>
+                      <td className="py-3">Tiers</td>
+                      <td>{month.tierSales}</td>
+                      <td>{money(month.tierRevenue)}</td>
+                    </tr>
+                    <tr className="border-b border-sand/5">
+                      <td className="py-3">Plans</td>
+                      <td>{month.planSales}</td>
+                      <td>{money(month.planRevenue)}</td>
                     </tr>
                     <tr>
                       <td className="py-3 font-semibold">Total</td>

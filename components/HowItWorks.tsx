@@ -1,193 +1,104 @@
-"use client";
-
-import { useState, useEffect, useRef } from "react";
-import gsap from "gsap";
-import { chargedPowerBank, rentPowerBank, returnPowerBank, scanPowerBank } from "@/public/howitworks";
 import Image from "next/image";
+import { chargedPowerBank, rentPowerBank, returnPowerBank, scanPowerBank } from "@/public/howitworks";
 
 const steps = [
   {
     id: 1,
-    subtitle: "STEP 1",
-    title: "Tap/Scan",
+    title: "Tap / Scan",
     description: "Scan the QR code on any Greenpal Pulse station.",
     image: scanPowerBank,
   },
   {
     id: 2,
-    subtitle: "STEP 2",
     title: "Rent",
     description: "Pick up a portable power bank. Pay by the hour.",
     image: rentPowerBank,
   },
   {
     id: 3,
-    subtitle: "STEP 3",
     title: "Charge",
     description: "Charge your phone anywhere. Keep moving.",
     image: chargedPowerBank,
   },
   {
     id: 4,
-    subtitle: "STEP 4",
     title: "Return",
     description: "Drop it at any Greenpal station when you're done.",
     image: returnPowerBank,
   },
 ];
 
-const AUTO_PLAY_DURATION = 7; // Seconds per step
+// Hairline dividers between the steps:
+// mobile + tablet = 2x2 grid, desktop = one row of 4.
+const dividers = [
+  "",
+  "border-l",
+  "border-t lg:border-t-0 lg:border-l",
+  "border-t border-l lg:border-t-0",
+];
 
-export default function HowItWorksAccordion() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const progressTween = useRef<gsap.core.Tween | null>(null);
-  const isManuallyClicked = useRef(false);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (progressTween.current) progressTween.current.kill();
-
-      gsap.set(".accordion-progress", { scaleX: 0, scaleY: 0 });
-
-      let mm = gsap.matchMedia();
-
-      mm.add("(min-width: 768px)", () => {
-        // DESKTOP: Vertical progress bar filling from top to bottom
-        gsap.set(`.progress-${activeIndex}`, {
-          scaleX: 1,
-          scaleY: 0,
-          transformOrigin: "top center",
-        });
-        progressTween.current = gsap.to(`.progress-${activeIndex}`, {
-          scaleY: 1,
-          duration: AUTO_PLAY_DURATION,
-          ease: "none",
-          onComplete: () => setActiveIndex((prev) => (prev + 1) % steps.length),
-        });
-      });
-
-      mm.add("(max-width: 767px)", () => {
-        // MOBILE: Horizontal progress bar filling from left to right
-        gsap.set(`.progress-${activeIndex}`, {
-          scaleY: 1,
-          scaleX: 0,
-          transformOrigin: "left center",
-        });
-        progressTween.current = gsap.to(`.progress-${activeIndex}`, {
-          scaleX: 1,
-          duration: AUTO_PLAY_DURATION,
-          ease: "none",
-          onComplete: () => setActiveIndex((prev) => (prev + 1) % steps.length),
-        });
-      });
-
-      if (isManuallyClicked.current) {
-        progressTween.current?.restart();
-        isManuallyClicked.current = false;
-      }
-    });
-
-    return () => ctx.revert();
-  }, [activeIndex]);
-
-  const handleTabClick = (index: number) => {
-    if (index === activeIndex) return;
-    isManuallyClicked.current = true;
-    setActiveIndex(index);
-  };
-
+export default function HowItWorks() {
   return (
-    <section className="relative py-10 md:py-14 bg-surface overflow-hidden">
+    <section className="relative py-16 md:py-24 bg-surface">
       <div className="container-edit">
-        {/* Header */}
-        <div className="mb-12 md:mb-16">
-          <h2 className="font-display font-bold text-5xl md:text-6xl mb-3 tracking-tight text-ink">
-            How It Works
-          </h2>
-          <p className="text-muted font-body text-xl md:text-2xl">
-            Stay powered up while on the go.
-          </p>
-        </div>
+        {/* One single light band holding all four steps */}
+        <div className="relative overflow-hidden rounded-[2rem] bg-card text-ink border border-signal/60 shadow-xl">
+          {/* Soft glow behind the band */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(60% 50% at 50% 0%, rgba(2,214,131,0.10) 0%, rgba(2,214,131,0) 70%)",
+            }}
+          />
 
-        {/* Expanding Accordion Container */}
-        <div className="flex flex-col md:flex-row w-full h-[800px] md:h-[650px] gap-4 md:gap-6">
-          {steps.map((step, i) => {
-            const isActive = i === activeIndex;
+          {/* Header */}
+          <div className="relative px-6 pt-12 pb-10 md:px-12 md:pt-16 md:pb-14 text-center">
+            <h2 className="font-display font-extrabold text-4xl sm:text-5xl md:text-6xl tracking-tight text-ink leading-[1.04] mb-3">
+              How It Works
+            </h2>
+            <p className="font-body text-lg md:text-xl text-muted">
+              Stay powered up while on the go.
+            </p>
+          </div>
 
-            return (
-              <div
+          {/* Four steps: 2 rows on mobile, 1 row on desktop */}
+          <ol className="relative grid grid-cols-2 lg:grid-cols-4 border-t line-rule">
+            {steps.map((step, i) => (
+              <li
                 key={step.id}
-                onClick={() => handleTabClick(i)}
-                className={`group relative overflow-hidden rounded-[2rem] border line-rule transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer
-                                    ${isActive
-                    ? "flex-[4] md:flex-[5] bg-surface shadow-2xl"
-                    : "flex-[0.8] md:flex-[0.7] bg-ink/5 hover:bg-ink/10 shadow-sm"
-                  }`}
+                className={`relative flex flex-col px-4 pt-4 pb-6 md:px-6 md:pt-5 md:pb-8 line-rule ${dividers[i]}`}
               >
-                {/* 
-                                  --- 1. THE TAB (Always Visible) ---
-                                */}
-                <div className="absolute top-0 left-0 w-full md:w-20 h-[72px] md:h-full border-b md:border-b-0 md:border-r line-rule bg-surface z-20 flex flex-row md:flex-col items-center justify-between p-5 md:py-8">
-                  {/* Tab Header (Number + Title for Mobile) */}
-                  <div className="flex items-center gap-4">
-                    <span
-                      className={`font-display text-xl md:text-2xl font-bold transition-colors duration-500 ${isActive ? "text-signal" : "text-muted group-hover:text-ink"}`}
-                    >
-                      0{step.id}
-                    </span>
-                    {/* Mobile Only: Show the title next to the number so it doesn't look empty */}
-                    <span
-                      className={`md:hidden font-display text-lg font-bold transition-colors duration-500 ${isActive ? "text-signal" : "text-muted group-hover:text-ink"}`}
-                    >
-                      {step.title}
-                    </span>
-                  </div>
-
-                  {/* GSAP Progress Track */}
-                  <div className="relative flex-1 w-full md:w-1 h-1 md:h-full ml-4 md:ml-0 md:mt-6 bg-ink/10 rounded-full overflow-hidden">
-                    <div
-                      className={`accordion-progress progress-${i} absolute top-0 left-0 w-full h-full bg-signal rounded-full`}
-                    />
-                  </div>
-                </div>
-
-                {/* 
-                                  --- 2. THE EXPANDED CONTENT ---
-                                */}
-                {/* EXPANDED CONTENT */}
-                <div
-                  className={`absolute inset-0 pt-[72px] md:pt-0 md:pl-20 flex flex-col md:flex-row transition-opacity duration-500 z-10
-    ${isActive ? "opacity-100 delay-200" : "opacity-0 pointer-events-none"}`}
+                {/* Big number */}
+                <span
+                  aria-hidden="true"
+                  className="font-display font-extrabold text-5xl md:text-8xl leading-none text-signal mb-3 md:mb-4 select-none"
                 >
-                  {/* Left: text card (fixed width, so text doesn't reflow during the animation) */}
-                  <div className="w-full md:w-[320px] shrink-0 p-6 md:p-12 flex flex-col justify-center bg-surface h-[35%] md:h-full border-b md:border-b-0 md:border-r line-rule">
-                    <div className="hidden md:block">
-                      <span className="text-signal font-bold tracking-widest text-xs md:text-sm uppercase mb-4 block">
-                        {step.subtitle}
-                      </span>
-                      <h3 className="text-ink font-display text-4xl md:text-5xl font-extrabold mb-6 leading-[1.05] tracking-tight pr-4">
-                        {step.title}
-                      </h3>
-                    </div>
-                    <p className="text-muted font-body text-base md:text-lg leading-relaxed">
-                      {step.description}
-                    </p>
-                  </div>
+                  0{step.id}
+                </span>
 
-                  {/* Right: image fills whatever space is left */}
-                  <div className="relative flex-1 min-w-0 min-h-0 overflow-hidden bg-[#022b20]">
-                    <Image
-                      src={step.image}
-                      alt={step.title}
-                      fill
-                      sizes="(min-width: 768px) 600px, 100vw"
-                      className="object-contain"
-                    />
-                  </div>
+                {/* Image */}
+                <div className="relative aspect-[4/5] w-full mb-4 md:mb-6 overflow-hidden">
+                  <Image
+                    src={step.image}
+                    alt={step.title}
+                    fill
+                    sizes="(min-width: 1024px) 22vw, 45vw"
+                    className="object-contain"
+                  />
                 </div>
-              </div>
-            );
-          })}
+
+                {/* Text */}
+                <h3 className="font-display font-extrabold text-lg md:text-3xl tracking-tight text-ink mb-2 md:mb-3">
+                  {step.title}
+                </h3>
+                <p className="font-body text-xs md:text-base leading-relaxed text-muted">
+                  {step.description}
+                </p>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>

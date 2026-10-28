@@ -17,6 +17,7 @@ export interface Summary {
     planSales: number;
     planRevenue: number;
     pendingCount: number;
+    tierSales: number;     // <-- Add these 3 lines
     processingCount: number;
 }
 

@@ -16,11 +16,24 @@ import {
 } from "@/components/admin/ui";
 import { useOrderStore } from "@/lib/admin/slices/useOrderStore";
 
+type OrderKind = "product" | "tier" | "plan";
 
+// Same rule as the reports: orderType 'product' = product, 'tier' = investment tier,
+// everything else = plan
+const getType = (o: any): OrderKind =>
+  o.orderType === "product" ? "product" : o.orderType === "tier" ? "tier" : "plan";
 
-// Same rule as the reports: orderType 'product' = product, everything else = plan
-const getType = (o: any): "product" | "plan" =>
-  o.orderType === "product" ? "product" : "plan";
+const typeLabel: Record<OrderKind, string> = {
+  product: "Product",
+  tier: "Tier",
+  plan: "Plan",
+};
+
+const typeClass: Record<OrderKind, string> = {
+  product: "text-sky-400 bg-sky-400/10",
+  tier: "text-emerald-400 bg-emerald-400/10",
+  plan: "text-violet-400 bg-violet-400/10",
+};
 
 const OrderSchema = Yup.object().shape({
   customerName: Yup.string().required("Required"),
@@ -35,7 +48,7 @@ export default function AdminOrdersPage() {
   const { orders, loading, fetchOrders, addOrder, changeOrderStatus } = useOrderStore();
   const [locations, setLocations] = useState<Location[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [typeFilter, setTypeFilter] = useState<any>("all");
+  const [typeFilter, setTypeFilter] = useState<"all" | OrderKind>("all");
 
   useEffect(() => {
     fetchOrders();
@@ -56,7 +69,8 @@ export default function AdminOrdersPage() {
   };
 
   const productCount = orders.filter((o) => getType(o) === "product").length;
-  const planCount = orders.length - productCount;
+  const tierCount = orders.filter((o) => getType(o) === "tier").length;
+  const planCount = orders.length - productCount - tierCount;
 
   const filteredOrders = orders.filter(
     (o) => typeFilter === "all" || getType(o) === typeFilter
@@ -74,11 +88,12 @@ export default function AdminOrdersPage() {
         <label className="text-sm text-sand/60 font-body">Show</label>
         <select
           value={typeFilter}
-          onChange={(e) => setTypeFilter(e.target.value as any)}
+          onChange={(e) => setTypeFilter(e.target.value as "all" | OrderKind)}
           className="bg-sand/[0.04] border border-sand/10 rounded-lg px-3 py-2 text-sand text-sm outline-none cursor-pointer"
         >
           <option value="all" className="bg-ink">All orders ({orders.length})</option>
           <option value="product" className="bg-ink">Product orders ({productCount})</option>
+          <option value="tier" className="bg-ink">Tier orders ({tierCount})</option>
           <option value="plan" className="bg-ink">Plan orders ({planCount})</option>
         </select>
       </div>
@@ -115,12 +130,9 @@ export default function AdminOrdersPage() {
                     <td className="p-4 text-sand/70">{o.item}</td>
                     <td className="p-4">
                       <span
-                        className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full ${type === "product"
-                          ? "text-sky-400 bg-sky-400/10"
-                          : "text-violet-400 bg-violet-400/10"
-                          }`}
+                        className={`inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-full ${typeClass[type]}`}
                       >
-                        {type === "product" ? "Product" : "Plan"}
+                        {typeLabel[type]}
                       </span>
                     </td>
                     <td className="p-4 text-sand/70">${(o.total ?? 0).toFixed(2)}</td>

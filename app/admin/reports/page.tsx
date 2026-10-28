@@ -16,8 +16,15 @@ const fmtDate = (s: string | null) => {
   return isValid(d) ? format(d, "dd MMM yyyy, hh:mm a") : "";
 };
 
-const typeLabel: Record<SaleType, string> = { product: "Product", plan: "Plan" };
+const typeLabel: Record<SaleType, string> = {
+  product: "Product",
+  plan: "Plan",
+  tier: "Investment tier",
+};
 const STATUSES = ["pending", "processing", "completed", "cancelled"];
+
+// Safe fallback so the page never crashes if the API has no tier numbers yet
+const EMPTY_TYPE = { sales: 0, units: 0, revenue: 0 };
 
 const card = "bg-sand/[0.04] border border-sand/10 rounded-xl p-6";
 const th = "text-left text-xs uppercase tracking-wide text-sand/40 font-body pb-3 pr-4 whitespace-nowrap";
@@ -78,7 +85,7 @@ export default function AdminReportsPage() {
     ];
     const body = data.orders.map((o) => [
       o.id, fmtDate(o.createdAt), fmtDate(o.paidAt), o.customerName, o.customerEmail, o.item,
-      typeLabel[o.type], o.quantity, o.total.toFixed(2), o.status, o.isPaid ? "Yes" : "No",
+      typeLabel[o.type] ?? o.type, o.quantity, o.total.toFixed(2), o.status, o.isPaid ? "Yes" : "No",
       o.location, o.paymentMethod, o.cardBrand, o.last4, o.stripeSessionId, o.stripePaymentIntentId, o.receiptUrl,
     ]);
     downloadCsv(`orders_${rangeLabel}.csv`, [head, ...body]);
@@ -86,12 +93,14 @@ export default function AdminReportsPage() {
 
   const exportSummary = () => {
     if (!data) return;
+    const tier = data.byType.tier ?? EMPTY_TYPE;
     const rows: unknown[][] = [
       ["Report range", from, to],
       [],
       ["Summary", "Count", "Units", "Revenue (USD)"],
       ["Total sales (completed)", data.totalSales, "", data.totalRevenue.toFixed(2)],
       ["Products", data.byType.product.sales, data.byType.product.units, data.byType.product.revenue.toFixed(2)],
+      ["Investment tiers", tier.sales, tier.units, tier.revenue.toFixed(2)],
       ["Plans", data.byType.plan.sales, data.byType.plan.units, data.byType.plan.revenue.toFixed(2)],
       ["All orders (any status)", data.totalOrders],
       [],
@@ -99,14 +108,19 @@ export default function AdminReportsPage() {
       ...STATUSES.map((s) => [s, data.statuses[s]?.count ?? 0, (data.statuses[s]?.amount ?? 0).toFixed(2)]),
       [],
       ["Item", "Type", "Units", "Sales", "Revenue (USD)"],
-      ...data.topItems.map((i) => [i.item, typeLabel[i.type], i.units, i.sales, i.revenue.toFixed(2)]),
+      ...data.topItems.map((i) => [i.item, typeLabel[i.type] ?? i.type, i.units, i.sales, i.revenue.toFixed(2)]),
     ];
     downloadCsv(`summary_${rangeLabel}.csv`, rows);
   };
 
+  const tierStats = data?.byType.tier ?? EMPTY_TYPE;
+
   return (
     <div>
-      <PageHeader title="Reports" description="Sales for products and plans. Pick a date range and download as CSV." />
+      <PageHeader
+        title="Reports"
+        description="Sales for products, investment tiers and plans. Pick a date range and download as CSV."
+      />
 
       <div className="flex flex-wrap items-center gap-3 mb-6">
         <label className="text-sm text-sand/60">From</label>
@@ -156,13 +170,18 @@ export default function AdminReportsPage() {
       {!loading && data && (
         <div className="grid gap-6">
           {/* Counts */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             <Stat label="Total sale amount" value={money(data.totalRevenue)} sub="Completed orders only" />
             <Stat label="Number of sales" value={data.totalSales} sub={`${data.totalOrders} orders in total`} />
             <Stat
               label="Products sold"
               value={data.byType.product.sales}
               sub={`${data.byType.product.units} units · ${money(data.byType.product.revenue)}`}
+            />
+            <Stat
+              label="Investment tiers sold"
+              value={tierStats.sales}
+              sub={`${tierStats.units} units · ${money(tierStats.revenue)}`}
             />
             <Stat
               label="Plans sold"
@@ -207,7 +226,7 @@ export default function AdminReportsPage() {
                     {data.topItems.map((i) => (
                       <tr key={`${i.type}-${i.item}`}>
                         <td className={td}>{i.item}</td>
-                        <td className={td}>{typeLabel[i.type]}</td>
+                        <td className={td}>{typeLabel[i.type] ?? i.type}</td>
                         <td className={td}>{i.units}</td>
                         <td className={td}>{money(i.revenue)}</td>
                       </tr>
@@ -241,7 +260,7 @@ export default function AdminReportsPage() {
                         <span className="text-xs text-sand/40">{o.customerEmail}</span>
                       </td>
                       <td className={td}>{o.item}</td>
-                      <td className={td}>{typeLabel[o.type]}</td>
+                      <td className={td}>{typeLabel[o.type] ?? o.type}</td>
                       <td className={td}>{o.quantity}</td>
                       <td className={td}>{money(o.total)}</td>
                       <td className={`${td} capitalize`}>{o.status}</td>

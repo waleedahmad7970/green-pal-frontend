@@ -44,7 +44,7 @@ export default function AdminInquiriesPage() {
     <div>
       <PageHeader
         title="Inquiries"
-        description="Product inquiries from customers. Review, schedule meetings, and generate payment links."
+        description="Product and plan tier inquiries from customers. Review, schedule meetings, and generate payment links."
         action={
           <select
             value={filterStatus}
@@ -72,7 +72,7 @@ export default function AdminInquiriesPage() {
               <tr className="text-left text-sand/40 border-b border-sand/10">
                 <th className="p-4 font-normal">ID</th>
                 <th className="p-4 font-normal">Customer</th>
-                <th className="p-4 font-normal">Product</th>
+                <th className="p-4 font-normal">Product / Tier</th>
                 <th className="p-4 font-normal">Message</th>
                 <th className="p-4 font-normal">Price</th>
                 <th className="p-4 font-normal">Date</th>
@@ -81,16 +81,21 @@ export default function AdminInquiriesPage() {
               </tr>
             </thead>
             <tbody>
-              {inquiries.map((inq) => {
+              {inquiries.map((inq: any) => {
                 const id = inq._id;
                 const userName =
                   typeof inq.user === "object" ? inq.user?.name : "—";
                 const userEmail =
                   typeof inq.user === "object" ? inq.user?.email : "";
-                const productName =
-                  typeof inq.product === "object"
+
+                // A tier inquiry has a planTier and no product
+                const isTier = !!inq.planTier;
+                const productName = isTier
+                  ? (typeof inq.planTier === "object" ? inq.planTier?.name : "") ||
+                  inq.productName
+                  : (typeof inq.product === "object"
                     ? inq.product?.productName || inq.product?.name
-                    : inq.productName;
+                    : "") || inq.productName;
 
                 return (
                   <tr key={id} className="border-b border-sand/5 last:border-0">
@@ -103,7 +108,14 @@ export default function AdminInquiriesPage() {
                         <div className="text-sand/40 text-xs">{userEmail}</div>
                       )}
                     </td>
-                    <td className="p-4 text-sand/70">{productName || "—"}</td>
+                    <td className="p-4 text-sand/70">
+                      {productName || "—"}
+                      {isTier && (
+                        <span className="ml-2 text-[10px] uppercase tracking-wider bg-signal text-black px-1.5 py-0.5 rounded font-bold">
+                          Tier
+                        </span>
+                      )}
+                    </td>
                     <td className="p-4 text-sand/50 max-w-[200px] truncate">
                       {inq.message}
                     </td>
@@ -137,10 +149,13 @@ export default function AdminInquiriesPage() {
                         <PrimaryButton
                           onClick={() => {
                             setLinkModal(id);
+                            // Start from the agreed price, else the tier's listed price
                             setPriceInput(
                               inq.customPrice
                                 ? (inq.customPrice / 100).toFixed(2)
-                                : ""
+                                : inq.planTier?.price
+                                  ? Number(inq.planTier.price).toFixed(2)
+                                  : ""
                             );
                           }}
                         >

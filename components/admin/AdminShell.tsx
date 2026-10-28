@@ -8,6 +8,7 @@ import { useAdminAuth } from "@/lib/admin/auth";
 const navItems = [
   { label: "Dashboard", href: "/admin" },
   { label: "Products", href: "/admin/product" },
+  { label: "Plan Tiers", href: "/admin/plan-tiers" },
   { label: "Plans", href: "/admin/plans" },
   { label: "Orders", href: "/admin/orders" },
   { label: "Inquiries", href: "/admin/inquiries" },
