@@ -42,16 +42,16 @@ export default function HowItWorks() {
     <section className="relative py-16 md:py-24 bg-surface">
       <div className="container-edit">
         {/* One single light band holding all four steps */}
-        <div className="relative overflow-hidden rounded-[2rem] bg-card text-ink border border-signal/60 shadow-xl">
+        <div className="relative overflow-hidden rounded-[2rem] bg-card text-ink border border-signal/60 ">
           {/* Soft glow behind the band */}
-          <div
+          {/* <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0"
             style={{
               background:
                 "radial-gradient(60% 50% at 50% 0%, rgba(2,214,131,0.10) 0%, rgba(2,214,131,0) 70%)",
             }}
-          />
+          /> */}
 
           {/* Header */}
           <div className="relative px-6 pt-12 pb-10 md:px-12 md:pt-16 md:pb-14 text-center">
@@ -85,7 +85,7 @@ export default function HowItWorks() {
                     alt={step.title}
                     fill
                     sizes="(min-width: 1024px) 22vw, 45vw"
-                    className="object-contain"
+                    className="object-cover object-center"
                   />
                 </div>
 
