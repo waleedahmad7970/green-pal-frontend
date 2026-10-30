@@ -479,7 +479,7 @@ export default function PlansPage() {
                   variants={fadeUp}
                   whileHover={{ y: -8 }}
                   transition={{ type: "spring", stiffness: 260, damping: 22 }}
-                  className={`group relative grid grid-rows-subgrid row-span-6 mb-6 rounded-[20px] p-4 sm:p-6 overflow-hidden transition-shadow duration-300 hover:shadow-xl ${CARD} ${isPopular
+                  className={`group relative grid grid-rows-subgrid row-span-6 mb-6 rounded-[20px] p-4 sm:p-8 overflow-hidden transition-shadow duration-300 hover:shadow-xl ${CARD} ${isPopular
                     ? "border-2 border-signal shadow-lg"
                     : "border border-signal/60"
                     }`}
