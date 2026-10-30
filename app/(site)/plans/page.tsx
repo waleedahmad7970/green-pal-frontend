@@ -351,15 +351,7 @@ export default function PlansPage() {
             popular: t.popular || false,
             image: t.image || `/stations/${t.slug}.png`,
             blurb: t.blurb || `${t.slots} power banks. Good for busy places.`,
-            features:
-              Array.isArray(t.features) && t.features.length > 0
-                ? t.features
-                : [
-                  `You pay one time: $${Number(t.price).toLocaleString()}`,
-                  "We buy your station and place it",
-                  "It gets its own number — yours",
-                  "50% of the net rental revenue, paid monthly",
-                ],
+            features: Array.isArray(t.features) ? t.features.filter(Boolean) : [],
             specs: {
               dimensions: t.specs?.dimensions || "",
               weight: t.specs?.weight || "",
@@ -440,26 +432,25 @@ export default function PlansPage() {
         {/* --- PLANS GRID / LOADING SKELETON / ERROR --- */}
         {isLoading ? (
           <div className="mb-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
-              {[1, 2, 3, 4].map((n) => (
-                <div
-                  key={n}
-                  className="rounded-[20px] p-8 sm:p-10 min-h-[640px] bg-card border border-signal/30 animate-pulse flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="h-7 w-32 bg-signal/20 rounded mb-2" />
-                    <div className="h-4 w-44 bg-signal/10 rounded mb-8" />
-                    <div className="h-10 w-28 bg-signal/20 rounded mb-8" />
-                    <div className="h-36 w-full bg-signal/10 rounded mb-8" />
-                    <div className="space-y-3">
-                      <div className="h-4 w-full bg-signal/10 rounded" />
-                      <div className="h-4 w-5/6 bg-signal/10 rounded" />
-                      <div className="h-4 w-4/6 bg-signal/10 rounded" />
-                    </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-0 items-stretch">              {[1, 2, 3, 4].map((n) => (
+              <div
+                key={n}
+                className="rounded-[20px] p-8 sm:p-10 min-h-[640px] bg-card border border-signal/30 animate-pulse flex flex-col justify-between"
+              >
+                <div>
+                  <div className="h-7 w-32 bg-signal/20 rounded mb-2" />
+                  <div className="h-4 w-44 bg-signal/10 rounded mb-8" />
+                  <div className="h-10 w-28 bg-signal/20 rounded mb-8" />
+                  <div className="h-36 w-full bg-signal/10 rounded mb-8" />
+                  <div className="space-y-3">
+                    <div className="h-4 w-full bg-signal/10 rounded" />
+                    <div className="h-4 w-5/6 bg-signal/10 rounded" />
+                    <div className="h-4 w-4/6 bg-signal/10 rounded" />
                   </div>
-                  <div className="h-14 w-full bg-signal/20 rounded-full mt-6" />
                 </div>
-              ))}
+                <div className="h-14 w-full bg-signal/20 rounded-full mt-6" />
+              </div>
+            ))}
             </div>
           </div>
         ) : hasError ? (
@@ -479,110 +470,99 @@ export default function PlansPage() {
             viewport={viewport}
             className="mb-16"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 items-stretch">
-              {plans.map((plan, i) => {
-                const isPopular = plan.popular;
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-2 items-stretch">              {plans?.map((plan, i) => {
+              const isPopular = plan.popular;
 
-                return (
-                  <motion.div
-                    key={plan.id}
-                    variants={fadeUp}
-                    whileHover={{ y: -8 }}
-                    transition={{ type: "spring", stiffness: 260, damping: 22 }}
-                    className="group relative flex"
-                  >
+              return (
+                <motion.div
+                  key={plan.id}
+                  variants={fadeUp}
+                  whileHover={{ y: -8 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 22 }}
+                  className={`group relative grid grid-rows-subgrid row-span-6 mb-6 rounded-[20px] p-4 sm:p-6 overflow-hidden transition-shadow duration-300 hover:shadow-xl ${CARD} ${isPopular
+                    ? "border-2 border-signal shadow-lg"
+                    : "border border-signal/60"
+                    }`}
+                >
+                  {isPopular && (
                     <div
-                      className={`relative flex flex-col justify-between w-full rounded-[20px] p-8 sm:p-10 min-h-[640px] overflow-hidden transition-shadow duration-300 group-hover:shadow-xl ${CARD} ${isPopular
-                        ? "border-2 border-signal shadow-lg"
-                        : "border border-signal/60"
-                        }`}
+                      className={`absolute -top-px left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-b-xl font-display text-[10px] font-bold tracking-[0.2em] uppercase ${CHIP}`}
                     >
-                      {isPopular && (
-                        <div
-                          className={`absolute -top-px left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-b-xl font-display text-[10px] font-bold tracking-[0.2em] uppercase ${CHIP}`}
-                        >
-                          Recommended
-                        </div>
-                      )}
-
-                      <div className="relative">
-                        <div className="flex items-start justify-between mb-4">
-                          <div>
-                            <h3 className="font-display font-bold text-2xl md:text-3xl tracking-tight text-current">
-                              {plan.name}
-                            </h3>
-                            <p className="font-body text-sm text-muted mt-1">
-                              {plan.subtitle}
-                            </p>
-                          </div>
-                          <span className="font-mono text-[11px] text-muted/70 mt-2">
-                            0{i + 1}
-                          </span>
-                        </div>
-
-                        <div className="my-5">
-                          <span className="font-display font-extrabold text-4xl sm:text-5xl tracking-tight">
-                            {plan.price}
-                          </span>
-                          <span className="font-display font-bold text-lg text-muted ml-2">
-                            — {plan.priceLabel}
-                          </span>
-                        </div>
-
-                        <div
-                          onClick={() => setSelectedPlan(plan)}
-                          className="min-h-[160px] flex flex-col justify-center cursor-pointer"
-                          title="Click to view full specifications"
-                        >
-                          <StationVisual plan={plan} />
-                          <p className="font-body text-xs text-muted text-center mt-2">
-                            {plan.blurb}
-                          </p>
-                        </div>
-
-                        <div className="h-px my-5 bg-signal/40" />
-
-                        <ul className="space-y-4 mb-8">
-                          {plan.features.map((feature, idx) => (
-                            <li
-                              key={idx}
-                              className="flex items-start gap-2.5 font-body text-sm leading-snug"
-                            >
-                              <span className={`mt-0.5 w-5 h-5 ${CHECK_BUBBLE}`}>
-                                <Check className="w-3 h-3" />
-                              </span>
-                              <span className="text-current/90">{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div className="relative pt-2 space-y-3">
-                        <button
-                          type="button"
-                          onClick={() => openInquiry(plan)}
-                          className={`w-full py-4 px-5 cursor-pointer rounded-full text-base flex items-center justify-center gap-2 active:scale-[0.98] ${BTN}`}
-                        >
-                          Explore
-                        </button>
-
-                        <div className="flex items-center justify-between px-1">
-                          <p className="font-body text-[11px] text-muted">
-                            You get half the rent money, every month.
-                          </p>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedPlan(plan)}
-                            className="font-body text-[11px] text-signal hover:underline shrink-0 ml-2"
-                          >
-                            Details & Specs →
-                          </button>
-                        </div>
-                      </div>
+                      Recommended
                     </div>
-                  </motion.div>
-                );
-              })}
+                  )}
+
+                  {/* Row 1: title */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="font-display font-bold text-2xl md:text-3xl tracking-tight text-current">
+                        {plan.name}
+                      </h3>
+                      <p className="font-body text-sm text-muted mt-1">{plan.subtitle}</p>
+                    </div>
+                    <span className="font-mono text-[11px] text-muted/70 mt-2">0{i + 1}</span>
+                  </div>
+
+                  {/* Row 2: price */}
+                  <div className="my-5">
+                    <span className="font-display font-extrabold text-4xl sm:text-5xl tracking-tight">
+                      {plan.price}
+                    </span>
+                    <span className="font-display font-bold text-lg text-muted ml-2">
+                      — {plan.priceLabel}
+                    </span>
+                  </div>
+
+                  {/* Row 3: image + blurb */}
+                  <div
+                    onClick={() => setSelectedPlan(plan)}
+                    className="flex flex-col justify-center cursor-pointer"
+                    title="Click to view full specifications"
+                  >
+                    <StationVisual plan={plan} />
+                    <p className="font-body text-xs text-muted text-center mt-2">{plan.blurb}</p>
+                  </div>
+
+                  {/* Row 4: divider */}
+                  <div className="h-px my-5 bg-signal/40 self-center" />
+
+                  {/* Row 5: features */}
+                  <ul className="space-y-4 mb-8">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-2.5 font-body text-sm leading-snug">
+                        <span className={`mt-0.5 w-5 h-5 ${CHECK_BUBBLE}`}>
+                          <Check className="w-3 h-3" />
+                        </span>
+                        <span className="text-current/90">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Row 6: button + footer */}
+                  <div className="pt-2 space-y-3 self-end">
+                    <button
+                      type="button"
+                      onClick={() => openInquiry(plan)}
+                      className={`w-full py-4 px-5 cursor-pointer rounded-full text-base flex items-center justify-center gap-2 active:scale-[0.98] ${BTN}`}
+                    >
+                      Explore
+                    </button>
+                    <div className="flex items-center justify-between px-1">
+                      <p className="font-body text-[11px] text-muted">
+                        You get half the rent money, every month.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPlan(plan)}
+                        className="font-body text-[11px] text-signal hover:underline shrink-0 ml-2"
+                      >
+                        Details & Specs →
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
             </div>
           </motion.div>
         )}
