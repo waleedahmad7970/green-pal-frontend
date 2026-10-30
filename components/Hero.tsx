@@ -190,7 +190,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="relative border-t line-rule">
+      {/* <div className="relative border-t line-rule">
         <div
           ref={statsRef}
           className="container-edit grid grid-cols-2 md:grid-cols-4 gap-6 py-8"
@@ -209,7 +209,7 @@ export default function Hero() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }

@@ -54,11 +54,11 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <HowItWorks />
       <Work />
       <MarqueeTicker />
       {/* <PortalTransition /> */}
       <ChargingStations />
-      <HowItWorks />
       <WhyGreenpal />
 
       <GreenpalNetwork />
