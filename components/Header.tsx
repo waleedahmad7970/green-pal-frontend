@@ -26,6 +26,7 @@ const pageLinks = [
   { label: "Home", href: "/" },
   { label: "Plans", href: "/plans" },
   { label: "Products", href: "/products" },
+  { label: "Franchise", href: "/franchise" },
   // { label: "Investment Plans", href: "/plans" },
   { label: "Events", href: "/event" },
   { label: "About", href: "/about" },
@@ -33,7 +34,6 @@ const pageLinks = [
 ];
 
 // Only these emails see the "Plans" link
-const PLANS_EMAILS = ["admin@greenpal.com", "test@greenpal.com", "sameerkhan.prof@gmail.com"];
 
 // Links shown inside the user popup
 const accountLinks = [
@@ -88,7 +88,10 @@ export default function Header() {
   useEffect(() => {
     if (!userMenuOpen) return;
     const onClick = (e: MouseEvent) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(e.target as Node)
+      ) {
         setUserMenuOpen(false);
       }
     };
@@ -103,9 +106,10 @@ export default function Header() {
     };
   }, [userMenuOpen]);
 
-  const showPlans =
-    mounted && isAuthed && PLANS_EMAILS.includes(user?.email?.toLowerCase() ?? "");
-  const visibleLinks = pageLinks.filter((l) => l.href !== "/plans" || showPlans);
+  const showPlans = mounted && isAuthed;
+  const visibleLinks = pageLinks.filter(
+    (l) => l.href !== "/plans" || showPlans,
+  );
 
   const handleAnchorClick = (e: React.MouseEvent, href: string) => {
     setMenuOpen(false);
@@ -124,10 +128,11 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-[1000] transition-colors duration-500 ${scrolled || pathname !== "/"
-        ? "bg-surface/85 backdrop-blur-md"
-        : "bg-transparent"
-        }`}
+      className={`fixed top-0 left-0 right-0 z-[1000] transition-colors duration-500 ${
+        scrolled || pathname !== "/"
+          ? "bg-surface/85 backdrop-blur-md"
+          : "bg-transparent"
+      }`}
     >
       <div className="container-edit flex items-center justify-between h-20">
         {/* --- LOGO SWAP IS HERE --- */}
@@ -151,8 +156,9 @@ export default function Header() {
             <Link
               key={l.href}
               href={l.href}
-              className={`font-body text-sm transition-colors duration-300 ${pathname === l.href ? "accent" : "text-muted hover:text-current"
-                }`}
+              className={`font-body text-sm transition-colors duration-300 ${
+                pathname === l.href ? "accent" : "text-muted hover:text-current"
+              }`}
             >
               {l.label}
             </Link>
@@ -218,8 +224,9 @@ export default function Header() {
                         key={item.href}
                         href={item.href}
                         role="menuitem"
-                        className={`block px-3 py-2.5 rounded-xl font-body text-sm transition-colors hover:bg-black/5 dark:hover:bg-white/10 ${pathname === item.href ? "accent" : ""
-                          }`}
+                        className={`block px-3 py-2.5 rounded-xl font-body text-sm transition-colors hover:bg-black/5 dark:hover:bg-white/10 ${
+                          pathname === item.href ? "accent" : ""
+                        }`}
                       >
                         {item.label}
                       </Link>
@@ -258,12 +265,14 @@ export default function Header() {
             onClick={() => setMenuOpen(!menuOpen)}
           >
             <span
-              className={`h-px w-full bg-current transition-transform duration-300 ${menuOpen ? "translate-y-[3.5px] rotate-45" : ""
-                }`}
+              className={`h-px w-full bg-current transition-transform duration-300 ${
+                menuOpen ? "translate-y-[3.5px] rotate-45" : ""
+              }`}
             />
             <span
-              className={`h-px w-full bg-current transition-transform duration-300 ${menuOpen ? "-translate-y-[3.5px] -rotate-45" : ""
-                }`}
+              className={`h-px w-full bg-current transition-transform duration-300 ${
+                menuOpen ? "-translate-y-[3.5px] -rotate-45" : ""
+              }`}
             />
           </button>
         </div>

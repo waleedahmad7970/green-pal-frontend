@@ -299,7 +299,9 @@ export default function ProductsPage() {
         setAllProducts(data);
       } catch (err: any) {
         console.error("Failed to fetch products:", err);
-        setError("Failed to load products from server. Please try again later.");
+        setError(
+          "Failed to load products from server. Please try again later.",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -419,10 +421,11 @@ export default function ProductsPage() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat!)}
-                className={`shrink-0 px-6 py-2.5 rounded-full font-body text-sm font-bold transition-colors ${activeCategory === cat
-                  ? "bg-[#02d683] text-ink border-[#02d683]"
-                  : "bg-card border line-rule text-muted hover:border-[#02d683]"
-                  }`}
+                className={`shrink-0 px-6 py-2.5 rounded-full font-body text-sm font-bold transition-colors ${
+                  activeCategory === cat
+                    ? "bg-[#02d683] text-ink border-[#02d683]"
+                    : "bg-card border line-rule text-muted hover:border-[#02d683]"
+                }`}
               >
                 {cat}
               </button>
@@ -434,12 +437,17 @@ export default function ProductsPage() {
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mb-16">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="aspect-[3/4] bg-card/50 rounded-3xl animate-pulse border line-rule" />
+              <div
+                key={i}
+                className="aspect-[3/4] bg-card/50 rounded-3xl animate-pulse border line-rule"
+              />
             ))}
           </div>
         ) : error ? (
           <div className="col-span-full py-20 text-center">
-            <h3 className="font-display text-2xl mb-2 text-red-500">Error loading products</h3>
+            <h3 className="font-display text-2xl mb-2 text-red-500">
+              Error loading products
+            </h3>
             <p className="font-body text-muted">{error}</p>
           </div>
         ) : (
@@ -520,7 +528,9 @@ export default function ProductsPage() {
               ))
             ) : (
               <div className="col-span-full py-20 text-center">
-                <h3 className="font-display text-2xl mb-2">No products found</h3>
+                <h3 className="font-display text-2xl mb-2">
+                  No products found
+                </h3>
                 <p className="font-body text-muted">
                   Try adjusting your search or filter criteria.
                 </p>
@@ -540,18 +550,6 @@ export default function ProductsPage() {
             </button>
           </div>
         )}
-
-        <div className="mt-20 border line-rule rounded-3xl p-8 md:p-12 bg-card text-center max-w-4xl mx-auto">
-          <h4 className="font-display font-bold text-xl mb-3">
-            Wholesale Procurement & Logistics
-          </h4>
-          <p className="font-body text-sm text-muted leading-relaxed max-w-2xl mx-auto">
-            Hardware pricing is determined by volume tiers. Minimum order
-            quantities apply for custom ambient light logo manufacturing. All
-            units ship fully certified (CE/FCC/RoHS) in standard 50-piece master
-            cartons.
-          </p>
-        </div>
       </div>
     </main>
   );

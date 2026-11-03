@@ -11,7 +11,7 @@ export default function ContactIntro() {
       gsap.fromTo(
         ".contact-reveal",
         { autoAlpha: 0, y: 20 },
-        { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }
+        { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" },
       );
     }, ref);
     return () => {
@@ -28,7 +28,10 @@ export default function ContactIntro() {
   }, []);
 
   return (
-    <section ref={ref} className="relative pt-40 pb-20 bg-ink text-sand overflow-hidden">
+    <section
+      ref={ref}
+      className="relative pt-40 pb-20 bg-ink text-sand overflow-hidden"
+    >
       <div className="absolute inset-0 gp-motif" aria-hidden="true" />
       <div className="container-edit relative grid lg:grid-cols-12 gap-10">
         <h1 className="contact-reveal font-display font-extrabold text-display-lg text-sand lg:col-span-8">
@@ -42,7 +45,7 @@ export default function ContactIntro() {
             </div> */}
             <div>
               <dt className="text-sand/45 mb-1">Phone</dt>
-              <dd>780-777-0519</dd>
+              <dd>+1-780-719-5725</dd>
             </div>
             <div>
               <dt className="text-sand/45 mb-1">Email</dt>

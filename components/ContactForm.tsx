@@ -9,7 +9,6 @@ const ContactLocationsMap = dynamic(() => import("./Contactlocationsmap"), {
 });
 // Leaflet needs the browser (window), so load it on the client only
 
-
 export default function ContactForm() {
   const btnRef = useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -64,7 +63,9 @@ export default function ContactForm() {
       }
     } catch (error: any) {
       console.error("API Submission Error:", error);
-      setServerError(error.message || "Failed to send message. Please try again.");
+      setServerError(
+        error.message || "Failed to send message. Please try again.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -132,10 +133,10 @@ export default function ContactForm() {
             <div>
               <span className="block text-ink/50 mb-1">Phone</span>
               <a
-                href="tel:+17807770519"
+                href="tel:+17807195725"
                 className="text-ink font-medium hover:text-signal transition-colors"
               >
-                +1 (780) 777-0519
+                +1-780-719-5725
               </a>
             </div>
             <div>
@@ -165,7 +166,7 @@ export default function ContactForm() {
               Email us: info@thegreenpal.ca
             </a>
             <a
-              href="https://wa.me/+17807770519?text=Hi%2C%20I%27d%20like%20to%20ask%20about%20a%20Greenpal%20station."
+              href="https://wa.me/+17807195725?text=Hi%2C%20I%27d%20like%20to%20ask%20about%20a%20Greenpal%20station."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-3 bg-[#25D366] text-white font-body font-bold px-6 py-3.5 rounded-full hover:bg-[#1ebe5a] transition-colors shadow-lg shadow-[#25D366]/20 w-fit"

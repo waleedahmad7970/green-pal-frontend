@@ -4,10 +4,12 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import LiveVenues from "@/components/LiveVenues";
+import { fetchProducts, Product } from "@/lib/site/services/productService";
 
 const stationTabs = [
     {
         id: "mega",
+        models: ["Pulse 48"], // 48 slots, floor totem
         label: "Mega Tower (48+ Slots)",
         badge: "High Capacity • Main Stages",
         title: "The Ultimate High-Traffic Power Hub",
@@ -17,6 +19,7 @@ const stationTabs = [
     },
     {
         id: "hub",
+        models: ["Pulse 12", "Pulse 24"], // 12-24 slots
         label: "Portable Hub (12-24 Slots)",
         badge: "Compact • VIP & Backstage",
         title: "Flexible Power for Intimate Zones",
@@ -26,6 +29,7 @@ const stationTabs = [
     },
     {
         id: "pro",
+        models: ["Pulse 24"], // 24 slots floor totem
         label: "Festival Pro (Outdoor)",
         badge: "Weatherproof • Open Grounds",
         title: "Built for Extreme Outdoor Elements",
@@ -38,6 +42,19 @@ const stationTabs = [
 export default function EventsPage() {
     const pageRef = useRef<HTMLDivElement>(null);
     const [activeTab, setActiveTab] = useState(0);
+    const [products, setProducts] = useState<Product[]>([]);
+
+    useEffect(() => {
+        fetchProducts()
+            .then(setProducts)
+            .catch((err) => console.error("Failed to fetch products:", err));
+    }, []);
+
+    // Lenient match (case/dash/space-insensitive) — first candidate model that has an image wins
+    const norm = (v?: string) => (v ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const activeProduct = stationTabs[activeTab].models
+        .map((m) => products.find((p) => norm(p.model) === norm(m) && p.image?.trim()))
+        .find(Boolean);
 
     useEffect(() => {
         // 1. Load Calendly Script
@@ -175,15 +192,32 @@ export default function EventsPage() {
                             </div>
 
                             {/* Visual Graphic Representation Box */}
-                            <div className="border line-rule rounded-2xl bg-surface p-8 flex flex-col items-center justify-center text-center min-h-[300px] relative overflow-hidden group">
-                                <div className="absolute inset-0 bg-gradient-to-br from-[#02d683]/5 to-transparent pointer-events-none"></div>
-                                <div className="w-20 h-20 rounded-3xl bg-[#02d683]/10 flex items-center justify-center text-[#02d683] font-display font-bold text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                                    ⚡
+                            <div className="border line-rule rounded-2xl bg-white aspect-square w-full relative overflow-hidden group flex flex-col items-center justify-end text-center">
+                                {activeProduct?.image ? (
+                                    <>
+                                        <img
+                                            key={activeProduct.model}
+                                            src={activeProduct.image}
+                                            alt={activeProduct.productName || activeProduct.model}
+                                            className="absolute inset-0 w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 select-none"
+                                        />
+                                        <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black/85 via-black/50 to-transparent pointer-events-none" />
+                                    </>
+                                ) : (
+                                    <div className="absolute inset-0 flex items-center justify-center pb-24">
+                                        <div className="w-20 h-20 rounded-3xl bg-[#02d683]/10 flex items-center justify-center text-[#02d683] font-display font-bold text-3xl group-hover:scale-110 transition-transform duration-300">
+                                            ⚡
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="relative z-10 p-6 md:p-8">
+                                    <h4 className={`font-display font-bold text-xl mb-2 ${activeProduct?.image ? "text-white" : ""}`}>
+                                        {stationTabs[activeTab].label}
+                                    </h4>
+                                    <p className={`font-body text-xs max-w-xs mx-auto ${activeProduct?.image ? "text-white/80" : "text-muted"}`}>
+                                        Fully integrated with real-time cloud analytics, automated billing, and secure locking bays.
+                                    </p>
                                 </div>
-                                <h4 className="font-display font-bold text-xl mb-2">{stationTabs[activeTab].label}</h4>
-                                <p className="font-body text-xs text-muted max-w-xs">
-                                    Fully integrated with real-time cloud analytics, automated billing, and secure locking bays.
-                                </p>
                             </div>
                         </div>
                     </div>

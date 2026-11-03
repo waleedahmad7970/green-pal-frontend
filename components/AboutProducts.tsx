@@ -7,17 +7,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { fetchProducts, Product } from "@/lib/site/services/productService";
 import GPMark from "./GPMark";
 
-// Varied layout patterns across 12-column grid for random-sized mosaic
-const cellSpans = [
-  "col-span-12 lg:col-span-8 h-[360px] sm:h-[460px] lg:h-[500px] border-b lg:border-b-0 lg:border-r",
-  "col-span-12 sm:col-span-6 lg:col-span-4 h-[240px] sm:h-[300px] lg:h-[500px] border-b lg:border-b-0",
-  "col-span-12 sm:col-span-6 lg:col-span-4 h-[260px] sm:h-[320px] border-b sm:border-b-0 sm:border-r",
-  "col-span-12 sm:col-span-6 lg:col-span-4 h-[260px] sm:h-[320px] border-b sm:border-b-0 sm:border-r",
-  "col-span-12 sm:col-span-6 lg:col-span-4 h-[260px] sm:h-[320px]",
-  "col-span-12 sm:col-span-7 lg:col-span-7 h-[280px] sm:h-[340px] border-t sm:border-r",
-  "col-span-12 sm:col-span-5 lg:col-span-5 h-[280px] sm:h-[340px] border-t",
-];
-
 export default function AboutProducts() {
   const sectionRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -123,27 +112,24 @@ export default function AboutProducts() {
         ) : (
           <div
             ref={gridRef}
-            className="grid grid-cols-1 sm:grid-cols-12 gap-0 border line-rule bg-card mb-16 overflow-hidden rounded-none shadow-xl transition-colors duration-300"
+            className="flex flex-nowrap gap-4 sm:gap-6 mb-16 overflow-x-auto snap-x snap-mandatory pb-4 lg:overflow-visible lg:pb-0"
           >
-            {productsWithImages.map((item, idx) => {
-              const spanClass = cellSpans[idx % cellSpans.length];
-              return (
-                <div
-                  key={item._id || item.id || item.model || idx}
-                  className={`api-grid-cell invisible ${spanClass} border line-rule bg-card p-6 sm:p-10 flex items-center justify-center relative overflow-hidden group hover:bg-surface-dim transition-colors duration-300`}
-                >
-                  <span className="absolute top-4 left-4 font-mono text-[10px] tracking-widest text-muted uppercase select-none z-10 transition-colors duration-300">
-                    {String(idx + 1).padStart(2, "0")} // {item.model}
-                  </span>
+            {productsWithImages.map((item, idx) => (
+              <div
+                key={item._id || item.id || item.model || idx}
+                className="api-grid-cell invisible snap-center shrink-0 basis-[72%] sm:basis-[40%] lg:basis-0 lg:flex-1 lg:min-w-0 aspect-[4/5] border line-rule rounded-2xl bg-card p-5 sm:p-6 flex items-center justify-center relative overflow-hidden group hover:bg-surface-dim shadow-md transition-colors duration-300"
+              >
+                <span className="absolute top-4 left-5 font-mono text-[10px] tracking-widest text-muted uppercase select-none z-10">
+                  {String(idx + 1).padStart(2, "0")} // {item.model}
+                </span>
 
-                  <img
-                    src={item.image}
-                    alt={item.productName || item.model}
-                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 ease-out select-none"
-                  />
-                </div>
-              );
-            })}
+                <img
+                  src={item.image}
+                  alt={item.productName || item.model}
+                  className="w-full h-full object-contain pt-6 group-hover:scale-105 transition-transform duration-700 ease-out select-none"
+                />
+              </div>
+            ))}
           </div>
         )}
 
