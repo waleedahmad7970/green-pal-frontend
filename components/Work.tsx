@@ -61,7 +61,8 @@ export default function Work() {
       try {
         const data = await fetchLocations();
         if (Array.isArray(data)) {
-          setLocations(data);
+          // Offline locations are not shown on the site
+          setLocations(data.filter((loc) => loc.status !== "offline"));
         }
       } catch (error) {
         console.error("Failed to load locations from API:", error);
