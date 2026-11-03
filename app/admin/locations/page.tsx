@@ -16,7 +16,7 @@ import {
 import toast from "react-hot-toast";
 import { uploadImage } from "@/lib/admin/services/upload";
 
-const statuses: LocationStatus[] = ["live", "installing", "offline"];
+const statuses: LocationStatus[] = ["live", "installing", "coming_soon", "offline"];
 
 const emptyLocation = {
   name: "",
@@ -43,7 +43,7 @@ const LocationSchema = Yup.object().shape({
   city: Yup.string().required("Required"),
   address: Yup.string().required("Required"),
   bays: Yup.number().min(0).required("Required"),
-  status: Yup.string().oneOf(["live", "installing", "offline"]).required("Required"),
+  status: Yup.string().oneOf(["live", "installing", "coming_soon", "offline"]).required("Required"),
   installedAt: Yup.string().required("Required"),
   lat: Yup.number().typeError("Must be a number").optional(),
   lng: Yup.number().typeError("Must be a number").optional(),
@@ -195,7 +195,7 @@ export default function AdminLocationsPage() {
                   >
                     {statuses.map((s) => (
                       <option key={s} value={s} className="bg-ink">
-                        {s}
+                        {s.replace(/_/g, " ")}
                       </option>
                     ))}
                   </select>
@@ -258,7 +258,7 @@ export default function AdminLocationsPage() {
                 <FormField label="Status">
                   <Field as="select" name="status" className={inputClass + " bg-ink text-sand"}>
                     {statuses.map((s) => (
-                      <option key={s} value={s}>{s}</option>
+                      <option key={s} value={s}>{s.replace(/_/g, " ")}</option>
                     ))}
                   </Field>
                   <ErrorMessage name="status" component="div" className="text-red-400 text-xs mt-1" />

@@ -2,14 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+// import "leaflet/dist/leaflet.css";
 
 type Location = {
-    name: string;
-    address: string;
-    description: string;
-    lat: number;
-    lng: number;
+  name: string;
+  address: string;
+  description: string;
+  lat: number;
+  lng: number;
 };
 
 const LOCATIONS: Location[] = [
@@ -101,52 +101,62 @@ const LOCATIONS: Location[] = [
     lat: 51.0769,
     lng: -114.1356,
   },
+  {
+    name: "Strathmore Motor Products Sports Centre",
+    address: "1150 Edgeview Rd, Strathmore, AB T1P 0H2",
+    description:
+      "Greenpal Pulse 24 station — rent a portable power bank here. Stay charged. Keep moving.",
+    lat: 51.0504,
+    lng: -113.3888,
+  },
 ];
 
 const PIN_COLOR = "#02d683";
 
 export default function ContactLocationsMap() {
-    const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (!containerRef.current) return;
+  useEffect(() => {
+    if (!containerRef.current) return;
 
-        const map = L.map(containerRef.current, { scrollWheelZoom: false });
+    const map = L.map(containerRef.current, { scrollWheelZoom: false });
 
-        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: "&copy; OpenStreetMap contributors",
-        }).addTo(map);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+    }).addTo(map);
 
-        const points: [number, number][] = [];
+    const points: [number, number][] = [];
 
-        LOCATIONS.forEach((loc) => {
-            const icon = L.divIcon({
-                className: "",
-                html: `<div style="width:20px;height:20px;border-radius:50%;background:${PIN_COLOR};border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.5)"></div>`,
-                iconSize: [20, 20],
-                iconAnchor: [10, 10],
-                popupAnchor: [0, -10],
-            });
+    LOCATIONS.forEach((loc) => {
+      const icon = L.divIcon({
+        className: "",
+        html: `<div style="width:20px;height:20px;border-radius:50%;background:${PIN_COLOR};border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.5)"></div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
+        popupAnchor: [0, -10],
+      });
 
-            const directions = `https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`;
+      const directions = `https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`;
 
-            L.marker([loc.lat, loc.lng], { icon })
-                .addTo(map)
-                .bindPopup(
-                    `<strong>${loc.name}</strong><br>${loc.address}<br>` +
-                    `<span style="color:#555">${loc.description}</span><br>` +
-                    `<a href="${directions}" target="_blank" rel="noopener noreferrer">Get directions</a>`
-                );
+      L.marker([loc.lat, loc.lng], { icon })
+        .addTo(map)
+        .bindPopup(
+          `<strong>${loc.name}</strong><br>${loc.address}<br>` +
+            `<span style="color:#555">${loc.description}</span><br>` +
+            `<a href="${directions}" target="_blank" rel="noopener noreferrer">Get directions</a>`,
+        );
 
-            points.push([loc.lat, loc.lng]);
-        });
+      points.push([loc.lat, loc.lng]);
+    });
 
-        map.fitBounds(points, { padding: [40, 40] });
+    map.fitBounds(points, { padding: [40, 40] });
 
-        return () => {
-            map.remove();
-        };
-    }, []);
+    return () => {
+      map.remove();
+    };
+  }, []);
 
-    return <div ref={containerRef} className="absolute inset-0 w-full h-full z-0" />;
+  return (
+    <div ref={containerRef} className="absolute inset-0 w-full h-full z-0" />
+  );
 }

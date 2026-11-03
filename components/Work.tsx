@@ -256,11 +256,13 @@ export default function Work() {
                         ? "bg-[#02D683] animate-pulse shadow-[0_0_10px_#02D683]"
                         : loc.status === "installing"
                           ? "bg-amber-400"
-                          : "bg-red-500"
+                          : loc.status === "coming_soon"
+                            ? "bg-sky-400"
+                            : "bg-red-500"
                         }`}
                     ></span>
                     <span className="text-[10px] text-signal font-mono uppercase tracking-widest leading-none mt-0.5">
-                      {loc.status}
+                      {loc.status.replace(/_/g, " ")}
                     </span>
                   </div>
                 </div>

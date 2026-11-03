@@ -13,7 +13,7 @@ export interface LocationItem {
   city: string;
   address: string;
   bays: number;
-  status: "live" | "installing" | "offline";
+  status: "live" | "installing" | "coming_soon" | "offline";
   installedAt: string;
   coordinates?: {
     lat?: number;

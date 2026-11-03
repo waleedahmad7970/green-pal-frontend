@@ -27,6 +27,7 @@ const statusStyles: Record<string, string> = {
   received: "bg-signal/15 text-signal",
   pending: "bg-amber-400/15 text-amber-300",
   installing: "bg-amber-400/15 text-amber-300",
+  coming_soon: "bg-sky-400/15 text-sky-300",
   sent: "bg-amber-400/15 text-amber-300",
   draft: "bg-sand/10 text-sand/60",
   returned: "bg-sand/10 text-sand/60",
@@ -41,7 +42,7 @@ export function StatusBadge({ status }: { status: string }) {
       className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-body capitalize ${statusStyles[status] || "bg-sand/10 text-sand/60"
         }`}
     >
-      {status}
+      {status.replace(/_/g, " ")}
     </span>
   );
 }

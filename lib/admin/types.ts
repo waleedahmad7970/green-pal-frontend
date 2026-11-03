@@ -42,7 +42,7 @@ export interface Location {
   name: string;
 }
 
-export type LocationStatus = "live" | "installing" | "offline";
+export type LocationStatus = "live" | "installing" | "coming_soon" | "offline";
 
 export interface Location {
   id: string;

@@ -10,6 +10,7 @@ import {
   PrimaryButton,
   inputClass,
 } from "@/components/admin/ui";
+import { downloadInquiryPdf } from "@/lib/admin/utils/inquiryPdf";
 
 const statusOptions = ["pending", "meeting_scheduled", "cancelled"];
 
@@ -78,6 +79,7 @@ export default function AdminInquiriesPage() {
                 <th className="p-4 font-normal">Date</th>
                 <th className="p-4 font-normal">Status</th>
                 <th className="p-4 font-normal">Actions</th>
+                <th className="p-4 font-normal">PDF</th>
               </tr>
             </thead>
             <tbody>
@@ -164,6 +166,19 @@ export default function AdminInquiriesPage() {
                             : "Generate Link"}
                         </PrimaryButton>
                       )}
+                    </td>
+                    <td className="p-4">
+                      <button
+                        type="button"
+                        onClick={() => downloadInquiryPdf(inq)}
+                        title="Download inquiry as PDF"
+                        aria-label="Download inquiry as PDF"
+                        className="w-9 h-9 rounded-lg border border-sand/15 text-sand/70 hover:text-signal hover:border-signal transition-colors flex items-center justify-center"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+                        </svg>
+                      </button>
                     </td>
                   </tr>
                 );
