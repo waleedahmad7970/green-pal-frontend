@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import L from "leaflet";
-// import "leaflet/dist/leaflet.css";
+import "leaflet/dist/leaflet.css";
 
 type Location = {
   name: string;
@@ -151,7 +151,19 @@ export default function ContactLocationsMap() {
 
     map.fitBounds(points, { padding: [40, 40] });
 
+    // The container is sized by CSS/layout after mount, so re-measure it
+    // (otherwise only part of the map renders).
+    const resize = () => {
+      map.invalidateSize();
+      map.fitBounds(points, { padding: [40, 40] });
+    };
+    const ro = new ResizeObserver(resize);
+    ro.observe(containerRef.current);
+    const t = window.setTimeout(resize, 300);
+
     return () => {
+      window.clearTimeout(t);
+      ro.disconnect();
       map.remove();
     };
   }, []);
