@@ -18,6 +18,7 @@ export interface ContactPayload {
   name: string;
   email: string;
   phone: string;
+  availability?: string;
   subject: string;
   message: string;
 }

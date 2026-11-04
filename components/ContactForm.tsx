@@ -9,6 +9,28 @@ const ContactLocationsMap = dynamic(() => import("./Contactlocationsmap"), {
 });
 // Leaflet needs the browser (window), so load it on the client only
 
+// Business hours are Mon-Fri 9 AM - 6 PM MT (Edmonton)
+const AVAILABILITY_SLOTS = [
+  "Morning (9 AM – 12 PM MT)",
+  "Afternoon (12 – 4 PM MT)",
+  "Evening (4 – 6 PM MT)",
+  "Anytime",
+];
+
+// Canadian / North American numbers: (780) 719-5725
+const formatCanadianPhone = (raw: string) => {
+  let digits = raw.replace(/\D/g, "");
+  if (digits.startsWith("1")) digits = digits.slice(1); // drop the +1 country code
+  digits = digits.slice(0, 10);
+  if (digits.length < 4) return digits.length ? `(${digits}` : "";
+  if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+};
+
+// 10 digits; area code and exchange cannot start with 0 or 1
+const isValidCanadianPhone = (value: string) =>
+  /^[2-9]\d{2}[2-9]\d{6}$/.test(value.replace(/\D/g, ""));
+
 export default function ContactForm() {
   const btnRef = useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -16,6 +38,8 @@ export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
   const handleMove = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = btnRef.current?.getBoundingClientRect();
@@ -30,6 +54,12 @@ export default function ContactForm() {
 
     if (!formRef.current) return;
 
+    if (!isValidCanadianPhone(phone)) {
+      setPhoneError("Enter a valid Canadian phone number, e.g. (780) 555-1234");
+      return;
+    }
+    setPhoneError(null);
+
     setIsSubmitting(true);
     setServerError(null);
 
@@ -40,6 +70,7 @@ export default function ContactForm() {
       const venue = formData.get("venue") as string;
       const email = formData.get("email") as string;
       const userMessage = formData.get("message") as string;
+      const availability = ((formData.get("availability") as string) || "").trim();
 
       // 2. Format the message to include the venue name
       const finalMessage = venue
@@ -50,7 +81,8 @@ export default function ContactForm() {
       const response = await submitContact({
         name,
         email,
-        phone: "",
+        phone: `+1 ${phone}`,
+        availability,
         subject: `New Venue Inquiry from ${name}`,
         message: finalMessage,
       });
@@ -90,6 +122,29 @@ export default function ContactForm() {
               <div className="grid sm:grid-cols-2 gap-8">
                 <Field label="Name" name="name" />
                 <Field label="Email" name="email" type="email" />
+              </div>
+              <div className="grid sm:grid-cols-2 gap-8">
+                <Field
+                  label="Phone (Canada)"
+                  name="phone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel-national"
+                  placeholder="(780) 555-1234"
+                  value={phone}
+                  onChange={(v) => {
+                    setPhone(formatCanadianPhone(v));
+                    if (phoneError) setPhoneError(null);
+                  }}
+                  error={phoneError}
+                />
+                <Field
+                  label="Preferred availability"
+                  name="availability"
+                  placeholder="Select a time slot"
+                  options={AVAILABILITY_SLOTS}
+                  required={false}
+                />
               </div>
               <Field label="Venue" name="venue" />
               <Field label="Message" name="message" textarea />
@@ -188,12 +243,32 @@ function Field({
   name,
   type = "text",
   textarea = false,
+  options,
+  required = true,
+  placeholder,
+  inputMode,
+  autoComplete,
+  value,
+  onChange,
+  error,
 }: {
   label: string;
   name: string;
   type?: string;
   textarea?: boolean;
+  options?: string[];
+  required?: boolean;
+  placeholder?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  autoComplete?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+  error?: string | null;
 }) {
+  const box = `w-full bg-transparent border-b-2 ${
+    error ? "border-red-500" : "border-ink/25 focus:border-[#02d683]"
+  } outline-none pb-2 font-body text-ink placeholder:text-ink/30 transition-colors duration-300`;
+
   return (
     <label className="block">
       <span className="block text-sm text-ink/70 mb-2 font-body font-medium">
@@ -203,17 +278,47 @@ function Field({
         <textarea
           name={name}
           rows={4}
-          required
-          className="w-full bg-transparent border-b-2 border-ink/25 focus:border-[#02d683] outline-none pb-2 font-body text-ink placeholder:text-ink/30 resize-none transition-colors duration-300"
+          required={required}
+          className={`${box} resize-none`}
         />
+      ) : options ? (
+        <div className="relative">
+          <select
+            name={name}
+            required={required}
+            defaultValue=""
+            className={`${box} appearance-none pr-8 cursor-pointer`}
+          >
+            <option value="">{placeholder || "Select"}</option>
+            {options.map((o) => (
+              <option key={o} value={o}>
+                {o}
+              </option>
+            ))}
+          </select>
+          <svg
+            className="w-4 h-4 absolute right-1 top-1/2 -translate-y-[70%] text-ink/50 pointer-events-none"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
       ) : (
         <input
           name={name}
           type={type}
-          required
-          className="w-full bg-transparent border-b-2 border-ink/25 focus:border-[#02d683] outline-none pb-2 font-body text-ink placeholder:text-ink/30 transition-colors duration-300"
+          required={required}
+          placeholder={placeholder}
+          inputMode={inputMode}
+          autoComplete={autoComplete}
+          {...(onChange ? { value, onChange: (e) => onChange(e.target.value) } : {})}
+          className={box}
         />
       )}
+      {error && <span className="block text-xs text-red-500 mt-1.5 font-body">{error}</span>}
     </label>
   );
 }
