@@ -7,8 +7,11 @@ export default function AboutHero() {
   return (
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 bg-surface overflow-hidden transition-colors duration-300">
       {/* Subtle brand line motif */}
-      <div className="absolute inset-0 gp-motif pointer-events-none" aria-hidden="true" />
-
+      <div
+        className="absolute inset-0 gp-motif pointer-events-none"
+        aria-hidden="true"
+      />
+      {/*  */}
       {/* Soft gradient ambient glow */}
       <div
         className="absolute top-1/4 right-1/4 w-[420px] h-[420px] bg-signal/10 rounded-full blur-[120px] pointer-events-none"
@@ -27,12 +30,14 @@ export default function AboutHero() {
 
           {/* Primary Headline */}
           <h1 className="font-display font-extrabold text-3xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.08] mb-6 transition-colors duration-300">
-            Greenpal is bringing shared portable charging to the places people shop, eat, work and spend time.
+            Greenpal is bringing shared portable charging to the places people
+            shop, eat, work and spend time.
           </h1>
 
           {/* Body Intro */}
           <p className="font-body text-base sm:text-xl text-muted leading-relaxed max-w-3xl mb-10 transition-colors duration-300">
-            Our Greenpal Pulse stations let customers rent a power bank, charge on the move and return it when they are done.
+            Our Greenpal Pulse stations let customers rent a power bank, charge
+            on the move and return it when they are done.
           </p>
 
           {/* CTA Link Buttons */}
