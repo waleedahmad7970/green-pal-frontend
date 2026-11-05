@@ -11,7 +11,7 @@ export default function AboutHero() {
         className="absolute inset-0 gp-motif pointer-events-none"
         aria-hidden="true"
       />
-      {/*  */}
+
       {/* Soft gradient ambient glow */}
       <div
         className="absolute top-1/4 right-1/4 w-[420px] h-[420px] bg-signal/10 rounded-full blur-[120px] pointer-events-none"
