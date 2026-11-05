@@ -126,3 +126,17 @@ textarea:focus-visible {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Scrolling "coming soon" ribbon on location cards */
+@keyframes gp-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.gp-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: gp-marquee 18s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gp-marquee-track { animation: none; }
+}
