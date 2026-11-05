@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { fetchLocations, LocationItem } from "@/lib/site/services/locations";
 
-type Location = {
+type MapLocation = {
   name: string;
   address: string;
   description: string;
@@ -12,122 +13,114 @@ type Location = {
   lng: number;
 };
 
-const LOCATIONS: Location[] = [
-  {
-    name: "Pawn Shop Live",
-    address: "6240 99 St NW, Edmonton, AB T6E 6C7",
-    description:
-      "Greenpal Pulse 12 station — rent a portable power bank here. Stay charged. Keep moving.",
-    lat: 53.49866,
-    lng: -113.48727,
-  },
-  {
-    name: "ExcelHealth",
-    address: "100 - 3916 Macleod Trail SE, Calgary, AB T2G 2C5",
-    description:
-      "Greenpal Pulse station — rent a portable power bank and stay charged while you wait for your appointment.",
-    lat: 51.018671,
-    lng: -114.062055,
-  },
-  {
-    name: "Evolution Wonderlounge",
-    address: "11508 Jasper Ave NW, Edmonton, AB T5K 0M8",
-    description:
-      "Greenpal Pulse station — rent a portable power bank here. Stay charged. Keep moving.",
-    lat: 53.54125,
-    lng: -113.51975,
-  },
-  {
-    name: "B Street Bar",
-    address: "11818 111 Ave NW, Edmonton, AB T5G 0E5",
-    description:
-      "Greenpal Pulse 8 station — rent a portable power bank here. Stay charged. Keep moving.",
-    lat: 53.5594,
-    lng: -113.52554,
-  },
-  {
-    name: "VRtual Arena",
-    address: "11715 170 St NW, Edmonton, AB T5V 1H3",
-    description:
-      "Greenpal Pulse 12 station — rent a portable power bank here. Stay charged. Keep moving.",
-    lat: 53.56849,
-    lng: -113.61409,
-  },
-  {
-    name: "Chop Shop Physiques — Sherwood Park",
-    address: "Unit 540, 800 Broadmoor Blvd, Sherwood Park, AB T8H 4Y6",
-    description:
-      "Greenpal Pulse 8 station — rent a portable power bank here. Stay charged. Keep moving.",
-    lat: 53.53844,
-    lng: -113.32262,
-  },
-  {
-    name: "Chop Shop Physiques — Spruce Grove",
-    address: "#315, 280 Pioneer Rd, Spruce Grove, AB T7X 0A7",
-    description:
-      "Greenpal Pulse 8 station — rent a portable power bank here. Stay charged. Keep moving.",
-    lat: 53.55529,
-    lng: -113.85977,
-  },
-  {
-    name: "Chop Shop Physiques — Stony Plain",
-    address: "#117, 4401 48 St, Stony Plain, AB T7Z 1N3",
-    description:
-      "Greenpal Pulse 8 station — rent a portable power bank here. Stay charged. Keep moving.",
-    lat: 53.53483,
-    lng: -114.00095,
-  },
-  {
-    name: "Chop Shop Physiques — Fort Saskatchewan",
-    address: "#601, 10471 99 Ave, Fort Saskatchewan, AB T8L 0V6",
-    description:
-      "Greenpal Pulse 8 station — rent a portable power bank here. Stay charged. Keep moving.",
-    lat: 53.71183,
-    lng: -113.20495,
-  },
-  {
-    name: "Cure MD — St. Albert",
-    address: "Unit 680, 1115 St. Albert Trail, St. Albert, AB T8N 7X6",
-    description:
-      "Greenpal Pulse 8 station — rent a portable power bank here. Stay charged. Keep moving.",
-    lat: 53.67362,
-    lng: -113.63752,
-  },
-  {
-    name: "Olympic Oval — Calgary",
-    address: "288 Collegiate Blvd NW, Calgary, AB T2N 1N4",
-    description:
-      "Greenpal Pulse 6 station — rent a portable power bank here. Stay charged. Keep moving.",
-    lat: 51.0769,
-    lng: -114.1356,
-  },
-  {
-    name: "Strathmore Motor Products Sports Centre",
-    address: "1150 Edgeview Rd, Strathmore, AB T1P 0H2",
-    description:
-      "Greenpal Pulse 24 station — rent a portable power bank here. Stay charged. Keep moving.",
-    lat: 51.0504,
-    lng: -113.3888,
-  },
-];
+const DEFAULT_DESCRIPTION =
+  "Greenpal Pulse station — rent a portable power bank here. Stay charged. Keep moving.";
+
+// Only stations people can actually visit; coming_soon and offline are hidden.
+const VISIBLE_STATUSES = ["live", "installing"];
+
+// Rough bounds for North America. Guards the map against records with a
+// missing or mistyped coordinate (e.g. a longitude without its minus sign).
+const isValidCoordinate = (lat?: number, lng?: number) =>
+  typeof lat === "number" &&
+  typeof lng === "number" &&
+  lat >= 15 &&
+  lat <= 75 &&
+  lng >= -170 &&
+  lng <= -50;
+
+const toMapLocations = (items: LocationItem[]): MapLocation[] =>
+  items
+    .filter((loc) => VISIBLE_STATUSES.includes(loc.status))
+    .filter((loc) => isValidCoordinate(loc.coordinates?.lat, loc.coordinates?.lng))
+    .map((loc) => ({
+      name: loc.name,
+      address: loc.address,
+      description: loc.websiteCopy?.trim() || DEFAULT_DESCRIPTION,
+      lat: loc.coordinates!.lat as number,
+      lng: loc.coordinates!.lng as number,
+    }));
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 
 const PIN_COLOR = "#02d683";
 
 export default function ContactLocationsMap() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<L.LayerGroup | null>(null);
+  const [locations, setLocations] = useState<MapLocation[]>([]);
 
+  // Load stations from the API
+  useEffect(() => {
+    let cancelled = false;
+    fetchLocations()
+      .then((data) => {
+        if (!cancelled) setLocations(toMapLocations(data));
+      })
+      .catch((err) => console.error("Failed to load locations for map:", err));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Create the map once
   useEffect(() => {
     if (!containerRef.current) return;
 
     const map = L.map(containerRef.current, { scrollWheelZoom: false });
+    mapRef.current = map;
 
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
 
+    markersRef.current = L.layerGroup().addTo(map);
+
+    // Default view (Alberta) until the stations load
+    map.setView([53.5, -113.5], 6);
+
+    // The container is sized by CSS/layout after mount, so re-measure it
+    // (otherwise only part of the map renders).
+    const resize = () => {
+      map.invalidateSize();
+      const layer = markersRef.current;
+      const markers = layer ? layer.getLayers() : [];
+      if (markers.length) {
+        map.fitBounds(L.featureGroup(markers).getBounds(), { padding: [40, 40] });
+      }
+    };
+    const ro = new ResizeObserver(resize);
+    ro.observe(containerRef.current);
+    const t = window.setTimeout(resize, 300);
+
+    return () => {
+      window.clearTimeout(t);
+      ro.disconnect();
+      map.remove();
+      mapRef.current = null;
+      markersRef.current = null;
+    };
+  }, []);
+
+  // Draw pins whenever the stations change
+  useEffect(() => {
+    const map = mapRef.current;
+    const layer = markersRef.current;
+    if (!map || !layer) return;
+
+    layer.clearLayers();
+    if (locations.length === 0) return;
+
     const points: [number, number][] = [];
 
-    LOCATIONS.forEach((loc) => {
+    locations.forEach((loc) => {
       const icon = L.divIcon({
         className: "",
         html: `<div style="width:20px;height:20px;border-radius:50%;background:${PIN_COLOR};border:3px solid #fff;box-shadow:0 1px 5px rgba(0,0,0,.5)"></div>`,
@@ -139,10 +132,10 @@ export default function ContactLocationsMap() {
       const directions = `https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}`;
 
       L.marker([loc.lat, loc.lng], { icon })
-        .addTo(map)
+        .addTo(layer)
         .bindPopup(
-          `<strong>${loc.name}</strong><br>${loc.address}<br>` +
-            `<span style="color:#555">${loc.description}</span><br>` +
+          `<strong>${escapeHtml(loc.name)}</strong><br>${escapeHtml(loc.address)}<br>` +
+            `<span style="color:#555">${escapeHtml(loc.description)}</span><br>` +
             `<a href="${directions}" target="_blank" rel="noopener noreferrer">Get directions</a>`,
         );
 
@@ -150,23 +143,7 @@ export default function ContactLocationsMap() {
     });
 
     map.fitBounds(points, { padding: [40, 40] });
-
-    // The container is sized by CSS/layout after mount, so re-measure it
-    // (otherwise only part of the map renders).
-    const resize = () => {
-      map.invalidateSize();
-      map.fitBounds(points, { padding: [40, 40] });
-    };
-    const ro = new ResizeObserver(resize);
-    ro.observe(containerRef.current);
-    const t = window.setTimeout(resize, 300);
-
-    return () => {
-      window.clearTimeout(t);
-      ro.disconnect();
-      map.remove();
-    };
-  }, []);
+  }, [locations]);
 
   return (
     <div ref={containerRef} className="absolute inset-0 w-full h-full z-0" />
