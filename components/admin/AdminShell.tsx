@@ -12,6 +12,8 @@ const navItems = [
   { label: "Plans", href: "/admin/plans" },
   { label: "Orders", href: "/admin/orders" },
   { label: "Inquiries", href: "/admin/inquiries" },
+  { label: "Contact Messages", href: "/admin/contacts" },
+  { label: "Deposits", href: "/admin/deposits" },
   { label: "Locations", href: "/admin/locations" },
   // { label: "Purchases", href: "/admin/purchases" },
   { label: "Invoices", href: "/admin/invoices" },

@@ -13,6 +13,9 @@ import {
   getSummary, getInquiriesList, getLocationsList, type Summary,
 } from "@/lib/admin/services/dashboard";
 import { PageHeader, StatCard, StatusBadge } from "@/components/admin/ui";
+import { fetchDeposits, type Deposit } from "@/lib/admin/services/depositAdminService";
+import { fetchContacts, type ContactMessage } from "@/lib/admin/services/contactAdminService";
+import { computeDepositStats } from "@/lib/admin/utils/depositStats";
 
 const money = (n: number) =>
   `$${(n ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -52,6 +55,8 @@ export default function AdminDashboardPage() {
   const [invoices, setInvoices] = useState<any[]>([]);
   const [inquiries, setInquiries] = useState<any[]>([]);
   const [locations, setLocations] = useState<any[]>([]);
+  const [deposits, setDeposits] = useState<Deposit[]>([]);
+  const [contacts, setContacts] = useState<ContactMessage[]>([]);
 
   useEffect(() => {
     let alive = true;
@@ -60,7 +65,7 @@ export default function AdminDashboardPage() {
 
     (async () => {
       // allSettled: if one call fails, the rest of the page still loads
-      const [t, m, l, o, inv, inq, loc] = await Promise.allSettled([
+      const [t, m, l, o, inv, inq, loc, dep, con] = await Promise.allSettled([
         getSummary(ymd(now), ymd(now)),
         getSummary(ymd(startOfMonth(now)), ymd(now)),
         getSummary(ymd(startOfMonth(lm)), ymd(endOfMonth(lm))),
@@ -68,6 +73,8 @@ export default function AdminDashboardPage() {
         listInvoices(),
         getInquiriesList(),
         getLocationsList(),
+        fetchDeposits(),
+        fetchContacts(),
       ]);
       if (!alive) return;
 
@@ -86,6 +93,8 @@ export default function AdminDashboardPage() {
       setInvoices(asList(val(inv, "invoices")).map((x: any) => ({ ...x, id: x._id || x.id })));
       setInquiries(val(inq, "inquiries") ?? []);
       setLocations(val(loc, "locations") ?? []);
+      setDeposits(val(dep, "deposits") ?? []);
+      setContacts(val(con, "contact messages") ?? []);
       setLoading(false);
     })();
 
@@ -109,6 +118,17 @@ export default function AdminDashboardPage() {
     .filter((i) => i.status === "pending" || i.status === "overdue")
     .reduce((s, i) => s + (i.amount || 0), 0);
   const overdueCount = invoices.filter((i) => i.status === "overdue").length;
+
+  // ---- Deposits (kept separate from sales revenue) ----
+  const depStats = computeDepositStats(deposits);
+  const monthKey = format(new Date(), "yyyy-MM");
+  const depositsThisMonth = deposits.filter((d) => {
+    const dt = parseISO(d.paidAt || d.createdAt);
+    return isValid(dt) && format(dt, "yyyy-MM") === monthKey;
+  });
+  const depositsThisMonthAmount = depositsThisMonth.reduce((s, d) => s + d.amount, 0);
+  const unreadContacts = contacts.filter((c) => c.status === "unread").length;
+  const depositsToContact = deposits.filter((d) => d.status === "paid").length;
 
   // ---- Needs your action ----
   const pendingInquiries = inquiries.filter((i) => i.status === "pending").length;
@@ -165,6 +185,33 @@ export default function AdminDashboardPage() {
             />
           </div>
 
+          {/* Deposits */}
+          <p className="text-xs uppercase tracking-wide text-sand/40 font-body mb-3">
+            Deposits (CAD, non-refundable)
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+            <StatCard
+              label="Deposits received"
+              value={String(depStats.count)}
+              delta={money(depStats.amount)}
+            />
+            <StatCard
+              label="Deposits this month"
+              value={String(depositsThisMonth.length)}
+              delta={money(depositsThisMonthAmount)}
+            />
+            <StatCard
+              label="Franchise deposits"
+              value={String(depStats.byType.franchise.count)}
+              delta={money(depStats.byType.franchise.amount)}
+            />
+            <StatCard
+              label="Co-Investment deposits"
+              value={String(depStats.byType.coinvestment.count)}
+              delta={money(depStats.byType.coinvestment.amount)}
+            />
+          </div>
+
           {/* Needs action + split */}
           <div className="grid lg:grid-cols-2 gap-6 mb-10">
             <div className={card}>
@@ -175,6 +222,8 @@ export default function AdminDashboardPage() {
               <ActionRow label="Orders pending" count={pendingOrders} href="/admin/orders" />
               <ActionRow label="Orders processing" count={processingOrders} href="/admin/orders" />
               <ActionRow label="Overdue invoices" count={overdueCount} href="/admin/invoices" />
+              <ActionRow label="Unread contact messages" count={unreadContacts} href="/admin/contacts" />
+              <ActionRow label="Deposits not contacted yet" count={depositsToContact} href="/admin/deposits" />
             </div>
 
             <div className={card}>

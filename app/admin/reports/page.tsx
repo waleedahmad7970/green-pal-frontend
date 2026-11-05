@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { format, parseISO, isValid } from "date-fns";
 import { getSalesStats, type SalesStats, type SaleType } from "@/lib/admin/services/reports";
 import { PageHeader } from "@/components/admin/ui";
+import { fetchDeposits, type Deposit } from "@/lib/admin/services/depositAdminService";
+import { computeDepositStats, DEPOSIT_STATUS_ORDER } from "@/lib/admin/utils/depositStats";
 
 const money = (n: number) =>
   `$${(n ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -63,6 +65,7 @@ export default function AdminReportsPage() {
   const [data, setData] = useState<SalesStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [allDeposits, setAllDeposits] = useState<Deposit[]>([]);
 
   useEffect(() => {
     if (!from || !to || from > to) return;
@@ -73,6 +76,19 @@ export default function AdminReportsPage() {
       .catch((e) => setError(e?.message || "Failed to load reports"))
       .finally(() => setLoading(false));
   }, [from, to]);
+
+  // Deposits are loaded once and filtered to the chosen dates in the browser
+  useEffect(() => {
+    fetchDeposits().then(setAllDeposits).catch(() => setAllDeposits([]));
+  }, []);
+
+  const rangeDeposits = allDeposits.filter((d) => {
+    const dt = parseISO(d.paidAt || d.createdAt);
+    if (!isValid(dt)) return false;
+    const day = format(dt, "yyyy-MM-dd");
+    return day >= from && day <= to;
+  });
+  const dep = computeDepositStats(rangeDeposits);
 
   const rangeLabel = from === to ? from : `${from}_to_${to}`;
 
@@ -109,6 +125,12 @@ export default function AdminReportsPage() {
       [],
       ["Item", "Type", "Units", "Sales", "Revenue (USD)"],
       ...data.topItems.map((i) => [i.item, typeLabel[i.type] ?? i.type, i.units, i.sales, i.revenue.toFixed(2)]),
+      [],
+      ["Deposits (CAD, non-refundable)", "Count", "Amount (CAD)"],
+      ["All deposits", dep.count, dep.amount.toFixed(2)],
+      ["Franchise", dep.byType.franchise.count, dep.byType.franchise.amount.toFixed(2)],
+      ["Co-Investment", dep.byType.coinvestment.count, dep.byType.coinvestment.amount.toFixed(2)],
+      ...DEPOSIT_STATUS_ORDER.map((s) => [`Status: ${s}`, dep.byStatus[s]?.count ?? 0, (dep.byStatus[s]?.amount ?? 0).toFixed(2)]),
     ];
     downloadCsv(`summary_${rangeLabel}.csv`, rows);
   };
@@ -188,6 +210,48 @@ export default function AdminReportsPage() {
               value={data.byType.plan.sales}
               sub={`${data.byType.plan.units} units · ${money(data.byType.plan.revenue)}`}
             />
+          </div>
+
+          {/* Deposits: separate from sales so a deposit is not counted twice */}
+          <div>
+            <h3 className="font-display text-lg font-semibold text-sand mb-1">Deposits</h3>
+            <p className="text-xs text-sand/40 font-body mb-4">
+              CAD, non-refundable. Counted separately from sales above.
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-4">
+              <Stat label="Deposits received" value={dep.count} sub={`${money(dep.amount)} CAD`} />
+              <Stat
+                label="Franchise"
+                value={dep.byType.franchise.count}
+                sub={`${money(dep.byType.franchise.amount)} CAD`}
+              />
+              <Stat
+                label="Co-Investment"
+                value={dep.byType.coinvestment.count}
+                sub={`${money(dep.byType.coinvestment.amount)} CAD`}
+              />
+              <Stat
+                label="Not contacted yet"
+                value={dep.byStatus.paid?.count ?? 0}
+                sub="Status: paid"
+              />
+            </div>
+            <div className={card}>
+              <table className="w-full">
+                <thead>
+                  <tr><th className={th}>Deposit status</th><th className={th}>Deposits</th><th className={th}>Amount (CAD)</th></tr>
+                </thead>
+                <tbody>
+                  {DEPOSIT_STATUS_ORDER.map((s) => (
+                    <tr key={s}>
+                      <td className={`${td} capitalize`}>{s}</td>
+                      <td className={td}>{dep.byStatus[s]?.count ?? 0}</td>
+                      <td className={td}>{money(dep.byStatus[s]?.amount ?? 0)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           {/* Status + items */}

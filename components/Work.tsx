@@ -232,6 +232,7 @@ export default function Work() {
             const Icon = iconMap[loc.venue?.toLowerCase()] || iconMap.retail;
             const t = treatments[i % treatments.length];
             const isLive = loc.status === "live";
+            const isComingSoon = loc.status === "coming_soon";
 
             return (
               <div
@@ -239,15 +240,38 @@ export default function Work() {
                 className="work-card invisible snap-start shrink-0 w-[85vw] sm:w-[65vw] lg:w-[35vw] flex flex-col group rounded-2xl overflow-hidden shadow-xl transition-transform duration-500 hover:-translate-y-1"
               >
                 {/* Image Frame */}
-                <div className="relative border border-b-0 line-rule p-1 bg-surface-dim overflow-hidden rounded-t-2xl">
+                <div className="relative border border-b-0 line-rule bg-surface-dim overflow-hidden">
                   <Image
                     alt={loc.imageAlt || loc.name || "Location Image"}
                     width={800}
                     height={450}
                     src={loc?.image}
                     draggable={false}
-                    className="w-full h-auto aspect-video object-cover rounded-xl opacity-100 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none"
+                    className={`w-full h-auto aspect-video object-cover block opacity-100 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none`}
                   />
+
+                  {/* Coming Soon Banner: scrolling ribbon */}
+                  {isComingSoon && (
+                    <div className="absolute inset-x-0 bottom-0 overflow-hidden pointer-events-none">
+                      <div className="bg-white border-t border-signal/40 py-2.5 overflow-hidden">
+                        <div className="gp-marquee-track">
+                          {[0, 1].map((half) => (
+                            <div key={half} className="flex shrink-0 items-center" aria-hidden={half === 1}>
+                              {Array.from({ length: 6 }).map((_, n) => (
+                                <span
+                                  key={n}
+                                  className="flex items-center gap-4 pr-4 font-mono text-xs font-bold uppercase tracking-[0.25em] text-signal-dim whitespace-nowrap"
+                                >
+                                  Coming Soon
+                                  <span className="w-1.5 h-1.5 rounded-full bg-signal-dim animate-pulse" />
+                                </span>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Status Badge */}
                   <div className="absolute top-5 right-5 bg-ink/90 backdrop-blur-md px-3.5 py-1.5 rounded-full flex items-center gap-2 border border-signal/20 shadow-2xl">
@@ -257,7 +281,7 @@ export default function Work() {
                         : loc.status === "installing"
                           ? "bg-amber-400"
                           : loc.status === "coming_soon"
-                            ? "bg-sky-400"
+                            ? "bg-signal/50 ring-1 ring-signal"
                             : "bg-red-500"
                         }`}
                     ></span>
@@ -302,7 +326,7 @@ export default function Work() {
                   {/* Interactive Footer */}
                   <div className="pt-4 border-t border-current/10 flex items-center justify-between">
                     <span className="text-xs font-mono uppercase tracking-wider opacity-70">
-                      View System Specs
+                      {isComingSoon ? "Opening soon" : "View System Specs"}
                     </span>
                     {/* <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5 font-bold text-lg">
                       →
