@@ -240,19 +240,19 @@ export default function Work() {
                 className="work-card invisible snap-start shrink-0 w-[85vw] sm:w-[65vw] lg:w-[35vw] flex flex-col group rounded-2xl overflow-hidden shadow-xl transition-transform duration-500 hover:-translate-y-1"
               >
                 {/* Image Frame */}
-                <div className="relative border border-b-0 line-rule p-1 bg-surface-dim overflow-hidden rounded-t-2xl">
+                <div className="relative border border-b-0 line-rule bg-surface-dim overflow-hidden">
                   <Image
                     alt={loc.imageAlt || loc.name || "Location Image"}
                     width={800}
                     height={450}
                     src={loc?.image}
                     draggable={false}
-                    className={`w-full h-auto aspect-video object-cover rounded-xl opacity-100 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none`}
+                    className={`w-full h-auto aspect-video object-cover block opacity-100 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out pointer-events-none`}
                   />
 
                   {/* Coming Soon Banner: scrolling ribbon */}
                   {isComingSoon && (
-                    <div className="absolute inset-x-1 bottom-1 rounded-b-xl overflow-hidden pointer-events-none">
+                    <div className="absolute inset-x-0 bottom-0 overflow-hidden pointer-events-none">
                       <div className="bg-white border-t border-signal/40 py-2.5 overflow-hidden">
                         <div className="gp-marquee-track">
                           {[0, 1].map((half) => (
