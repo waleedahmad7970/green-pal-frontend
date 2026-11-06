@@ -95,7 +95,7 @@ export default function AdminReportsPage() {
   const exportOrders = () => {
     if (!data) return;
     const head = [
-      "Order ID", "Created", "Paid at", "Customer", "Email", "Item", "Type", "Qty", "Total (USD)",
+      "Order ID", "Created", "Paid at", "Customer", "Email", "Item", "Type", "Qty", "Total (CAD)",
       "Status", "Paid", "Location", "Payment method", "Card brand", "Card last4",
       "Stripe session", "Stripe payment intent", "Receipt URL",
     ];
@@ -113,17 +113,17 @@ export default function AdminReportsPage() {
     const rows: unknown[][] = [
       ["Report range", from, to],
       [],
-      ["Summary", "Count", "Units", "Revenue (USD)"],
+      ["Summary", "Count", "Units", "Revenue (CAD)"],
       ["Total sales (completed)", data.totalSales, "", data.totalRevenue.toFixed(2)],
       ["Products", data.byType.product.sales, data.byType.product.units, data.byType.product.revenue.toFixed(2)],
       ["Investment tiers", tier.sales, tier.units, tier.revenue.toFixed(2)],
       ["Plans", data.byType.plan.sales, data.byType.plan.units, data.byType.plan.revenue.toFixed(2)],
       ["All orders (any status)", data.totalOrders],
       [],
-      ["Status", "Orders", "Amount (USD)"],
+      ["Status", "Orders", "Amount (CAD)"],
       ...STATUSES.map((s) => [s, data.statuses[s]?.count ?? 0, (data.statuses[s]?.amount ?? 0).toFixed(2)]),
       [],
-      ["Item", "Type", "Units", "Sales", "Revenue (USD)"],
+      ["Item", "Type", "Units", "Sales", "Revenue (CAD)"],
       ...data.topItems.map((i) => [i.item, typeLabel[i.type] ?? i.type, i.units, i.sales, i.revenue.toFixed(2)]),
       [],
       ["Deposits (CAD, non-refundable)", "Count", "Amount (CAD)"],

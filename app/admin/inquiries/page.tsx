@@ -194,7 +194,7 @@ export default function AdminInquiriesPage() {
         onClose={() => setLinkModal(null)}
         title="Generate Payment Link"
       >
-        <FormField label="Custom Price (USD)">
+        <FormField label="Custom Price (CAD)">
           <input
             type="number"
             step="0.01"
