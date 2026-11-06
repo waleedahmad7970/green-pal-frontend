@@ -10,6 +10,13 @@ import {
   type ContactMessage,
   type ContactStatus,
 } from "@/lib/admin/services/contactAdminService";
+import { downloadContactPdf } from "@/lib/admin/utils/contactPdf";
+
+const DownloadIcon = () => (
+  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
+  </svg>
+);
 
 export default function AdminContactsPage() {
   const [contacts, setContacts] = useState<ContactMessage[]>([]);
@@ -100,6 +107,7 @@ export default function AdminContactsPage() {
                 <th className="p-4 font-normal">Message</th>
                 <th className="p-4 font-normal">Status</th>
                 <th className="p-4 font-normal"></th>
+                <th className="p-4 font-normal">PDF</th>
               </tr>
             </thead>
             <tbody>
@@ -157,6 +165,17 @@ export default function AdminContactsPage() {
                       View
                     </button>
                   </td>
+                  <td className="p-4">
+                    <button
+                      type="button"
+                      onClick={() => downloadContactPdf(c)}
+                      title="Download message as PDF"
+                      aria-label="Download message as PDF"
+                      className="w-9 h-9 rounded-lg border border-sand/15 text-sand/70 hover:text-signal hover:border-signal transition-colors flex items-center justify-center cursor-pointer"
+                    >
+                      <DownloadIcon />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -187,6 +206,14 @@ export default function AdminContactsPage() {
               <p className="text-sand/40 text-xs mb-1">Message</p>
               <p className="text-sand/80 whitespace-pre-wrap leading-relaxed">{selected.message}</p>
             </div>
+            <button
+              type="button"
+              onClick={() => downloadContactPdf(selected)}
+              className="inline-flex items-center gap-2 text-xs font-body border border-sand/15 rounded-lg px-3 py-2 text-sand/80 hover:text-signal hover:border-signal transition-colors cursor-pointer"
+            >
+              <DownloadIcon />
+              Download PDF
+            </button>
             <div className="flex items-center gap-3 pt-2">
               <span className="text-sand/40 text-xs">Status</span>
               <select
