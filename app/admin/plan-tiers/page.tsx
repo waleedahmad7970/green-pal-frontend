@@ -365,7 +365,7 @@ export default function AdminPlanTiersPage() {
                     </div>
 
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                      {renderField("price", "Price ($ USD) *", "number", "e.g. 500")}
+                      {renderField("price", "Price ($ CAD) *", "number", "e.g. 500")}
                       {renderField("sortOrder", "Sort Order *", "number", "1")}
 
                       <div className="flex items-center gap-3 pt-6">
@@ -701,7 +701,7 @@ export default function AdminPlanTiersPage() {
               />
             </FormField>
 
-            <FormField label="Price (USD)">
+            <FormField label="Price (CAD)">
               <input
                 type="number"
                 step="0.01"
