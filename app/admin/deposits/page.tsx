@@ -15,6 +15,7 @@ import {
 const TYPE_BADGE: Record<string, { label: string; className: string }> = {
   franchise: { label: "Franchise", className: "bg-violet-400/15 text-violet-300" },
   coinvestment: { label: "Co-Investment", className: "bg-sky-400/15 text-sky-300" },
+  test: { label: "Test", className: "bg-amber-400/15 text-amber-300" },
 };
 
 const money = (d: Deposit) =>
@@ -74,6 +75,7 @@ export default function AdminDepositsPage() {
             <option value="" className="bg-ink">All types</option>
             <option value="franchise" className="bg-ink">Franchise</option>
             <option value="coinvestment" className="bg-ink">Co-Investment</option>
+            <option value="test" className="bg-ink">Test</option>
           </select>
           <select
             value={filterStatus}

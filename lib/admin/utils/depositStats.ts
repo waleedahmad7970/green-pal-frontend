@@ -21,6 +21,9 @@ export function computeDepositStats(deposits: Deposit[]): DepositStats {
   };
 
   for (const d of deposits) {
+    // Internal test payments are listed in the table but never counted in totals
+    if (d.depositType === "test") continue;
+
     stats.count += 1;
     stats.amount += d.amount;
 
