@@ -24,7 +24,7 @@ const sectionLinks = [
 
 const pageLinks = [
   { label: "Home", href: "/" },
-  { label: "Plans", href: "/plans" },
+  { label: "Co-Invest", href: "/plans" },
   { label: "Products", href: "/products" },
   { label: "Franchise", href: "/franchise" },
   // { label: "Investment Plans", href: "/plans" },
