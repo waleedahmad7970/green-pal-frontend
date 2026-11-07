@@ -18,6 +18,7 @@ const TYPE_BADGE: Record<string, { label: string; className: string }> = {
   franchise: { label: "Franchise", className: "bg-violet-400/15 text-violet-300" },
   coinvestment: { label: "Co-Investment", className: "bg-sky-400/15 text-sky-300" },
   premium: { label: "Premium", className: "bg-emerald-400/15 text-emerald-300" },
+  franchise_full: { label: "Franchisee Full", className: "bg-rose-400/15 text-rose-300" },
   test: { label: "Test", className: "bg-amber-400/15 text-amber-300" },
 };
 
@@ -92,6 +93,7 @@ export default function AdminDepositsPage() {
             <option value="franchise" className="bg-ink">Franchise</option>
             <option value="coinvestment" className="bg-ink">Co-Investment</option>
             <option value="premium" className="bg-ink">Premium</option>
+            <option value="franchise_full" className="bg-ink">Franchisee Full Payment</option>
             <option value="test" className="bg-ink">Test</option>
           </select>
           <select

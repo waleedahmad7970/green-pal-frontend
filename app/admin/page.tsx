@@ -215,6 +215,11 @@ export default function AdminDashboardPage() {
               value={String(depStats.byType.premium.count)}
               delta={money(depStats.byType.premium.amount)}
             />
+            <StatCard
+              label="Franchisee full payments"
+              value={String(depStats.byType.franchise_full.count)}
+              delta={money(depStats.byType.franchise_full.amount)}
+            />
           </div>
 
           {/* Needs action + split */}
