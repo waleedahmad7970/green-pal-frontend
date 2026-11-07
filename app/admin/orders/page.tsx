@@ -1,5 +1,7 @@
 "use client";
 
+import { useTableSort, SortTh, type SortAccessors } from "@/components/admin/sort";
+
 import { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -44,6 +46,17 @@ const OrderSchema = Yup.object().shape({
   status: Yup.string().required("Required"),
 });
 
+const orderSort: SortAccessors<any> = {
+  id: (o) => o?._id?.slice(-6),
+  customer: (o) => o.customerName,
+  item: (o) => o.item,
+  type: (o) => getType(o),
+  total: (o) => o.total ?? 0,
+  payment: (o) => (o.isPaid ? 1 : 0),
+  date: (o) => new Date(o.createdAt).getTime(),
+  status: (o) => o.status,
+};
+
 export default function AdminOrdersPage() {
   const { orders, loading, fetchOrders, addOrder, changeOrderStatus } = useOrderStore();
   const [locations, setLocations] = useState<Location[]>([]);
@@ -75,6 +88,7 @@ export default function AdminOrdersPage() {
   const filteredOrders = orders.filter(
     (o) => typeFilter === "all" || getType(o) === typeFilter
   );
+  const { sorted: sortedOrders, sort, toggle } = useTableSort(filteredOrders, orderSort);
 
   return (
     <div>
@@ -105,18 +119,18 @@ export default function AdminOrdersPage() {
           <table className="w-full text-sm font-body">
             <thead>
               <tr className="text-left text-sand/40 border-b border-sand/10">
-                <th className="p-4 font-normal">Order ID</th>
-                <th className="p-4 font-normal">Customer</th>
-                <th className="p-4 font-normal">Item</th>
-                <th className="p-4 font-normal">Type</th>
-                <th className="p-4 font-normal">Total</th>
-                <th className="p-4 font-normal">Payment</th>
-                <th className="p-4 font-normal">Date</th>
-                <th className="p-4 font-normal">Status</th>
+                <SortTh label="Order ID" sortKey="id" sort={sort} onSort={toggle} />
+                <SortTh label="Customer" sortKey="customer" sort={sort} onSort={toggle} />
+                <SortTh label="Item" sortKey="item" sort={sort} onSort={toggle} />
+                <SortTh label="Type" sortKey="type" sort={sort} onSort={toggle} />
+                <SortTh label="Total" sortKey="total" sort={sort} onSort={toggle} />
+                <SortTh label="Payment" sortKey="payment" sort={sort} onSort={toggle} />
+                <SortTh label="Date" sortKey="date" sort={sort} onSort={toggle} />
+                <SortTh label="Status" sortKey="status" sort={sort} onSort={toggle} />
               </tr>
             </thead>
             <tbody>
-              {filteredOrders.map((o) => {
+              {sortedOrders.map((o) => {
                 const orderId = o?._id;
                 const type = getType(o);
                 const locked = !!o?.paymentDetails?.stripeSessionId;

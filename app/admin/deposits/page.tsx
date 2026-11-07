@@ -1,5 +1,7 @@
 "use client";
 
+import { useTableSort, SortTh, type SortAccessors } from "@/components/admin/sort";
+
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PageHeader, StatCard, StatusBadge } from "@/components/admin/ui";
@@ -20,6 +22,16 @@ const TYPE_BADGE: Record<string, { label: string; className: string }> = {
 
 const money = (d: Deposit) =>
   `$${d.amount.toFixed(2)} ${(d.currency || "cad").toUpperCase()}`;
+
+const depositSort: SortAccessors<Deposit> = {
+  id: (d) => d._id.slice(-6),
+  customer: (d) => d.customerName,
+  type: (d) => d.depositType,
+  reference: (d) => d.reference,
+  amount: (d) => d.amount,
+  date: (d) => new Date(d.paidAt || d.createdAt).getTime(),
+  status: (d) => d.status,
+};
 
 export default function AdminDepositsPage() {
   const [deposits, setDeposits] = useState<Deposit[]>([]);
@@ -61,6 +73,7 @@ export default function AdminDepositsPage() {
   const counted = visible.filter((d) => d.depositType !== "test");
   const received = counted.reduce((sum, d) => sum + d.amount, 0);
   const awaitingContact = counted.filter((d) => d.status === "paid").length;
+  const { sorted: sortedDeposits, sort, toggle } = useTableSort(visible, depositSort);
 
   return (
     <div>
@@ -114,18 +127,18 @@ export default function AdminDepositsPage() {
           <table className="w-full text-sm font-body">
             <thead>
               <tr className="text-left text-sand/40 border-b border-sand/10">
-                <th className="p-4 font-normal">ID</th>
-                <th className="p-4 font-normal">Customer</th>
-                <th className="p-4 font-normal">Deposit</th>
-                <th className="p-4 font-normal">Package / machine</th>
-                <th className="p-4 font-normal">Amount</th>
-                <th className="p-4 font-normal">Date</th>
-                <th className="p-4 font-normal">Status</th>
+                <SortTh label="ID" sortKey="id" sort={sort} onSort={toggle} />
+                <SortTh label="Customer" sortKey="customer" sort={sort} onSort={toggle} />
+                <SortTh label="Deposit" sortKey="type" sort={sort} onSort={toggle} />
+                <SortTh label="Package / machine" sortKey="reference" sort={sort} onSort={toggle} />
+                <SortTh label="Amount" sortKey="amount" sort={sort} onSort={toggle} />
+                <SortTh label="Date" sortKey="date" sort={sort} onSort={toggle} />
+                <SortTh label="Status" sortKey="status" sort={sort} onSort={toggle} />
                 <th className="p-4 font-normal">Receipt</th>
               </tr>
             </thead>
             <tbody>
-              {visible.map((d) => (
+              {sortedDeposits.map((d) => (
                 <tr key={d._id} className="border-b border-sand/5 last:border-0">
                   <td className="p-4 text-sand/70 font-mono text-xs">{d._id.slice(-6)}</td>
                   <td className="p-4 text-sand">

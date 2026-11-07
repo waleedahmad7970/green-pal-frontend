@@ -1,5 +1,7 @@
 "use client";
 
+import { useTableSort, SortTh, type SortAccessors } from "@/components/admin/sort";
+
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PageHeader, StatCard, StatusBadge, AdminModal } from "@/components/admin/ui";
@@ -17,6 +19,15 @@ const DownloadIcon = () => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" />
   </svg>
 );
+
+const contactSort: SortAccessors<ContactMessage> = {
+  date: (c) => new Date(c.createdAt).getTime(),
+  name: (c) => c.name,
+  phone: (c) => c.phone,
+  availability: (c) => c.availability,
+  message: (c) => c.message,
+  status: (c) => c.status,
+};
 
 export default function AdminContactsPage() {
   const [contacts, setContacts] = useState<ContactMessage[]>([]);
@@ -59,6 +70,7 @@ export default function AdminContactsPage() {
 
   const unread = contacts.filter((c) => c.status === "unread").length;
   const replied = contacts.filter((c) => c.status === "replied").length;
+  const { sorted: sortedContacts, sort, toggle } = useTableSort(contacts, contactSort);
 
   return (
     <div>
@@ -100,18 +112,18 @@ export default function AdminContactsPage() {
           <table className="w-full text-sm font-body">
             <thead>
               <tr className="text-left text-sand/40 border-b border-sand/10">
-                <th className="p-4 font-normal">Date</th>
-                <th className="p-4 font-normal">Customer</th>
-                <th className="p-4 font-normal">Phone</th>
-                <th className="p-4 font-normal">Availability</th>
-                <th className="p-4 font-normal">Message</th>
-                <th className="p-4 font-normal">Status</th>
+                <SortTh label="Date" sortKey="date" sort={sort} onSort={toggle} />
+                <SortTh label="Customer" sortKey="name" sort={sort} onSort={toggle} />
+                <SortTh label="Phone" sortKey="phone" sort={sort} onSort={toggle} />
+                <SortTh label="Availability" sortKey="availability" sort={sort} onSort={toggle} />
+                <SortTh label="Message" sortKey="message" sort={sort} onSort={toggle} />
+                <SortTh label="Status" sortKey="status" sort={sort} onSort={toggle} />
                 <th className="p-4 font-normal"></th>
                 <th className="p-4 font-normal">PDF</th>
               </tr>
             </thead>
             <tbody>
-              {contacts.map((c) => (
+              {sortedContacts.map((c) => (
                 <tr
                   key={c._id}
                   className={`border-b border-sand/5 last:border-0 ${

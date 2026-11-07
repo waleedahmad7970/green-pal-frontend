@@ -1,5 +1,7 @@
 "use client";
 
+import { useTableSort, SortTh, type SortAccessors } from "@/components/admin/sort";
+
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PageHeader } from "@/components/admin/ui";
@@ -11,12 +13,22 @@ import {
   type FailedEmail,
 } from "@/lib/admin/services/failedEmails";
 
+const emailSort: SortAccessors<FailedEmail> = {
+  to: (e) => e.to,
+  subject: (e) => e.subject,
+  status: (e) => e.status,
+  type: (e) => e.emailType,
+  retries: (e) => e.retryCount,
+  error: (e) => e.lastError,
+};
+
 export default function AdminFailedEmailsPage() {
   const [emails, setEmails] = useState<FailedEmail[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const { sorted: sortedEmails, sort, toggle } = useTableSort(emails, emailSort);
 
   const fetchEmails = async () => {
     setLoading(true);
@@ -115,12 +127,12 @@ export default function AdminFailedEmailsPage() {
           <table className="w-full text-sm font-body">
             <thead>
               <tr className="text-left text-sand/40 border-b border-sand/10">
-                <th className="p-4 font-normal">To</th>
-                <th className="p-4 font-normal">Subject</th>
-                <th className="p-4 font-normal">Status</th>
-                <th className="p-4 font-normal">Type</th>
-                <th className="p-4 font-normal">Retries</th>
-                <th className="p-4 font-normal">Last Error</th>
+                <SortTh label="To" sortKey="to" sort={sort} onSort={toggle} />
+                <SortTh label="Subject" sortKey="subject" sort={sort} onSort={toggle} />
+                <SortTh label="Status" sortKey="status" sort={sort} onSort={toggle} />
+                <SortTh label="Type" sortKey="type" sort={sort} onSort={toggle} />
+                <SortTh label="Retries" sortKey="retries" sort={sort} onSort={toggle} />
+                <SortTh label="Last Error" sortKey="error" sort={sort} onSort={toggle} />
                 <th className="p-4 font-normal">Actions</th>
               </tr>
             </thead>
@@ -132,7 +144,7 @@ export default function AdminFailedEmailsPage() {
                   </td>
                 </tr>
               ) : (
-                emails.map((email) => (
+                sortedEmails.map((email) => (
                   <tr key={email._id} className="hover:bg-sand/[0.02]">
                     <td className="p-4">{email.to}</td>
                     <td className="p-4">{email.subject}</td>

@@ -1,5 +1,7 @@
 "use client";
 
+import { useTableSort, SortTh, type SortAccessors } from "@/components/admin/sort";
+
 import { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -14,6 +16,13 @@ const AdminSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Required"),
     password: Yup.string().min(6, "At least 6 characters").required("Required"),
 });
+
+const userSort: SortAccessors<AdminUser> = {
+    name: (u) => u.name,
+    email: (u) => u.email,
+    role: (u) => u.role,
+    added: (u) => new Date(u.createdAt).getTime(),
+};
 
 export default function AdminAdminsPage() {
     const [users, setUsers] = useState<AdminUser[]>([]);
@@ -36,6 +45,7 @@ export default function AdminAdminsPage() {
 
     const admins = users?.filter((u) => u.role === "admin") ?? [];
     const visible = roleFilter === "all" ? users : users.filter((u) => u.role === roleFilter);
+    const { sorted: sortedUsers, sort, toggle } = useTableSort(visible, userSort);
 
     const handleCreate = async (values: any, { resetForm, setStatus }: any) => {
         try {
@@ -85,14 +95,14 @@ export default function AdminAdminsPage() {
                         <table className="w-full text-sm font-body">
                             <thead>
                                 <tr className="text-left text-sand/40 border-b border-sand/10">
-                                    <th className="p-4 font-normal">Name</th>
-                                    <th className="p-4 font-normal">Email</th>
-                                    <th className="p-4 font-normal">Role</th>
-                                    <th className="p-4 font-normal">Added</th>
+                                    <SortTh label="Name" sortKey="name" sort={sort} onSort={toggle} />
+                                    <SortTh label="Email" sortKey="email" sort={sort} onSort={toggle} />
+                                    <SortTh label="Role" sortKey="role" sort={sort} onSort={toggle} />
+                                    <SortTh label="Added" sortKey="added" sort={sort} onSort={toggle} />
                                 </tr>
                             </thead>
                             <tbody>
-                                {visible.map((u) => {
+                                {sortedUsers.map((u) => {
                                     const d = parseISO(u.createdAt);
                                     return (
                                         <tr key={u._id} className="border-b border-sand/5 last:border-0">

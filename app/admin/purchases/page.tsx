@@ -1,5 +1,7 @@
 "use client";
 
+import { useTableSort, SortTh, type SortAccessors } from "@/components/admin/sort";
+
 import { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -21,8 +23,19 @@ const PurchaseSchema = Yup.object().shape({
   cost: Yup.number().positive("Must be positive").required("Required"),
 });
 
+const purchaseSort: SortAccessors<Purchase> = {
+  id: (p) => p.id,
+  supplier: (p) => p.supplier,
+  item: (p) => p.item,
+  quantity: (p) => p.quantity,
+  cost: (p) => p.cost,
+  date: (p) => (p.purchasedAt ? new Date(p.purchasedAt).getTime() : null),
+  status: (p) => (p.received ? 1 : 0),
+};
+
 export default function AdminPurchasesPage() {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
+  const { sorted: sortedPurchases, sort, toggle } = useTableSort(purchases, purchaseSort);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -66,17 +79,17 @@ export default function AdminPurchasesPage() {
           <table className="w-full text-sm font-body">
             <thead>
               <tr className="text-left text-sand/40 border-b border-sand/10">
-                <th className="p-4 font-normal">Purchase</th>
-                <th className="p-4 font-normal">Supplier</th>
-                <th className="p-4 font-normal">Item</th>
-                <th className="p-4 font-normal">Qty</th>
-                <th className="p-4 font-normal">Cost</th>
-                <th className="p-4 font-normal">Date</th>
-                <th className="p-4 font-normal">Status</th>
+                <SortTh label="Purchase" sortKey="id" sort={sort} onSort={toggle} />
+                <SortTh label="Supplier" sortKey="supplier" sort={sort} onSort={toggle} />
+                <SortTh label="Item" sortKey="item" sort={sort} onSort={toggle} />
+                <SortTh label="Qty" sortKey="quantity" sort={sort} onSort={toggle} />
+                <SortTh label="Cost" sortKey="cost" sort={sort} onSort={toggle} />
+                <SortTh label="Date" sortKey="date" sort={sort} onSort={toggle} />
+                <SortTh label="Status" sortKey="status" sort={sort} onSort={toggle} />
               </tr>
             </thead>
             <tbody>
-              {purchases.map((p) => (
+              {sortedPurchases.map((p) => (
                 <tr key={p.id} className="border-b border-sand/5 last:border-0">
                   <td className="p-4 text-sand/70">{p.id}</td>
                   <td className="p-4 text-sand">{p.supplier}</td>
