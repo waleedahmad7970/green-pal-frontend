@@ -131,6 +131,7 @@ export default function AdminReportsPage() {
       ["Franchise", dep.byType.franchise.count, dep.byType.franchise.amount.toFixed(2)],
       ["Co-Investment", dep.byType.coinvestment.count, dep.byType.coinvestment.amount.toFixed(2)],
       ["Premium", dep.byType.premium.count, dep.byType.premium.amount.toFixed(2)],
+      ["Franchisee Full Payment", dep.byType.franchise_full.count, dep.byType.franchise_full.amount.toFixed(2)],
       ...DEPOSIT_STATUS_ORDER.map((s) => [`Status: ${s}`, dep.byStatus[s]?.count ?? 0, (dep.byStatus[s]?.amount ?? 0).toFixed(2)]),
     ];
     downloadCsv(`summary_${rangeLabel}.csv`, rows);
@@ -219,7 +220,7 @@ export default function AdminReportsPage() {
             <p className="text-xs text-sand/40 font-body mb-4">
               CAD, non-refundable. Counted separately from sales above.
             </p>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 mb-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-4">
               <Stat label="Deposits received" value={dep.count} sub={`${money(dep.amount)} CAD`} />
               <Stat
                 label="Franchise"
@@ -235,6 +236,11 @@ export default function AdminReportsPage() {
                 label="Premium"
                 value={dep.byType.premium.count}
                 sub={`${money(dep.byType.premium.amount)} CAD`}
+              />
+              <Stat
+                label="Franchisee Full Payment"
+                value={dep.byType.franchise_full.count}
+                sub={`${money(dep.byType.franchise_full.amount)} CAD`}
               />
               <Stat
                 label="Not contacted yet"
