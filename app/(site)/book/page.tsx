@@ -16,6 +16,7 @@ const CHECK_BUBBLE =
 // The pay links are the Stripe Payment Links. Put them in .env.local:
 //   NEXT_PUBLIC_DEPOSIT_COINVESTMENT_URL=https://buy.stripe.com/...
 //   NEXT_PUBLIC_DEPOSIT_FRANCHISE_URL=https://buy.stripe.com/...
+//   NEXT_PUBLIC_DEPOSIT_PREMIUM_URL=https://buy.stripe.com/...
 const DEPOSITS = [
     {
         key: "coinvestment",
@@ -34,6 +35,15 @@ const DEPOSITS = [
         currency: "CAD",
         text: "Reserve your territory as a Greenpal franchise partner with an initial deposit.",
         url: process.env.NEXT_PUBLIC_DEPOSIT_FRANCHISE_URL || "",
+    },
+    {
+        key: "premium",
+        title: "Premium",
+        label: "Initial deposit",
+        amount: "$2,000",
+        currency: "CAD",
+        text: "Reserve your premium Greenpal package with an initial deposit.",
+        url: process.env.NEXT_PUBLIC_DEPOSIT_PREMIUM_URL || "",
     },
 ];
 
@@ -120,7 +130,7 @@ export default function BookPage() {
                     variants={stagger}
                     initial="hidden"
                     animate="show"
-                    className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto mb-10"
+                    className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto mb-10"
                 >
                     {DEPOSITS.map((d) => (
                         <motion.div

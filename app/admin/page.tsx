@@ -210,6 +210,11 @@ export default function AdminDashboardPage() {
               value={String(depStats.byType.coinvestment.count)}
               delta={money(depStats.byType.coinvestment.amount)}
             />
+            <StatCard
+              label="Premium deposits"
+              value={String(depStats.byType.premium.count)}
+              delta={money(depStats.byType.premium.amount)}
+            />
           </div>
 
           {/* Needs action + split */}
