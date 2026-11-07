@@ -57,8 +57,10 @@ export default function AdminDepositsPage() {
 
   // Deposits are non-refundable, so every payment counts as received,
   // including ones whose deal was later marked cancelled.
-  const received = visible.reduce((sum, d) => sum + d.amount, 0);
-  const awaitingContact = visible.filter((d) => d.status === "paid").length;
+  // Internal test payments stay in the table but are never counted in the cards.
+  const counted = visible.filter((d) => d.depositType !== "test");
+  const received = counted.reduce((sum, d) => sum + d.amount, 0);
+  const awaitingContact = counted.filter((d) => d.status === "paid").length;
 
   return (
     <div>
@@ -94,7 +96,7 @@ export default function AdminDepositsPage() {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <StatCard label="Deposits" value={String(visible.length)} />
+        <StatCard label="Deposits" value={String(counted.length)} />
         <StatCard label="Total received (CAD)" value={`$${received.toFixed(2)}`} />
         <StatCard
           label="Not contacted yet"
