@@ -24,7 +24,7 @@ const sectionLinks = [
 
 const pageLinks = [
   { label: "Home", href: "/" },
-  { label: "Plans", href: "/plans" },
+  { label: "Co-Invest", href: "/plans" },
   { label: "Products", href: "/products" },
   { label: "Franchise", href: "/franchise" },
   // { label: "Investment Plans", href: "/plans" },
@@ -33,7 +33,6 @@ const pageLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
-// Only these emails see the "Plans" link
 
 // Links shown inside the user popup
 const accountLinks = [
@@ -106,10 +105,8 @@ export default function Header() {
     };
   }, [userMenuOpen]);
 
-  const showPlans = mounted && isAuthed;
-  const visibleLinks = pageLinks.filter(
-    (l) => l.href !== "/plans" || showPlans,
-  );
+  // Every page link is shown to everyone, on desktop and on mobile
+  const visibleLinks = pageLinks;
 
   const handleAnchorClick = (e: React.MouseEvent, href: string) => {
     setMenuOpen(false);

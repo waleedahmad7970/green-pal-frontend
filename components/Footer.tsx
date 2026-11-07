@@ -50,7 +50,7 @@ export default function Footer() {
               </h4>
               <nav className="flex flex-col gap-3 text-sm font-body text-sand/55">
                 <a href="/plans" className="hover:text-sand transition-colors">
-                  Plans
+                  Co-Invest
                 </a>
                 <a href="/#how-it-works" className="hover:text-sand transition-colors">
                   How It Works
