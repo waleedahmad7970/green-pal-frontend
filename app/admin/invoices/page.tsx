@@ -1,5 +1,7 @@
 "use client";
 
+import { useTableSort, SortTh, type SortAccessors } from "@/components/admin/sort";
+
 import { useEffect, useState } from "react";
 import { useInvoiceStore } from "@/lib/admin/slices/useInvoiceStore";
 import { listOrders } from "@/lib/admin/services/orders";
@@ -9,9 +11,19 @@ import {
 } from "@/components/admin/ui";
 import { safeFormatDate } from "@/lib/helpers/helper";
 
+const invoiceSort: SortAccessors<any> = {
+  id: (i) => (i._id || i.id || "").slice(-6),
+  customer: (i) => i?.customerName,
+  amount: (i) => i?.amount || 0,
+  issued: (i) => (i?.issuedAt ? new Date(i.issuedAt).getTime() : null),
+  due: (i) => (i?.dueAt ? new Date(i.dueAt).getTime() : null),
+  status: (i) => i?.status,
+};
+
 export default function AdminInvoicesPage() {
   const { invoices, loading, fetchInvoices, } = useInvoiceStore();
   const [orders, setOrders] = useState<Order[]>([]);
+  const { sorted: sortedInvoices, sort, toggle } = useTableSort(invoices as any[], invoiceSort);
 
   useEffect(() => {
     fetchInvoices();
@@ -39,16 +51,16 @@ export default function AdminInvoicesPage() {
           <table className="w-full text-sm font-body">
             <thead>
               <tr className="text-left text-sand/40 border-b border-sand/10">
-                <th className="p-4 font-normal">Invoice ID</th>
-                <th className="p-4 font-normal">Customer</th>
-                <th className="p-4 font-normal">Amount</th>
-                <th className="p-4 font-normal">Issued</th>
-                <th className="p-4 font-normal">Due</th>
-                <th className="p-4 font-normal">Status</th>
+                <SortTh label="Invoice ID" sortKey="id" sort={sort} onSort={toggle} />
+                <SortTh label="Customer" sortKey="customer" sort={sort} onSort={toggle} />
+                <SortTh label="Amount" sortKey="amount" sort={sort} onSort={toggle} />
+                <SortTh label="Issued" sortKey="issued" sort={sort} onSort={toggle} />
+                <SortTh label="Due" sortKey="due" sort={sort} onSort={toggle} />
+                <SortTh label="Status" sortKey="status" sort={sort} onSort={toggle} />
               </tr>
             </thead>
             <tbody>
-              {invoices.map((i: any) => {
+              {sortedInvoices.map((i: any) => {
                 const invId = i._id || i.id || "";
                 return (
                   <tr key={invId} className="border-b border-sand/5 last:border-0">

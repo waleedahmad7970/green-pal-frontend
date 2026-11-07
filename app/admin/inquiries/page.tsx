@@ -1,5 +1,7 @@
 "use client";
 
+import { useTableSort, SortTh, type SortAccessors } from "@/components/admin/sort";
+
 import { useEffect, useState } from "react";
 import { useAdminInquiryStore } from "@/lib/admin/slices/useAdminInquiryStore";
 import {
@@ -14,6 +16,19 @@ import { downloadInquiryPdf } from "@/lib/admin/utils/inquiryPdf";
 
 const statusOptions = ["pending", "meeting_scheduled", "cancelled"];
 
+const inquirySort: SortAccessors<any> = {
+  id: (q) => q._id?.slice(-6),
+  customer: (q) => (typeof q.user === "object" ? q.user?.name : ""),
+  product: (q) =>
+    q.planTier
+      ? (typeof q.planTier === "object" ? q.planTier?.name : "") || q.productName
+      : (typeof q.product === "object" ? q.product?.productName || q.product?.name : "") || q.productName,
+  message: (q) => q.message,
+  price: (q) => q.customPrice || null,
+  date: (q) => new Date(q.createdAt).getTime(),
+  status: (q) => q.status,
+};
+
 export default function AdminInquiriesPage() {
   const { inquiries, isLoading, fetchInquiries, updateStatus, generateLink } =
     useAdminInquiryStore();
@@ -22,6 +37,7 @@ export default function AdminInquiriesPage() {
   const [priceInput, setPriceInput] = useState("");
   const [generating, setGenerating] = useState(false);
   const [filterStatus, setFilterStatus] = useState("");
+  const { sorted: sortedInquiries, sort, toggle } = useTableSort(inquiries as any[], inquirySort);
 
   useEffect(() => {
     fetchInquiries(filterStatus || undefined);
@@ -71,19 +87,19 @@ export default function AdminInquiriesPage() {
           <table className="w-full text-sm font-body">
             <thead>
               <tr className="text-left text-sand/40 border-b border-sand/10">
-                <th className="p-4 font-normal">ID</th>
-                <th className="p-4 font-normal">Customer</th>
-                <th className="p-4 font-normal">Product / Tier</th>
-                <th className="p-4 font-normal">Message</th>
-                <th className="p-4 font-normal">Price</th>
-                <th className="p-4 font-normal">Date</th>
-                <th className="p-4 font-normal">Status</th>
+                <SortTh label="ID" sortKey="id" sort={sort} onSort={toggle} />
+                <SortTh label="Customer" sortKey="customer" sort={sort} onSort={toggle} />
+                <SortTh label="Product / Tier" sortKey="product" sort={sort} onSort={toggle} />
+                <SortTh label="Message" sortKey="message" sort={sort} onSort={toggle} />
+                <SortTh label="Price" sortKey="price" sort={sort} onSort={toggle} />
+                <SortTh label="Date" sortKey="date" sort={sort} onSort={toggle} />
+                <SortTh label="Status" sortKey="status" sort={sort} onSort={toggle} />
                 <th className="p-4 font-normal">Actions</th>
                 <th className="p-4 font-normal">PDF</th>
               </tr>
             </thead>
             <tbody>
-              {inquiries.map((inq: any) => {
+              {sortedInquiries.map((inq: any) => {
                 const id = inq._id;
                 const userName =
                   typeof inq.user === "object" ? inq.user?.name : "—";
