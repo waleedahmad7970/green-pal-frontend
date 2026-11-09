@@ -17,6 +17,7 @@ const CHECK_BUBBLE =
 //   NEXT_PUBLIC_DEPOSIT_COINVESTMENT_URL=https://buy.stripe.com/...
 //   NEXT_PUBLIC_DEPOSIT_FRANCHISE_URL=https://buy.stripe.com/...
 //   NEXT_PUBLIC_DEPOSIT_PREMIUM_URL=https://buy.stripe.com/...
+//   NEXT_PUBLIC_DEPOSIT_COINVEST_STAKE_URL=https://buy.stripe.com/...
 const DEPOSITS = [
     {
         key: "coinvestment",
@@ -44,6 +45,16 @@ const DEPOSITS = [
         currency: "CAD",
         text: "Reserve your premium Greenpal package with an initial deposit.",
         url: process.env.NEXT_PUBLIC_DEPOSIT_PREMIUM_URL || "",
+    },
+    {
+        key: "coinvest_stake",
+        title: "Co-Invest 25% Stake",
+        label: "Full payment",
+        amount: "$5,000",
+        currency: "CAD",
+        text: "Co-invest in two 24-slot stations and one 48-slot station at a 25% stake, paid in full.",
+        buttonLabel: "Pay $5,000 in full",
+        url: process.env.NEXT_PUBLIC_DEPOSIT_COINVEST_STAKE_URL || "",
     },
 ];
 
@@ -130,7 +141,7 @@ export default function BookPage() {
                     variants={stagger}
                     initial="hidden"
                     animate="show"
-                    className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto mb-10"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto mb-10"
                 >
                     {DEPOSITS.map((d) => (
                         <motion.div
@@ -162,7 +173,7 @@ export default function BookPage() {
                                         href={d.url}
                                         className={`inline-flex items-center justify-center px-8 py-4 rounded-full text-base mb-8 ${BTN}`}
                                     >
-                                        Pay {d.amount} deposit
+                                        {d.buttonLabel ?? `Pay ${d.amount} deposit`}
                                     </a>
                                     <QrCode value={d.url} label={d.title} />
                                     <p className="font-body text-xs text-muted mt-3">
