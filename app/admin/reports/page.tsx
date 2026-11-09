@@ -132,6 +132,7 @@ export default function AdminReportsPage() {
       ["Co-Investment", dep.byType.coinvestment.count, dep.byType.coinvestment.amount.toFixed(2)],
       ["Premium", dep.byType.premium.count, dep.byType.premium.amount.toFixed(2)],
       ["Franchisee Full Payment", dep.byType.franchise_full.count, dep.byType.franchise_full.amount.toFixed(2)],
+      ["Co-Invest 25% Stake", dep.byType.coinvest_stake.count, dep.byType.coinvest_stake.amount.toFixed(2)],
       ...DEPOSIT_STATUS_ORDER.map((s) => [`Status: ${s}`, dep.byStatus[s]?.count ?? 0, (dep.byStatus[s]?.amount ?? 0).toFixed(2)]),
     ];
     downloadCsv(`summary_${rangeLabel}.csv`, rows);
@@ -241,6 +242,11 @@ export default function AdminReportsPage() {
                 label="Franchisee Full Payment"
                 value={dep.byType.franchise_full.count}
                 sub={`${money(dep.byType.franchise_full.amount)} CAD`}
+              />
+              <Stat
+                label="Co-Invest 25% Stake"
+                value={dep.byType.coinvest_stake.count}
+                sub={`${money(dep.byType.coinvest_stake.amount)} CAD`}
               />
               <Stat
                 label="Not contacted yet"

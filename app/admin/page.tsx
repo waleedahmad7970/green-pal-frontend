@@ -220,6 +220,11 @@ export default function AdminDashboardPage() {
               value={String(depStats.byType.franchise_full.count)}
               delta={money(depStats.byType.franchise_full.amount)}
             />
+            <StatCard
+              label="Co-Invest 25% stake"
+              value={String(depStats.byType.coinvest_stake.count)}
+              delta={money(depStats.byType.coinvest_stake.amount)}
+            />
           </div>
 
           {/* Needs action + split */}
