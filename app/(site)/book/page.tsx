@@ -18,6 +18,7 @@ const CHECK_BUBBLE =
 //   NEXT_PUBLIC_DEPOSIT_FRANCHISE_URL=https://buy.stripe.com/...
 //   NEXT_PUBLIC_DEPOSIT_PREMIUM_URL=https://buy.stripe.com/...
 //   NEXT_PUBLIC_DEPOSIT_COINVEST_STAKE_URL=https://buy.stripe.com/...
+//   NEXT_PUBLIC_DEPOSIT_STATIONS_2X12_URL=https://buy.stripe.com/...
 const DEPOSITS = [
     {
         key: "coinvestment",
@@ -55,6 +56,16 @@ const DEPOSITS = [
         text: "Co-invest in two 24-slot stations and one 48-slot station at a 25% stake, paid in full.",
         buttonLabel: "Pay $5,000 in full",
         url: process.env.NEXT_PUBLIC_DEPOSIT_COINVEST_STAKE_URL || "",
+    },
+    {
+        key: "stations_2x12",
+        title: "2x 12-Slot Stations",
+        label: "Full payment",
+        amount: "$3,000",
+        currency: "CAD",
+        text: "Get two Greenpal 12-slot charging stations, paid in full.",
+        buttonLabel: "Pay $3,000 in full",
+        url: process.env.NEXT_PUBLIC_DEPOSIT_STATIONS_2X12_URL || "",
     },
 ];
 
@@ -143,11 +154,16 @@ export default function BookPage() {
                     animate="show"
                     className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto mb-10"
                 >
-                    {DEPOSITS.map((d) => (
+                    {DEPOSITS.map((d, i) => (
                         <motion.div
                             key={d.key}
                             variants={fadeUp}
-                            className={`flex flex-col items-center text-center rounded-[20px] shadow-lg p-8 sm:p-10 ${CARD}`}
+                            className={`flex flex-col items-center text-center rounded-[20px] shadow-lg p-8 sm:p-10 ${CARD} ${
+                                // an odd last card sits centred under the pair above it
+                                DEPOSITS.length % 2 === 1 && i === DEPOSITS.length - 1
+                                    ? "md:col-span-2 md:w-1/2 md:mx-auto"
+                                    : ""
+                            }`}
                         >
                             <span className="font-mono text-xs uppercase tracking-wider text-signal-dim dark:text-signal font-semibold mb-2">
                                 {d.label}

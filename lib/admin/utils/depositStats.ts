@@ -3,7 +3,7 @@ import type { Deposit } from "@/lib/admin/services/depositAdminService";
 export interface DepositStats {
   count: number;
   amount: number;
-  byType: Record<"franchise" | "coinvestment" | "premium" | "franchise_full" | "coinvest_stake", { count: number; amount: number }>;
+  byType: Record<"franchise" | "coinvestment" | "premium" | "franchise_full" | "coinvest_stake" | "stations_2x12", { count: number; amount: number }>;
   byStatus: Record<string, { count: number; amount: number }>;
 }
 
@@ -16,7 +16,7 @@ export function computeDepositStats(deposits: Deposit[]): DepositStats {
   const stats: DepositStats = {
     count: 0,
     amount: 0,
-    byType: { franchise: { count: 0, amount: 0 }, coinvestment: { count: 0, amount: 0 }, premium: { count: 0, amount: 0 }, franchise_full: { count: 0, amount: 0 }, coinvest_stake: { count: 0, amount: 0 } },
+    byType: { franchise: { count: 0, amount: 0 }, coinvestment: { count: 0, amount: 0 }, premium: { count: 0, amount: 0 }, franchise_full: { count: 0, amount: 0 }, coinvest_stake: { count: 0, amount: 0 }, stations_2x12: { count: 0, amount: 0 } },
     byStatus: Object.fromEntries(DEPOSIT_STATUS_ORDER.map((s) => [s, { count: 0, amount: 0 }])),
   };
 
@@ -27,7 +27,7 @@ export function computeDepositStats(deposits: Deposit[]): DepositStats {
     stats.count += 1;
     stats.amount += d.amount;
 
-    const t = stats.byType[d.depositType as "franchise" | "coinvestment" | "premium" | "franchise_full" | "coinvest_stake"];
+    const t = stats.byType[d.depositType as "franchise" | "coinvestment" | "premium" | "franchise_full" | "coinvest_stake" | "stations_2x12"];
     if (t) {
       t.count += 1;
       t.amount += d.amount;
