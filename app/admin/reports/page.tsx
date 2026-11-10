@@ -133,6 +133,7 @@ export default function AdminReportsPage() {
       ["Premium", dep.byType.premium.count, dep.byType.premium.amount.toFixed(2)],
       ["Franchisee Full Payment", dep.byType.franchise_full.count, dep.byType.franchise_full.amount.toFixed(2)],
       ["Co-Invest 25% Stake", dep.byType.coinvest_stake.count, dep.byType.coinvest_stake.amount.toFixed(2)],
+      ["2x 12-Slot Stations", dep.byType.stations_2x12.count, dep.byType.stations_2x12.amount.toFixed(2)],
       ...DEPOSIT_STATUS_ORDER.map((s) => [`Status: ${s}`, dep.byStatus[s]?.count ?? 0, (dep.byStatus[s]?.amount ?? 0).toFixed(2)]),
     ];
     downloadCsv(`summary_${rangeLabel}.csv`, rows);
@@ -247,6 +248,11 @@ export default function AdminReportsPage() {
                 label="Co-Invest 25% Stake"
                 value={dep.byType.coinvest_stake.count}
                 sub={`${money(dep.byType.coinvest_stake.amount)} CAD`}
+              />
+              <Stat
+                label="2x 12-Slot Stations"
+                value={dep.byType.stations_2x12.count}
+                sub={`${money(dep.byType.stations_2x12.amount)} CAD`}
               />
               <Stat
                 label="Not contacted yet"

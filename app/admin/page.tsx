@@ -225,6 +225,11 @@ export default function AdminDashboardPage() {
               value={String(depStats.byType.coinvest_stake.count)}
               delta={money(depStats.byType.coinvest_stake.amount)}
             />
+            <StatCard
+              label="2x 12-slot stations"
+              value={String(depStats.byType.stations_2x12.count)}
+              delta={money(depStats.byType.stations_2x12.amount)}
+            />
           </div>
 
           {/* Needs action + split */}
