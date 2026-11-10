@@ -62,7 +62,15 @@ export default function Work() {
         const data = await fetchLocations();
         if (Array.isArray(data)) {
           // Offline locations are not shown on the site
-          setLocations(data.filter((loc) => loc.status !== "offline"));
+          // Coming soon first, then live, then everything else (stable order within each group)
+          const rank = (status: string) => (status === "coming_soon" ? 0 : status === "live" ? 1 : 2);
+          setLocations(
+            data
+              .filter((loc) => loc.status !== "offline")
+              .map((loc, index) => ({ loc, index }))
+              .sort((a, b) => rank(a.loc.status) - rank(b.loc.status) || a.index - b.index)
+              .map(({ loc }) => loc),
+          );
         }
       } catch (error) {
         console.error("Failed to load locations from API:", error);
