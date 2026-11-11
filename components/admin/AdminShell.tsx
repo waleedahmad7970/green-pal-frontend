@@ -14,6 +14,7 @@ const navItems = [
   { label: "Inquiries", href: "/admin/inquiries" },
   { label: "Contact Messages", href: "/admin/contacts" },
   { label: "Deposits", href: "/admin/deposits" },
+  { label: "Payment Links", href: "/admin/payment-links" },
   { label: "Locations", href: "/admin/locations" },
   // { label: "Purchases", href: "/admin/purchases" },
   { label: "Invoices", href: "/admin/invoices" },
