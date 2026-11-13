@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import ContactIntro from "@/components/ContactIntro";
 import ContactSteps from "@/components/ContactSteps";
 import ContactForm from "@/components/ContactForm";
+import BookCall from "@/components/BookCall";
 
 export const metadata: Metadata = {
   title: "Contact — Partner With Us",
@@ -17,6 +18,7 @@ export default function ContactPage() {
     <>
       <ContactIntro />
       <ContactForm />
+      {/* <BookCall /> */}
       <ContactSteps />
     </>
   );

@@ -24,7 +24,7 @@ export default function AboutHero() {
           <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-card border line-rule mb-8 transition-colors duration-300">
             <GPMark className="w-5 h-4 text-signal shrink-0" />
             <span className="font-body text-xs md:text-sm font-medium tracking-wide">
-              Edmonton-Based · Canadian Shared Portable Charging
+              Alberta-Based · Canadian Shared Portable Charging
             </span>
           </div>
 

@@ -123,7 +123,7 @@ function StationSlotGraphic({ slots }: { slots: 8 | 12 | 24 | 48 }) {
               strokeWidth="0.4"
             />
           );
-        })
+        }),
       )}
     </svg>
   );
@@ -161,7 +161,11 @@ function Check({ className = "" }: { className?: string }) {
       stroke="currentColor"
       strokeWidth={2.4}
     >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M4.5 12.75l6 6 9-13.5"
+      />
     </svg>
   );
 }
@@ -178,7 +182,7 @@ function InquiryModal({
 }) {
   const router = useRouter();
   const [message, setMessage] = useState(
-    `Hi, I am interested in the ${plan.name} package (${plan.price}, one time). Please contact me to discuss the next steps.`
+    `Hi, I am interested in the ${plan.name} package (${plan.price}, one time). Please contact me to discuss the next steps.`,
   );
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
@@ -208,8 +212,8 @@ function InquiryModal({
       }
       setError(
         err?.response?.data?.message ||
-        err?.message ||
-        "Could not send your inquiry. Please try again."
+          err?.message ||
+          "Could not send your inquiry. Please try again.",
       );
     } finally {
       setSubmitting(false);
@@ -244,9 +248,7 @@ function InquiryModal({
 
         {sent ? (
           <div className="text-center py-6">
-            <span
-              className={`mx-auto mb-5 w-12 h-12 ${CHECK_BUBBLE}`}
-            >
+            <span className={`mx-auto mb-5 w-12 h-12 ${CHECK_BUBBLE}`}>
               <Check className="w-6 h-6" />
             </span>
             <h3 className="font-display font-extrabold text-2xl tracking-tight mb-2">
@@ -254,8 +256,8 @@ function InquiryModal({
             </h3>
             <p className="font-body text-sm text-muted mb-6 leading-relaxed">
               Thank you. We received your inquiry for {plan.name}. We will
-              contact you to arrange a meeting. After the meeting, we will
-              email you your payment link.
+              contact you to arrange a meeting. After the meeting, we will email
+              you your payment link.
             </p>
             <button
               type="button"
@@ -351,7 +353,9 @@ export default function PlansPage() {
             popular: t.popular || false,
             image: t.image || `/stations/${t.slug}.png`,
             blurb: t.blurb || `${t.slots} power banks. Good for busy places.`,
-            features: Array.isArray(t.features) ? t.features.filter(Boolean) : [],
+            features: Array.isArray(t.features)
+              ? t.features.filter(Boolean)
+              : [],
             specs: {
               dimensions: t.specs?.dimensions || "",
               weight: t.specs?.weight || "",
@@ -423,34 +427,36 @@ export default function PlansPage() {
             variants={fadeUp}
             className="font-body text-base sm:text-lg md:text-xl text-muted max-w-2xl mx-auto leading-relaxed"
           >
-            You pay one time. We buy the station, put it in a busy place and
-            run it. Every month we send you 50% of the net rental revenue from
-            your station.
+            You pay one time. We buy the station, put it in a busy place and run
+            it. Every month we send you 50% of the net rental revenue from your
+            station.
           </motion.p>
         </motion.div>
 
         {/* --- PLANS GRID / LOADING SKELETON / ERROR --- */}
         {isLoading ? (
           <div className="mb-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-0 items-stretch">              {[1, 2, 3, 4].map((n) => (
-              <div
-                key={n}
-                className="rounded-[20px] p-8 sm:p-10 min-h-[640px] bg-card border border-signal/30 animate-pulse flex flex-col justify-between"
-              >
-                <div>
-                  <div className="h-7 w-32 bg-signal/20 rounded mb-2" />
-                  <div className="h-4 w-44 bg-signal/10 rounded mb-8" />
-                  <div className="h-10 w-28 bg-signal/20 rounded mb-8" />
-                  <div className="h-36 w-full bg-signal/10 rounded mb-8" />
-                  <div className="space-y-3">
-                    <div className="h-4 w-full bg-signal/10 rounded" />
-                    <div className="h-4 w-5/6 bg-signal/10 rounded" />
-                    <div className="h-4 w-4/6 bg-signal/10 rounded" />
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-0 items-stretch">
+              {" "}
+              {[1, 2, 3, 4].map((n) => (
+                <div
+                  key={n}
+                  className="rounded-[20px] p-8 sm:p-10 min-h-[640px] bg-card border border-signal/30 animate-pulse flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="h-7 w-32 bg-signal/20 rounded mb-2" />
+                    <div className="h-4 w-44 bg-signal/10 rounded mb-8" />
+                    <div className="h-10 w-28 bg-signal/20 rounded mb-8" />
+                    <div className="h-36 w-full bg-signal/10 rounded mb-8" />
+                    <div className="space-y-3">
+                      <div className="h-4 w-full bg-signal/10 rounded" />
+                      <div className="h-4 w-5/6 bg-signal/10 rounded" />
+                      <div className="h-4 w-4/6 bg-signal/10 rounded" />
+                    </div>
                   </div>
+                  <div className="h-14 w-full bg-signal/20 rounded-full mt-6" />
                 </div>
-                <div className="h-14 w-full bg-signal/20 rounded-full mt-6" />
-              </div>
-            ))}
+              ))}
             </div>
           </div>
         ) : hasError ? (
@@ -459,7 +465,8 @@ export default function PlansPage() {
               Plans are unavailable right now. Please try again later.
             </p>
             <p className="font-body text-sm text-muted">
-              We are having trouble connecting to the network. Please refresh the page or contact our support team.
+              We are having trouble connecting to the network. Please refresh
+              the page or contact our support team.
             </p>
           </div>
         ) : (
@@ -470,99 +477,111 @@ export default function PlansPage() {
             viewport={viewport}
             className="mb-16"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-2 items-stretch">              {plans?.map((plan, i) => {
-              const isPopular = plan.popular;
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-2 items-stretch">
+              {" "}
+              {plans?.map((plan, i) => {
+                const isPopular = plan.popular;
 
-              return (
-                <motion.div
-                  key={plan.id}
-                  variants={fadeUp}
-                  whileHover={{ y: -8 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 22 }}
-                  className={`group relative grid grid-rows-subgrid row-span-6 mb-6 rounded-[20px] p-4 sm:p-8 overflow-hidden transition-shadow duration-300 hover:shadow-xl ${CARD} ${isPopular
-                    ? "border-2 border-signal shadow-lg"
-                    : "border border-signal/60"
+                return (
+                  <motion.div
+                    key={plan.id}
+                    variants={fadeUp}
+                    whileHover={{ y: -8 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 22 }}
+                    className={`group relative grid grid-rows-subgrid row-span-6 mb-6 rounded-[20px] p-4 sm:p-8 overflow-hidden transition-shadow duration-300 hover:shadow-xl ${CARD} ${
+                      isPopular
+                        ? "border-2 border-signal shadow-lg"
+                        : "border border-signal/60"
                     }`}
-                >
-                  {isPopular && (
-                    <div
-                      className={`absolute -top-px left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-b-xl font-display text-[10px] font-bold tracking-[0.2em] uppercase ${CHIP}`}
-                    >
-                      Recommended
-                    </div>
-                  )}
-
-                  {/* Row 1: title */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="font-display font-bold text-2xl md:text-3xl tracking-tight text-current">
-                        {plan.name}
-                      </h3>
-                      <p className="font-body text-sm text-muted mt-1">{plan.subtitle}</p>
-                    </div>
-                    <span className="font-mono text-[11px] text-muted/70 mt-2">0{i + 1}</span>
-                  </div>
-
-                  {/* Row 2: price */}
-                  <div className="my-5">
-                    <span className="font-display font-extrabold text-4xl sm:text-5xl tracking-tight">
-                      {plan.price}
-                    </span>
-                    <span className="font-display font-bold text-lg text-muted ml-2">
-                      — {plan.priceLabel}
-                    </span>
-                  </div>
-
-                  {/* Row 3: image + blurb */}
-                  <div
-                    onClick={() => setSelectedPlan(plan)}
-                    className="flex flex-col justify-center cursor-pointer"
-                    title="Click to view full specifications"
                   >
-                    <StationVisual plan={plan} />
-                    <p className="font-body text-xs text-muted text-center mt-2">{plan.blurb}</p>
-                  </div>
+                    {isPopular && (
+                      <div
+                        className={`absolute -top-px left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-b-xl font-display text-[10px] font-bold tracking-[0.2em] uppercase ${CHIP}`}
+                      >
+                        Recommended
+                      </div>
+                    )}
 
-                  {/* Row 4: divider */}
-                  <div className="h-px my-5 bg-signal/40 self-center" />
+                    {/* Row 1: title */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h3 className="font-display font-bold text-2xl md:text-3xl tracking-tight text-current">
+                          {plan.name}
+                        </h3>
+                        <p className="font-body text-sm text-muted mt-1">
+                          {plan.subtitle}
+                        </p>
+                      </div>
+                      <span className="font-mono text-[11px] text-muted/70 mt-2">
+                        0{i + 1}
+                      </span>
+                    </div>
 
-                  {/* Row 5: features */}
-                  <ul className="space-y-4 mb-8">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5 font-body text-sm leading-snug">
-                        <span className={`mt-0.5 w-5 h-5 ${CHECK_BUBBLE}`}>
-                          <Check className="w-3 h-3" />
-                        </span>
-                        <span className="text-current/90">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
+                    {/* Row 2: price */}
+                    <div className="my-5">
+                      <span className="font-display font-extrabold text-4xl sm:text-5xl tracking-tight">
+                        {plan.price}
+                      </span>
+                      <span className="font-display font-bold text-lg text-muted ml-2">
+                        — {plan.priceLabel}
+                      </span>
+                    </div>
 
-                  {/* Row 6: button + footer */}
-                  <div className="pt-2 space-y-3 self-end">
-                    <button
-                      type="button"
-                      onClick={() => openInquiry(plan)}
-                      className={`w-full py-4 px-5 cursor-pointer rounded-full text-base flex items-center justify-center gap-2 active:scale-[0.98] ${BTN}`}
+                    {/* Row 3: image + blurb */}
+                    <div
+                      onClick={() => setSelectedPlan(plan)}
+                      className="flex flex-col justify-center cursor-pointer"
+                      title="Click to view full specifications"
                     >
-                      Explore
-                    </button>
-                    <div className="flex items-center justify-between px-1">
-                      <p className="font-body text-[11px] text-muted">
-                        You get half the rent money, every month.
+                      <StationVisual plan={plan} />
+                      <p className="font-body text-xs text-muted text-center mt-2">
+                        {plan.blurb}
                       </p>
+                    </div>
+
+                    {/* Row 4: divider */}
+                    <div className="h-px my-5 bg-signal/40 self-center" />
+
+                    {/* Row 5: features */}
+                    <ul className="space-y-4 mb-8">
+                      {plan.features.map((feature, idx) => (
+                        <li
+                          key={idx}
+                          className="flex items-start gap-2.5 font-body text-sm leading-snug"
+                        >
+                          <span className={`mt-0.5 w-5 h-5 ${CHECK_BUBBLE}`}>
+                            <Check className="w-3 h-3" />
+                          </span>
+                          <span className="text-current/90">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Row 6: button + footer */}
+                    <div className="pt-2 space-y-3 self-end">
                       <button
                         type="button"
-                        onClick={() => setSelectedPlan(plan)}
-                        className="font-body text-[11px] text-signal hover:underline shrink-0 ml-2"
+                        onClick={() => openInquiry(plan)}
+                        className={`w-full py-4 px-5 cursor-pointer rounded-full text-base flex items-center justify-center gap-2 active:scale-[0.98] ${BTN}`}
                       >
-                        Details & Specs →
+                        Explore
                       </button>
+                      <div className="flex items-center justify-between px-1">
+                        <p className="font-body text-[11px] text-muted">
+                          You get half the rent money, every month.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPlan(plan)}
+                          className="font-body text-[11px] text-signal hover:underline shrink-0 ml-2"
+                        >
+                          Details & Specs →
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              );
-            })}
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.div>
         )}
@@ -663,10 +682,10 @@ export default function PlansPage() {
                       label: "Form Factor",
                       cells: plans.map((p) => p.specs.formFactor || "—"),
                     },
-                    {
-                      label: "Dimensions",
-                      cells: plans.map((p) => p.specs.dimensions || "—"),
-                    },
+                    // {
+                    //   label: "Dimensions",
+                    //   cells: plans.map((p) => p.specs.dimensions || "—"),
+                    // },
                     {
                       label: "Weight",
                       cells: plans.map((p) => p.specs.weight || "—"),
@@ -678,7 +697,7 @@ export default function PlansPage() {
                     {
                       label: "Your Share",
                       cells: plans.map(
-                        () => "50% of the net rental revenue, paid monthly"
+                        () => "50% of the net rental revenue, paid monthly",
                       ),
                       accent: true,
                     },
@@ -691,12 +710,13 @@ export default function PlansPage() {
                       {row.cells.map((c, idx) => (
                         <td
                           key={idx}
-                          className={`p-4 sm:p-5 text-center ${row.strong
-                            ? "font-bold"
-                            : row.accent
-                              ? "font-semibold accent"
-                              : "text-muted"
-                            }`}
+                          className={`p-4 sm:p-5 text-center ${
+                            row.strong
+                              ? "font-bold"
+                              : row.accent
+                                ? "font-semibold accent"
+                                : "text-muted"
+                          }`}
                         >
                           {c}
                         </td>
@@ -723,8 +743,8 @@ export default function PlansPage() {
               Questions before you pay?
             </h2>
             <p className="font-body text-sand/70 text-base md:text-lg mb-8 leading-relaxed">
-              Talk to us. We will answer anything about the stations, the
-              places and the monthly numbers.
+              Talk to us. We will answer anything about the stations, the places
+              and the monthly numbers.
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <Link
@@ -817,7 +837,7 @@ export default function PlansPage() {
                     ["Form factor", selectedPlan.specs.formFactor || "—"],
                     [
                       "Size & weight",
-                      `${selectedPlan.specs.dimensions || "—"} · ${selectedPlan.specs.weight || "—"}`,
+                      // `${selectedPlan.specs.dimensions || "—"} · ${selectedPlan.specs.weight || "—"}`,
                     ],
                   ].map(([label, value]) => (
                     <div
@@ -848,9 +868,9 @@ export default function PlansPage() {
               </div>
 
               <p className="font-body text-xs text-muted mb-6 leading-relaxed">
-                The money is not promised. Some months are busy. Some months are slow.
-                Your pay can go up and down. All the rules are in the investor paper.
-                Please read it before you pay.
+                The money is not promised. Some months are busy. Some months are
+                slow. Your pay can go up and down. All the rules are in the
+                investor paper. Please read it before you pay.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
